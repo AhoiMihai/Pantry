@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "154665864046",
+    "project_id": "pantry-4d54b",
+    "storage_bucket": "pantry-4d54b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:154665864046:android:45759a30cb6268c9148f7f",
+        "android_client_info": {
+          "package_name": "com.ahoi.pantry"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "154665864046-qsas7m9ot78fcoh04k54cj69tkomtpec.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ahoi.pantry",
+            "certificate_hash": "444c8370910e5004a95e95d8c6a18bacaed4f7ea"
+          }
+        },
+        {
+          "client_id": "154665864046-286de1pnls033c1dlbdohalr85k3tc27.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDH5Ns5L0X3VT0v35lJo1_Xq2T1QxgrG4Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "154665864046-286de1pnls033c1dlbdohalr85k3tc27.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
