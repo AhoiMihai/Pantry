@@ -14,7 +14,29 @@ class CreateAccountViewModel(
     private val _signupState = MutableLiveData<SignUpState>()
     val signUpState: LiveData<SignUpState> = _signupState
 
-    fun createAccount(email: String, password: String) {
+    private val _email = MutableLiveData<String>()
+    val email: LiveData<String> = _email
+
+    private val _password = MutableLiveData<String>()
+    val password: LiveData<String> = _password
+
+    fun updateEmail(email: String) {
+        _email.value = email
+    }
+
+    fun updatePassword(password: String) {
+        _password.value = password
+    }
+
+    fun createAccount() {
+        val email = email.value
+        val password = password.value
+
+        if (email.isNullOrEmpty() || password.isNullOrEmpty()) {
+            _signupState.postValue(SignUpState.MISSING_CREDENTIALS)
+            return
+        }
+
         firebaseAuth.createUserWithEmailAndPassword(email, password)
             .addOnSuccessListener {
                 _signupState.postValue(SignUpState.SUCCESS)
@@ -26,10 +48,11 @@ class CreateAccountViewModel(
 }
 
 enum class SignUpState(
-    success: Boolean,
-    fatal: Boolean,
-    errorStringId: Int
+    val success: Boolean,
+    val fatal: Boolean,
+    val errorStringId: Int
 ) {
     SUCCESS(true, false, 0),
+    MISSING_CREDENTIALS(false, false, R.string.missing_credentials),
     UNKNOWN_ERROR(false, false, R.string.generic_auth_error)
 }
