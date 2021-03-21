@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Pantry</string>
+    <string name="generic_auth_error">something went wrong, try again later</string>
 </resources>
