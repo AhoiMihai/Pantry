@@ -4,6 +4,8 @@ import android.app.Application
 import com.ahoi.pantry.arch.PantryComponent
 import com.ahoi.pantry.auth.signup.di.DaggerSignUpComponent
 import com.ahoi.pantry.auth.signup.di.SignUpComponent
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import java.lang.IllegalStateException
 
 class PantryApp : Application() {
@@ -16,7 +18,10 @@ class PantryApp : Application() {
     }
 
     private fun initComponents() {
-        componentRegistry[SignUpComponent::class.java] = DaggerSignUpComponent.builder().build()
+        componentRegistry[SignUpComponent::class.java] = DaggerSignUpComponent
+            .builder()
+            .firebaseAuth(Firebase.auth)
+            .build()
     }
 
     fun <M : PantryComponent> getComponent(componentClass: Class<M>): M {

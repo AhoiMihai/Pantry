@@ -13,11 +13,6 @@ import dagger.Provides
 class SignUpModule {
 
     @Provides
-    fun provideFirebaseAuth(): FirebaseAuth {
-        return Firebase.auth
-    }
-
-    @Provides
     fun provideSchedulers(): ScheduleProvider {
         return DefaultScheduleProvider()
     }
