@@ -7,5 +7,11 @@ import dagger.Component
 @Component(modules = [SignUpModule::class])
 interface SignUpComponent: PantryComponent {
 
+    @Component.Builder
+    interface Builder {
+
+        fun build(): SignUpComponent
+    }
+
     fun inject(activity: CreateAccountActivity)
 }

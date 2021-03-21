@@ -43,6 +43,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 
     implementation 'com.google.dagger:dagger:2.33'
+    implementation 'com.google.dagger:dagger-android:2.33'
     kapt 'com.google.dagger:dagger-compiler:2.33'
 
     implementation platform('com.google.firebase:firebase-bom:26.7.0')
