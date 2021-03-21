@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Pantry</string>
     <string name="generic_auth_error">something went wrong, try again later</string>
+    <string name="create_your_account">Create your account</string>
+    <string name="email_label">Email</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="password">password</string>
 </resources>
