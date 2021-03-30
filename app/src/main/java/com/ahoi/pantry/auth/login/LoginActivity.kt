@@ -1,4 +1,4 @@
-package com.ahoi.pantry.auth.signup
+package com.ahoi.pantry.auth.login
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -10,10 +10,13 @@ import com.ahoi.pantry.MainActivity
 import com.ahoi.pantry.PantryApp
 import com.ahoi.pantry.R
 import com.ahoi.pantry.auth.di.AuthenticationComponent
+import com.ahoi.pantry.auth.signup.AuthMode
+import com.ahoi.pantry.auth.signup.AuthenticationViewModel
+import com.ahoi.pantry.auth.signup.SignUpState
 import com.ahoi.pantry.common.uistuff.bind
 import javax.inject.Inject
 
-class CreateAccountActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity() {
 
     private val emailInput: EditText by bind(R.id.email_input)
     private val passwordInput: EditText by bind(R.id.password_input)
@@ -24,7 +27,7 @@ class CreateAccountActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_create_account)
+        setContentView(R.layout.activity_login)
         (application as PantryApp).getComponent(AuthenticationComponent::class.java).inject(this)
 
         viewModel.signUpState.observe(this) {
@@ -34,7 +37,7 @@ class CreateAccountActivity : AppCompatActivity() {
         submitButton.setOnClickListener {
             viewModel.updateEmail(emailInput.text.toString())
             viewModel.updatePassword(passwordInput.text.toString())
-            viewModel.createAccount(AuthMode.SIGN_UP)
+            viewModel.createAccount(AuthMode.LOGIN)
         }
     }
 

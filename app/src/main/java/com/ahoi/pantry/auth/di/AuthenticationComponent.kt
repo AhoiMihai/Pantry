@@ -1,13 +1,14 @@
-package com.ahoi.pantry.auth.signup.di
+package com.ahoi.pantry.auth.di
 
 import com.ahoi.pantry.arch.PantryComponent
+import com.ahoi.pantry.auth.login.LoginActivity
 import com.ahoi.pantry.auth.signup.CreateAccountActivity
 import com.google.firebase.auth.FirebaseAuth
 import dagger.BindsInstance
 import dagger.Component
 
-@Component(modules = [SignUpModule::class])
-interface SignUpComponent: PantryComponent {
+@Component(modules = [AuthenticationModule::class])
+interface AuthenticationComponent: PantryComponent {
 
     @Component.Builder
     interface Builder {
@@ -15,8 +16,9 @@ interface SignUpComponent: PantryComponent {
         @BindsInstance
         fun firebaseAuth(value: FirebaseAuth): Builder
 
-        fun build(): SignUpComponent
+        fun build(): AuthenticationComponent
     }
 
     fun inject(activity: CreateAccountActivity)
+    fun inject(activity: LoginActivity)
 }

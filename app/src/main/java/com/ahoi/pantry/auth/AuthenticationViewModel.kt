@@ -6,9 +6,8 @@ import com.ahoi.pantry.R
 import com.ahoi.pantry.common.rx.ScheduleProvider
 import com.google.firebase.auth.FirebaseAuth
 
-class CreateAccountViewModel(
-    private val firebaseAuth: FirebaseAuth,
-    private val schedulers: ScheduleProvider
+class AuthenticationViewModel(
+    private val firebaseAuth: FirebaseAuth
 ) {
 
     private val _signupState = MutableLiveData<SignUpState>()
@@ -28,7 +27,7 @@ class CreateAccountViewModel(
         _password.value = password
     }
 
-    fun createAccount() {
+    fun createAccount(mode: AuthMode) {
         val email = email.value
         val password = password.value
 
@@ -36,14 +35,14 @@ class CreateAccountViewModel(
             _signupState.postValue(SignUpState.MISSING_CREDENTIALS)
             return
         }
-
-        firebaseAuth.createUserWithEmailAndPassword(email, password)
-            .addOnSuccessListener {
-                _signupState.postValue(SignUpState.SUCCESS)
-            }
-            .addOnFailureListener {
-                _signupState.postValue(SignUpState.UNKNOWN_ERROR)
-            }
+        when (mode) {
+            AuthMode.LOGIN -> firebaseAuth.signInWithEmailAndPassword(email, password)
+            AuthMode.SIGN_UP -> firebaseAuth.createUserWithEmailAndPassword(email, password)
+        }.addOnSuccessListener {
+            _signupState.postValue(SignUpState.SUCCESS)
+        }.addOnFailureListener {
+            _signupState.postValue(SignUpState.UNKNOWN_ERROR)
+        }
     }
 }
 
@@ -55,4 +54,9 @@ enum class SignUpState(
     SUCCESS(true, false, 0),
     MISSING_CREDENTIALS(false, false, R.string.missing_credentials),
     UNKNOWN_ERROR(false, false, R.string.generic_auth_error)
+}
+
+enum class AuthMode {
+    LOGIN,
+    SIGN_UP
 }

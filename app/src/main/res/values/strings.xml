@@ -6,4 +6,6 @@
     <string name="sign_up">Sign Up</string>
     <string name="password">password</string>
     <string name="missing_credentials">Please complete both fields.</string>
+    <string name="log_in">Log In</string>
+    <string name="welcome">Welcome to your virtual pantry!</string>
 </resources>

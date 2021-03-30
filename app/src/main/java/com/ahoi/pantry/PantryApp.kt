@@ -2,8 +2,10 @@ package com.ahoi.pantry
 
 import android.app.Application
 import com.ahoi.pantry.arch.PantryComponent
-import com.ahoi.pantry.auth.signup.di.DaggerSignUpComponent
-import com.ahoi.pantry.auth.signup.di.SignUpComponent
+import com.ahoi.pantry.auth.di.AuthenticationComponent
+import com.ahoi.pantry.auth.di.DaggerAuthenticationComponent
+import com.ahoi.pantry.launch.di.DaggerLaunchComponent
+import com.ahoi.pantry.launch.di.LaunchComponent
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import java.lang.IllegalStateException
@@ -18,7 +20,12 @@ class PantryApp : Application() {
     }
 
     private fun initComponents() {
-        componentRegistry[SignUpComponent::class.java] = DaggerSignUpComponent
+        componentRegistry[AuthenticationComponent::class.java] = DaggerAuthenticationComponent
+            .builder()
+            .firebaseAuth(Firebase.auth)
+            .build()
+
+        componentRegistry[LaunchComponent::class.java] = DaggerLaunchComponent
             .builder()
             .firebaseAuth(Firebase.auth)
             .build()
