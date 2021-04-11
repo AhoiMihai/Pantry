@@ -7,6 +7,7 @@ import com.ahoi.pantry.auth.di.DaggerAuthenticationComponent
 import com.ahoi.pantry.launch.di.DaggerLaunchComponent
 import com.ahoi.pantry.launch.di.LaunchComponent
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import java.lang.IllegalStateException
 
