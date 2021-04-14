@@ -12,18 +12,36 @@ class ProfileRepository(
 ) {
 
     fun createProfile(user: String): Completable {
-        auth.currentUser?.let {
-            firestore
-                .collection(it.uid)
-                .document("profile")
-                .get()
-                .addOnSuccessListener {
-
-                }
+        return Completable.fromCallable {
+            auth.currentUser?.let {
+                firestore
+                    .collection("profiles")
+                    .document(it.uid)
+                    .set(user)
+                    .addOnSuccessListener {
+                        Completable.complete()
+                    }
+                    .addOnFailureListener { error ->
+                        Completable.error(error)
+                    }
+            }
         }
     }
 
     fun getOrLoadProfile(): Single<Profile> {
-        firestore.collection("users")
+        return Single.fromCallable {
+            auth.currentUser?.let {
+                firestore
+                    .collection(it.uid)
+                    .document("profile")
+                    .get()
+                    .addOnSuccessListener {
+
+                    }
+                    .addOnFailureListener { error ->
+                        Completable.error(error)
+                    }
+            }
+        }
     }
 }
