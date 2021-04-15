@@ -12,9 +12,6 @@ interface ProfileComponent {
     interface Builder {
 
         @BindsInstance
-        fun firebaseAuth(value: FirebaseAuth): Builder
-
-        @BindsInstance
         fun firestore(value: FirebaseFirestore): Builder
 
         fun build(): ProfileComponent

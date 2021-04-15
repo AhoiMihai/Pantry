@@ -12,7 +12,7 @@ import com.ahoi.pantry.R
 import com.ahoi.pantry.auth.di.AuthenticationComponent
 import com.ahoi.pantry.auth.signup.AuthMode
 import com.ahoi.pantry.auth.signup.AuthenticationViewModel
-import com.ahoi.pantry.auth.signup.SignUpState
+import com.ahoi.pantry.auth.signup.AuthenticationState
 import com.ahoi.pantry.common.uistuff.bind
 import javax.inject.Inject
 
@@ -30,7 +30,7 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
         (application as PantryApp).getComponent(AuthenticationComponent::class.java).inject(this)
 
-        viewModel.signUpState.observe(this) {
+        viewModel.authenticationState.observe(this) {
             handleStateChange(it)
         }
 
@@ -41,7 +41,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleStateChange(state: SignUpState) {
+    private fun handleStateChange(state: AuthenticationState) {
         if (state.success) {
             goToDashboard()
             return

@@ -27,7 +27,7 @@ class CreateAccountActivity : AppCompatActivity() {
         setContentView(R.layout.activity_create_account)
         (application as PantryApp).getComponent(AuthenticationComponent::class.java).inject(this)
 
-        viewModel.signUpState.observe(this) {
+        viewModel.authenticationState.observe(this) {
             handleStateChange(it)
         }
 
@@ -38,7 +38,7 @@ class CreateAccountActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleStateChange(state: SignUpState) {
+    private fun handleStateChange(state: AuthenticationState) {
         if (state.success) {
             goToDashboard()
             return

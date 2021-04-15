@@ -3,15 +3,17 @@ package com.ahoi.pantry.auth.signup
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ahoi.pantry.R
-import com.ahoi.pantry.common.rx.ScheduleProvider
+import com.ahoi.pantry.profile.data.Profile
+import com.ahoi.pantry.profile.domain.ProfileRepository
 import com.google.firebase.auth.FirebaseAuth
 
 class AuthenticationViewModel(
-    private val firebaseAuth: FirebaseAuth
+    private val firebaseAuth: FirebaseAuth,
+    private val profileRepo: ProfileRepository
 ) {
 
-    private val _signupState = MutableLiveData<SignUpState>()
-    val signUpState: LiveData<SignUpState> = _signupState
+    private val _signupState = MutableLiveData<AuthenticationState>()
+    val authenticationState: LiveData<AuthenticationState> = _signupState
 
     private val _email = MutableLiveData<String>()
     val email: LiveData<String> = _email
@@ -32,21 +34,34 @@ class AuthenticationViewModel(
         val password = password.value
 
         if (email.isNullOrEmpty() || password.isNullOrEmpty()) {
-            _signupState.postValue(SignUpState.MISSING_CREDENTIALS)
+            _signupState.postValue(AuthenticationState.MISSING_CREDENTIALS)
             return
         }
         when (mode) {
             AuthMode.LOGIN -> firebaseAuth.signInWithEmailAndPassword(email, password)
+                .addOnSuccessListener {
+                    profileRepo.loadProfile(it.user.uid)
+                    _signupState.postValue(AuthenticationState.SUCCESS)
+                }
+                .addOnFailureListener {
+                    _signupState.postValue(AuthenticationState.UNKNOWN_ERROR)
+                }
             AuthMode.SIGN_UP -> firebaseAuth.createUserWithEmailAndPassword(email, password)
-        }.addOnSuccessListener {
-            _signupState.postValue(SignUpState.SUCCESS)
-        }.addOnFailureListener {
-            _signupState.postValue(SignUpState.UNKNOWN_ERROR)
+                .addOnSuccessListener {
+                    val profile = Profile(
+                        it.user!!.email!!,
+                        it.user!!.displayName!!
+                    )
+                    profileRepo.createProfile(it.user!!.uid, profile)
+                        .subscribe { _signupState.postValue(AuthenticationState.SUCCESS) }
+                }.addOnFailureListener {
+                    _signupState.postValue(AuthenticationState.UNKNOWN_ERROR)
+                }
         }
     }
 }
 
-enum class SignUpState(
+enum class AuthenticationState(
     val success: Boolean,
     val fatal: Boolean,
     val errorStringId: Int

@@ -10,8 +10,8 @@ import dagger.Provides
 class ProfileModule {
 
     @Provides
-    fun provideProfileRepo(auth: FirebaseAuth, firestore: FirebaseFirestore): ProfileRepository {
-        return ProfileRepository(firestore, auth)
+    fun provideProfileRepo(firestore: FirebaseFirestore): ProfileRepository {
+        return ProfileRepository(firestore)
     }
 
 }
