@@ -1,6 +1,9 @@
 package com.ahoi.pantry.auth.di
 
-import com.ahoi.pantry.auth.signup.AuthenticationViewModel
+import com.ahoi.pantry.auth.AuthManagerImpl
+import com.ahoi.pantry.auth.AuthenticationViewModel
+import com.ahoi.pantry.auth.api.AuthManager
+import com.ahoi.pantry.profile.domain.ProfileRepository
 import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
 import dagger.Provides
@@ -9,9 +12,16 @@ import dagger.Provides
 class AuthenticationModule {
 
     @Provides
+    fun provideAuthManager(auth: FirebaseAuth): AuthManager {
+        return AuthManagerImpl(auth)
+    }
+
+    @Provides
     fun provideAuthenticationViewModel(
-        auth: FirebaseAuth
+        auth: FirebaseAuth,
+        authManager: AuthManager,
+        profileRepository: ProfileRepository
     ): AuthenticationViewModel {
-        return AuthenticationViewModel(auth)
+        return AuthenticationViewModel(auth, authManager, profileRepository)
     }
 }

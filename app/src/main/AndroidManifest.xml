@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ahoi.pantry">
+        package="com.ahoi.pantry">
 
     <application
-        android:name=".PantryApp"
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/Theme.Pantry">
+            android:name=".PantryApp"
+            android:allowBackup="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:supportsRtl="true"
+            android:theme="@style/Theme.Pantry">
+        <activity android:name=".recipes.ui.MyRecipesActivity"></activity>
+        <activity android:name=".recipes.ui.CreateOrEditRecipeActivity" />
         <activity android:name=".launch.LaunchActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,14 +27,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".auth.login.LoginActivity"
-            android:screenOrientation="portrait" />
+                android:name=".auth.login.LoginActivity"
+                android:screenOrientation="portrait" />
         <activity
-            android:name=".auth.signup.CreateAccountActivity"
-            android:screenOrientation="portrait" />
+                android:name=".auth.signup.CreateAccountActivity"
+                android:screenOrientation="portrait" />
         <activity
-            android:name=".MainActivity"
-            android:screenOrientation="portrait" />
+                android:name=".HomeActivity"
+                android:screenOrientation="portrait" />
     </application>
 
 </manifest>

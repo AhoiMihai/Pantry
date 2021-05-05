@@ -18,7 +18,7 @@ class ProfileRepository(
     fun createProfile(id: String, user: Profile): Completable {
         return Completable.create {
             firestore
-                .collection("profile")
+                .collection("profiles")
                 .document(id)
                 .set(user)
                 .addOnSuccessListener {
@@ -32,7 +32,7 @@ class ProfileRepository(
 
     fun loadProfile(id: String) {
         firestore
-            .collection("profile")
+            .collection("profiles")
             .document(id)
             .get()
             .addOnSuccessListener { document ->

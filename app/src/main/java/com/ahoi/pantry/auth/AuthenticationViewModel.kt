@@ -1,14 +1,16 @@
-package com.ahoi.pantry.auth.signup
+package com.ahoi.pantry.auth
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ahoi.pantry.R
+import com.ahoi.pantry.auth.api.AuthManager
 import com.ahoi.pantry.profile.data.Profile
 import com.ahoi.pantry.profile.domain.ProfileRepository
 import com.google.firebase.auth.FirebaseAuth
 
 class AuthenticationViewModel(
     private val firebaseAuth: FirebaseAuth,
+    private val authManager: AuthManager,
     private val profileRepo: ProfileRepository
 ) {
 
@@ -38,14 +40,15 @@ class AuthenticationViewModel(
             return
         }
         when (mode) {
-            AuthMode.LOGIN -> firebaseAuth.signInWithEmailAndPassword(email, password)
-                .addOnSuccessListener {
-                    profileRepo.loadProfile(it.user.uid)
-                    _signupState.postValue(AuthenticationState.SUCCESS)
-                }
-                .addOnFailureListener {
-                    _signupState.postValue(AuthenticationState.UNKNOWN_ERROR)
-                }
+            AuthMode.LOGIN -> authManager.loginWithEmailAndPassword(email, password)
+                .subscribe(
+                    {
+                        profileRepo.loadProfile(authManager.currentUserId)
+                        _signupState.postValue(AuthenticationState.SUCCESS)
+                    },
+                    {
+                        _signupState.postValue(AuthenticationState.UNKNOWN_ERROR)
+                    })
             AuthMode.SIGN_UP -> firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener {
                     val profile = Profile(
