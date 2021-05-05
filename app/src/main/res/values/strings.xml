@@ -8,4 +8,6 @@
     <string name="missing_credentials">Please complete both fields.</string>
     <string name="log_in">Log In</string>
     <string name="welcome">Welcome to your virtual pantry!</string>
+    <string name="description_add_recipe_button">Add Recipe</string>
+    <string name="empty_recipe_list_text">No Recipes Yet</string>
 </resources>
