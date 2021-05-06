@@ -49,17 +49,15 @@ class AuthenticationViewModel(
                     {
                         _signupState.postValue(AuthenticationState.UNKNOWN_ERROR)
                     })
-            AuthMode.SIGN_UP -> firebaseAuth.createUserWithEmailAndPassword(email, password)
-                .addOnSuccessListener {
-                    val profile = Profile(
-                        it.user!!.email!!,
-                        it.user!!.displayName!!
-                    )
-                    profileRepo.createProfile(it.user!!.uid, profile)
-                        .subscribe { _signupState.postValue(AuthenticationState.SUCCESS) }
-                }.addOnFailureListener {
-                    _signupState.postValue(AuthenticationState.UNKNOWN_ERROR)
-                }
+            AuthMode.SIGN_UP -> authManager.signUpWithEmailAndPassword(email, password)
+                .subscribe(
+                    {
+                        profileRepo.createProfile(it.uid, it.email!!, it.displayName!!)
+                            .subscribe { _signupState.postValue(AuthenticationState.SUCCESS) }
+                    }, {
+                        _signupState.postValue(AuthenticationState.UNKNOWN_ERROR)
+                    }
+                )
         }
     }
 }

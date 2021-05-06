@@ -14,6 +14,9 @@ class ProfileRepository(
 ) {
 
     private val profileSubject = BehaviorSubject.create<Profile>()
+    private val profilePantrySubject: BehaviorSubject<String> = BehaviorSubject.create()
+    val pantryReference: String
+        get() = profilePantrySubject.value
 
     fun createProfile(id: String, user: Profile): Completable {
         return Completable.create {
@@ -27,6 +30,37 @@ class ProfileRepository(
                 .addOnFailureListener { error ->
                     Completable.error(error)
                 }
+        }
+    }
+
+    fun createProfile(id: String, name: String, email: String): Completable {
+        return Completable.create {
+            firestore.collection("pantries")
+                .add(
+                    mapOf(
+                        "name" to "My Pantry"
+                    )
+                ).addOnSuccessListener {
+                    val profile = Profile(
+                        name = name,
+                        email = email,
+                        pantryReference = it.id
+                    )
+                    firestore
+                        .collection("profiles")
+                        .document(id)
+                        .set(profile)
+                        .addOnSuccessListener {
+                            profilePantrySubject.onNext(profile.pantryReference)
+                            Completable.complete()
+                        }
+                        .addOnFailureListener { error ->
+                            Completable.error(error)
+                        }
+                }.addOnFailureListener {
+                    Completable.error(it)
+                }
+
         }
     }
 

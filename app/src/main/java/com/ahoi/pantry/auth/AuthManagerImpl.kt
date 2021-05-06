@@ -2,8 +2,10 @@ package com.ahoi.pantry.auth
 
 import com.ahoi.pantry.auth.api.AuthManager
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 
 class AuthManagerImpl(
@@ -28,14 +30,14 @@ class AuthManagerImpl(
         }
     }
 
-    override fun signUpWithEmailAndPassword(email: String, password: String): Completable {
-        return Completable.create {
+    override fun signUpWithEmailAndPassword(email: String, password: String): Single<FirebaseUser> {
+        return Single.create {
             firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener {
                     userIdSubject.onNext(it.user?.uid)
-                    Completable.complete()
+                    Single.just(it.user)
                 }.addOnFailureListener {
-                    Completable.error(it)
+                    Single.error<FirebaseUser>(it)
                 }
         }
     }
