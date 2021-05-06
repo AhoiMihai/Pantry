@@ -11,7 +11,7 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.Pantry">
         <activity android:name=".recipes.ui.MyRecipesActivity"></activity>
-        <activity android:name=".recipes.ui.CreateOrEditRecipeActivity" />
+        <activity android:name=".recipes.ui.edit.CreateOrEditRecipeActivity" />
         <activity android:name=".launch.LaunchActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

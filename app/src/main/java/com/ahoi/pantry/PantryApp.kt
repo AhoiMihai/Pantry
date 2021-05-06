@@ -8,6 +8,8 @@ import com.ahoi.pantry.launch.di.DaggerLaunchComponent
 import com.ahoi.pantry.launch.di.LaunchComponent
 import com.ahoi.pantry.profile.di.DaggerProfileComponent
 import com.ahoi.pantry.profile.di.ProfileComponent
+import com.ahoi.pantry.recipes.di.DaggerRecipesComponent
+import com.ahoi.pantry.recipes.di.RecipesComponent
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
@@ -31,11 +33,18 @@ class PantryApp : Application() {
         componentRegistry[AuthenticationComponent::class.java] = DaggerAuthenticationComponent
             .builder()
             .firebaseAuth(Firebase.auth)
+            .profileRepository(getComponent(ProfileComponent::class.java).profileRepository())
             .build()
 
         componentRegistry[LaunchComponent::class.java] = DaggerLaunchComponent
             .builder()
             .firebaseAuth(Firebase.auth)
+            .build()
+
+        componentRegistry[RecipesComponent::class.java] = DaggerRecipesComponent
+            .builder()
+            .firestore(FirebaseFirestore.getInstance())
+            .AuthManager(getComponent(AuthenticationComponent::class.java).authManager())
             .build()
     }
 
