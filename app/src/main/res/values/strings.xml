@@ -10,4 +10,6 @@
     <string name="welcome">Welcome to your virtual pantry!</string>
     <string name="description_add_recipe_button">Add Recipe</string>
     <string name="empty_recipe_list_text">No Recipes Yet</string>
+    <string name="edit_recipe_recipe_name_hint">Name your Recipe</string>
+    <string name="edit_recipe_servings_hint">How many servings will this make?</string>
 </resources>

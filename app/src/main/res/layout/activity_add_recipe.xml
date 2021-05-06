@@ -4,10 +4,42 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingStart="32dp"
+        android:paddingEnd="32dp"
         tools:context=".recipes.ui.edit.CreateOrEditRecipeActivity">
 
     <EditText
+            android:id="@+id/recipe_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:hint="@string/edit_recipe_recipe_name_hint"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+            android:id="@+id/recipe_servings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="@string/edit_recipe_servings_hint"
+            android:importantForAutofill="no"
+            android:inputType="number"
+            app:layout_constraintTop_toBottomOf="@+id/recipe_title" />
+
+    <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="280dp"
+            android:id="@+id/ingredient_list"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/recipe_servings" />
+
+    <Button
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:id="@+id/add_ingredient_button"
+            app:layout_constraintTop_toBottomOf="@+id/ingredient_list"
+            android:layout_marginTop="16dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
