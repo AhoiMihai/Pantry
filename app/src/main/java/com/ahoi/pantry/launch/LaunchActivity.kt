@@ -7,7 +7,6 @@ import com.ahoi.pantry.HomeActivity
 import com.ahoi.pantry.PantryApp
 import com.ahoi.pantry.R
 import com.ahoi.pantry.landing.AuthState
-import com.ahoi.pantry.landing.LandingActivity
 import com.ahoi.pantry.landing.LaunchViewModel
 import com.ahoi.pantry.launch.di.LaunchComponent
 import javax.inject.Inject

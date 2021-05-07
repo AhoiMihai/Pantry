@@ -1,4 +1,4 @@
-package com.ahoi.pantry.landing
+package com.ahoi.pantry.launch
 
 import android.content.Intent
 import android.os.Bundle

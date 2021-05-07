@@ -2,7 +2,11 @@ package com.ahoi.pantry.profile.domain
 
 import com.ahoi.pantry.profile.data.Profile
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentId
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.core.FirestoreClient
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
@@ -18,27 +22,12 @@ class ProfileRepository(
     val pantryReference: String
         get() = profilePantrySubject.value
 
-    fun createProfile(id: String, user: Profile): Completable {
-        return Completable.create {
-            firestore
-                .collection("profiles")
-                .document(id)
-                .set(user)
-                .addOnSuccessListener {
-                    Completable.complete()
-                }
-                .addOnFailureListener { error ->
-                    Completable.error(error)
-                }
-        }
-    }
-
     fun createProfile(id: String, name: String, email: String): Completable {
         return Completable.create {
             firestore.collection("pantries")
                 .add(
                     mapOf(
-                        "name" to "My Pantry"
+                        "name" to "My Pantry",
                     )
                 ).addOnSuccessListener {
                     val profile = Profile(

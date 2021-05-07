@@ -2,13 +2,14 @@ package com.ahoi.pantry.recipes.data
 
 import android.os.Parcelable
 import com.ahoi.pantry.common.units.Quantity
-import com.ahoi.pantry.food.data.model.Ingredient
+import com.google.firebase.firestore.DocumentId
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Recipe(
+    @DocumentId
     val name: String,
     val servings: Int,
-    val ingredients: Map<Ingredient, Quantity> = mutableMapOf(),
+    val ingredients: Map<String, Quantity> = mutableMapOf(),
     val steps: List<String> = arrayListOf()
 ) : Parcelable
