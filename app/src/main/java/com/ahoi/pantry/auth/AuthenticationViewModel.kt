@@ -4,16 +4,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ahoi.pantry.R
 import com.ahoi.pantry.auth.api.AuthManager
+import com.ahoi.pantry.common.operation.CommonOperationState
+import com.ahoi.pantry.common.operation.OperationState
 import com.ahoi.pantry.profile.domain.ProfileRepository
-import com.google.firebase.auth.FirebaseAuth
 
 class AuthenticationViewModel(
     private val authManager: AuthManager,
     private val profileRepo: ProfileRepository
 ) {
 
-    private val _signupState = MutableLiveData<OperationResult>()
-    val operationResult: LiveData<OperationResult> = _signupState
+    private val _signupState = MutableLiveData<OperationState>()
+    val operationResult: LiveData<OperationState> = _signupState
 
     private val _email = MutableLiveData<String>()
     val email: LiveData<String> = _email
@@ -42,32 +43,26 @@ class AuthenticationViewModel(
                 .subscribe(
                     {
                         profileRepo.loadProfile(authManager.currentUserId)
-                        _signupState.postValue(OperationResult.SUCCESS)
+                        _signupState.postValue(CommonOperationState.SUCCESS)
                     },
                     {
-                        _signupState.postValue(OperationResult.UNKNOWN_ERROR)
+                        _signupState.postValue(CommonOperationState.UNKNOWN_ERROR)
                     })
             AuthMode.SIGN_UP -> authManager.signUpWithEmailAndPassword(email, password)
                 .subscribe(
                     {
                         profileRepo.createProfile(it.uid, it.email!!, it.displayName!!)
-                            .subscribe { _signupState.postValue(OperationResult.SUCCESS) }
+                            .subscribe { _signupState.postValue(CommonOperationState.SUCCESS) }
                     }, {
-                        _signupState.postValue(OperationResult.UNKNOWN_ERROR)
+                        _signupState.postValue(CommonOperationState.UNKNOWN_ERROR)
                     }
                 )
         }
     }
 }
 
-enum class OperationResult(
-    val success: Boolean,
-    val fatal: Boolean,
-    val errorStringId: Int
-) {
-    SUCCESS(true, false, 0),
-    MISSING_CREDENTIALS(false, false, R.string.missing_credentials),
-    UNKNOWN_ERROR(false, false, R.string.generic_auth_error)
+enum class OperationResult: OperationState {
+    MISSING_CREDENTIALS,
 }
 
 enum class AuthMode {

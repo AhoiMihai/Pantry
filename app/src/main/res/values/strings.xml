@@ -19,4 +19,6 @@
     <string name="create_ingredient_success">Ingredient Created Successfully</string>
     <string name="create_ingredient_validation_error">Ingredient invalid or already exists</string>
     <string name="create_ingredient_unknown_error">An error occurred, please try again</string>
+    <string name="error_message_unauthorized">Not logged in, please log in again.</string>
+    <string name="error_message_unknown_error">Something went wrong, please try again</string>
 </resources>

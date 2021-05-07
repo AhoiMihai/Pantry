@@ -1,7 +1,6 @@
 package com.ahoi.pantry.auth.login
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -9,14 +8,18 @@ import android.widget.Toast
 import com.ahoi.pantry.HomeActivity
 import com.ahoi.pantry.PantryApp
 import com.ahoi.pantry.R
-import com.ahoi.pantry.auth.di.AuthenticationComponent
 import com.ahoi.pantry.auth.AuthMode
 import com.ahoi.pantry.auth.AuthenticationViewModel
 import com.ahoi.pantry.auth.OperationResult
+import com.ahoi.pantry.auth.di.AuthenticationComponent
+import com.ahoi.pantry.common.operation.CommonOperationState
+import com.ahoi.pantry.common.operation.OperationState
+import com.ahoi.pantry.common.uistuff.PantryActivity
 import com.ahoi.pantry.common.uistuff.bind
+import com.ahoi.pantry.common.uistuff.showToast
 import javax.inject.Inject
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : PantryActivity() {
 
     private val emailInput: EditText by bind(R.id.email_input)
     private val passwordInput: EditText by bind(R.id.password_input)
@@ -39,15 +42,18 @@ class LoginActivity : AppCompatActivity() {
             viewModel.updatePassword(passwordInput.text.toString())
             viewModel.authenticate(AuthMode.LOGIN)
         }
+
+        errorHandlers[OperationResult.MISSING_CREDENTIALS] =
+            { showToast(getString(R.string.missing_credentials)) }
     }
 
-    private fun handleStateChange(state: OperationResult) {
-        if (state.success) {
+    private fun handleStateChange(state: OperationState) {
+        if (state == CommonOperationState.SUCCESS) {
             goToDashboard()
             return
         }
 
-        Toast.makeText(this, state.errorStringId, Toast.LENGTH_SHORT).show()
+        handleOperationError(state)
     }
 
     private fun goToDashboard() {
