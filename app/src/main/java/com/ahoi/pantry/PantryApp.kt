@@ -4,6 +4,8 @@ import android.app.Application
 import com.ahoi.pantry.arch.PantryComponent
 import com.ahoi.pantry.auth.di.AuthenticationComponent
 import com.ahoi.pantry.auth.di.DaggerAuthenticationComponent
+import com.ahoi.pantry.ingredients.di.DaggerIngredientsComponent
+import com.ahoi.pantry.ingredients.di.IngredientsComponent
 import com.ahoi.pantry.launch.di.DaggerLaunchComponent
 import com.ahoi.pantry.launch.di.LaunchComponent
 import com.ahoi.pantry.profile.di.DaggerProfileComponent
@@ -34,6 +36,12 @@ class PantryApp : Application() {
             .builder()
             .firebaseAuth(Firebase.auth)
             .profileRepository(getComponent(ProfileComponent::class.java).profileRepository())
+            .build()
+
+        componentRegistry[IngredientsComponent::class.java] = DaggerIngredientsComponent
+            .builder()
+            .firestore(FirebaseFirestore.getInstance())
+            .pantryRefSupplier { getComponent(ProfileComponent::class.java).profileRepository().pantryReference }
             .build()
 
         componentRegistry[LaunchComponent::class.java] = DaggerLaunchComponent

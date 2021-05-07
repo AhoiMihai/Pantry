@@ -4,18 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ahoi.pantry.R
 import com.ahoi.pantry.auth.api.AuthManager
-import com.ahoi.pantry.profile.data.Profile
 import com.ahoi.pantry.profile.domain.ProfileRepository
 import com.google.firebase.auth.FirebaseAuth
 
 class AuthenticationViewModel(
-    private val firebaseAuth: FirebaseAuth,
     private val authManager: AuthManager,
     private val profileRepo: ProfileRepository
 ) {
 
-    private val _signupState = MutableLiveData<AuthenticationState>()
-    val authenticationState: LiveData<AuthenticationState> = _signupState
+    private val _signupState = MutableLiveData<OperationResult>()
+    val operationResult: LiveData<OperationResult> = _signupState
 
     private val _email = MutableLiveData<String>()
     val email: LiveData<String> = _email
@@ -31,12 +29,12 @@ class AuthenticationViewModel(
         _password.value = password
     }
 
-    fun createAccount(mode: AuthMode) {
+    fun authenticate(mode: AuthMode) {
         val email = email.value
         val password = password.value
 
         if (email.isNullOrEmpty() || password.isNullOrEmpty()) {
-            _signupState.postValue(AuthenticationState.MISSING_CREDENTIALS)
+            _signupState.postValue(OperationResult.MISSING_CREDENTIALS)
             return
         }
         when (mode) {
@@ -44,25 +42,25 @@ class AuthenticationViewModel(
                 .subscribe(
                     {
                         profileRepo.loadProfile(authManager.currentUserId)
-                        _signupState.postValue(AuthenticationState.SUCCESS)
+                        _signupState.postValue(OperationResult.SUCCESS)
                     },
                     {
-                        _signupState.postValue(AuthenticationState.UNKNOWN_ERROR)
+                        _signupState.postValue(OperationResult.UNKNOWN_ERROR)
                     })
             AuthMode.SIGN_UP -> authManager.signUpWithEmailAndPassword(email, password)
                 .subscribe(
                     {
                         profileRepo.createProfile(it.uid, it.email!!, it.displayName!!)
-                            .subscribe { _signupState.postValue(AuthenticationState.SUCCESS) }
+                            .subscribe { _signupState.postValue(OperationResult.SUCCESS) }
                     }, {
-                        _signupState.postValue(AuthenticationState.UNKNOWN_ERROR)
+                        _signupState.postValue(OperationResult.UNKNOWN_ERROR)
                     }
                 )
         }
     }
 }
 
-enum class AuthenticationState(
+enum class OperationResult(
     val success: Boolean,
     val fatal: Boolean,
     val errorStringId: Int

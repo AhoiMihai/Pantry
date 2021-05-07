@@ -10,7 +10,9 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/Theme.Pantry">
-        <activity android:name=".recipes.ui.MyRecipesActivity"></activity>
+        <activity android:name=".recipes.ui.addingredient.AddIngredientToRecipeActivity"></activity>
+        <activity android:name=".ingredients.ui.CreateIngredientActivity" />
+        <activity android:name=".recipes.ui.MyRecipesActivity" />
         <activity android:name=".recipes.ui.edit.CreateOrEditRecipeActivity" />
         <activity android:name=".launch.LaunchActivity">
             <intent-filter>

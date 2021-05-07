@@ -12,7 +12,7 @@ import com.ahoi.pantry.R
 import com.ahoi.pantry.auth.di.AuthenticationComponent
 import com.ahoi.pantry.auth.AuthMode
 import com.ahoi.pantry.auth.AuthenticationViewModel
-import com.ahoi.pantry.auth.AuthenticationState
+import com.ahoi.pantry.auth.OperationResult
 import com.ahoi.pantry.common.uistuff.bind
 import javax.inject.Inject
 
@@ -30,18 +30,18 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
         (application as PantryApp).getComponent(AuthenticationComponent::class.java).inject(this)
 
-        viewModel.authenticationState.observe(this) {
+        viewModel.operationResult.observe(this) {
             handleStateChange(it)
         }
 
         submitButton.setOnClickListener {
             viewModel.updateEmail(emailInput.text.toString())
             viewModel.updatePassword(passwordInput.text.toString())
-            viewModel.createAccount(AuthMode.LOGIN)
+            viewModel.authenticate(AuthMode.LOGIN)
         }
     }
 
-    private fun handleStateChange(state: AuthenticationState) {
+    private fun handleStateChange(state: OperationResult) {
         if (state.success) {
             goToDashboard()
             return

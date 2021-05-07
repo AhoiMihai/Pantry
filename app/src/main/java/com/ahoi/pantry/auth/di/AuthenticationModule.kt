@@ -18,10 +18,9 @@ class AuthenticationModule {
 
     @Provides
     fun provideAuthenticationViewModel(
-        auth: FirebaseAuth,
         authManager: AuthManager,
         profileRepository: ProfileRepository
     ): AuthenticationViewModel {
-        return AuthenticationViewModel(auth, authManager, profileRepository)
+        return AuthenticationViewModel(authManager, profileRepository)
     }
 }

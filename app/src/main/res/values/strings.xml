@@ -12,4 +12,11 @@
     <string name="empty_recipe_list_text">No Recipes Yet</string>
     <string name="edit_recipe_recipe_name_hint">Name your Recipe</string>
     <string name="edit_recipe_servings_hint">How many servings will this make?</string>
+    <string name="edit_ingredient_name_hint">name</string>
+    <string name="edit_ingredient_amount_hint">Quantity</string>
+    <string name="done">Done</string>
+    <string name="button_create_another">Create Another</string>
+    <string name="create_ingredient_success">Ingredient Created Successfully</string>
+    <string name="create_ingredient_validation_error">Ingredient invalid or already exists</string>
+    <string name="create_ingredient_unknown_error">An error occurred, please try again</string>
 </resources>
