@@ -5,6 +5,8 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.OnLifecycleEvent
+import com.ahoi.pantry.common.operation.CommonOperationState
+import com.ahoi.pantry.common.operation.OperationState
 import com.ahoi.pantry.common.units.Quantity
 import com.ahoi.pantry.common.units.Unit
 import com.ahoi.pantry.ingredients.api.Pantry
@@ -22,18 +24,19 @@ class CreateOrEditIngredientViewModel(
 
     fun createItem(displayIngredient: DisplayIngredient) {
         if (!isItemValid(displayIngredient)) {
-            _createItemState.postValue(OperationState.VALIDATION_ERROR)
+            _createItemState.postValue(CreateIngredientState.VALIDATION_ERROR)
             return
         }
         val item = PantryItem(
             ingredientName = displayIngredient.name,
+            unitType = displayIngredient.unit.type,
             quantity = Quantity(displayIngredient.amount, displayIngredient.unit),
             tags = emptyList()
         )
         disposable.add(pantry.updateOrCreateItems(listOf(item))
             .subscribe(
                 {
-                    _createItemState.postValue(OperationState.SUCCESS)
+                    _createItemState.postValue(CommonOperationState.SUCCESS)
                 },
                 {
                     _createItemState.postValue(generateErrorState(it))
@@ -54,11 +57,11 @@ class CreateOrEditIngredientViewModel(
     private fun generateErrorState(exception: Throwable): OperationState {
         return if (exception is FirebaseFirestoreException) {
             when (exception.code) {
-                FirebaseFirestoreException.Code.INVALID_ARGUMENT -> OperationState.VALIDATION_ERROR
-                else -> OperationState.UNKNOWN_ERROR
+                FirebaseFirestoreException.Code.INVALID_ARGUMENT -> CreateIngredientState.VALIDATION_ERROR
+                else -> CommonOperationState.UNKNOWN_ERROR
             }
         } else {
-            OperationState.UNKNOWN_ERROR
+            CommonOperationState.UNKNOWN_ERROR
         }
     }
 }
@@ -69,8 +72,6 @@ data class DisplayIngredient(
     val unit: Unit,
 )
 
-enum class OperationState {
-    SUCCESS,
-    UNKNOWN_ERROR,
+enum class CreateIngredientState: OperationState {
     VALIDATION_ERROR,
 }

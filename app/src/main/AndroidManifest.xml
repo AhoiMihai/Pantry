@@ -10,24 +10,39 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/Theme.Pantry">
-        <activity android:name=".recipes.ui.addingredient.AddIngredientToRecipeActivity"></activity>
-        <activity android:name=".ingredients.ui.CreateIngredientActivity" />
-        <activity android:name=".recipes.ui.MyRecipesActivity" />
-        <activity android:name=".recipes.ui.edit.CreateOrEditRecipeActivity" />
-        <activity android:name=".launch.LaunchActivity">
+        <activity
+                android:name=".profile.ui.CreateInvitationActivity"
+                android:screenOrientation="portrait" />
+        <activity
+                android:name=".profile.ui.MyInvitationsActivity"
+                android:screenOrientation="portrait" />
+        <activity
+                android:name=".recipes.ui.addsteps.AddStepsToRecipeActivity"
+                android:screenOrientation="portrait" />
+        <activity
+                android:name=".recipes.ui.addingredient.AddIngredientActivity"
+                android:screenOrientation="portrait" />
+        <activity
+                android:name=".ingredients.ui.CreateIngredientActivity"
+                android:screenOrientation="portrait" />
+        <activity
+                android:name=".recipes.ui.MyRecipesActivity"
+                android:screenOrientation="portrait" />
+        <activity
+                android:name=".recipes.ui.edit.CreateOrEditRecipeActivity"
+                android:screenOrientation="portrait" />
+        <activity
+                android:name=".launch.LaunchActivity"
+                android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".launch.LandingActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity
+                android:name=".launch.LandingActivity"
+                android:screenOrientation="portrait" />
         <activity
                 android:name=".auth.login.LoginActivity"
                 android:screenOrientation="portrait" />

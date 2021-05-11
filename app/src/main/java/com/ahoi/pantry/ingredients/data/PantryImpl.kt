@@ -2,6 +2,7 @@ package com.ahoi.pantry.ingredients.data
 
 import com.ahoi.pantry.common.units.Quantity
 import com.ahoi.pantry.common.units.Unit
+import com.ahoi.pantry.common.units.UnitType
 import com.ahoi.pantry.ingredients.api.Pantry
 import com.ahoi.pantry.ingredients.data.model.PantryItem
 import com.google.android.gms.tasks.Task
@@ -42,6 +43,7 @@ class PantryImpl(
                 collectionRef.document(item.ingredientName),
                 mapOf(
                     "amount" to item.quantity.amount,
+                    "unitType" to item.unitType.name
                     "unit" to item.quantity.unit.name,
                     "tags" to item.tags.map { it.name },
                     "keywords" to generateKeywordsFromNameAlsoKnownAsFirestoreIsTrash(item.ingredientName)
@@ -102,6 +104,7 @@ class PantryImpl(
     private fun createPantryItemFromDocument(document: DocumentSnapshot): PantryItem {
         return PantryItem(
             ingredientName = document.id,
+            unitType = UnitType.valueOf(document["unitType"].toString()),
             quantity = Quantity(
                 document["amount"] as Double,
                 Unit.valueOf(document["unit"].toString())

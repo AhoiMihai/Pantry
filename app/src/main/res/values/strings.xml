@@ -22,4 +22,16 @@
     <string name="error_message_unauthorized">Not logged in, please log in again.</string>
     <string name="error_message_unknown_error">Something went wrong, please try again</string>
     <string name="plus">+</string>
+    <string name="edit_recipe_empty_ingredients_error">Recipe must have ingredients!</string>
+    <string name="edit_recipe_empty_steps_error">Recipe must have at least one step!</string>
+    <string name="edit_recipe_validation_error">Recipe already exists or is invalid</string>
+    <string name="edit_recipe_operation_success">Recipe Created</string>
+    <string name="add_ingredient_search_hint">Search ingredients</string>
+    <string name="invitations_empty_list_text">No pending invitations :(</string>
+    <string name="invitations_name_text">from: %s</string>
+    <string name="invitations_invitation_declined">Invitation Declined</string>
+    <string name="invitations_invitation_accepted">Invitation Accepted</string>
+    <string name="create_invitation_email_hint">Email to invite</string>
+    <string name="create_invitation_send">Send Invitation</string>
+    <string name="create_invitation_invitation_sent">Invitation Sent</string>
 </resources>

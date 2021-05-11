@@ -42,7 +42,7 @@ class CreateAccountActivity : PantryActivity() {
             viewModel.authenticate(AuthMode.SIGN_UP)
         }
 
-        errorHandlers[OperationResult.MISSING_CREDENTIALS] = {
+        stateHandlers[OperationResult.MISSING_CREDENTIALS] = {
             showToast(getString(R.string.missing_credentials))
         }
     }
@@ -53,7 +53,7 @@ class CreateAccountActivity : PantryActivity() {
             return
         }
 
-        handleOperationError(state)
+        handleOperationState(state)
     }
 
     private fun goToDashboard() {

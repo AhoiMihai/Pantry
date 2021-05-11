@@ -1,15 +1,14 @@
 package com.ahoi.pantry.ingredients.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
-import android.widget.SpinnerAdapter
-import android.widget.Toast
 import com.ahoi.pantry.PantryApp
 import com.ahoi.pantry.R
+import com.ahoi.pantry.common.operation.CommonOperationState
+import com.ahoi.pantry.common.uistuff.PantryActivity
 import com.ahoi.pantry.common.uistuff.bind
 import com.ahoi.pantry.common.uistuff.showToast
 import com.ahoi.pantry.common.units.Unit
@@ -17,7 +16,7 @@ import com.ahoi.pantry.common.units.UnitType
 import com.ahoi.pantry.ingredients.di.IngredientsComponent
 import javax.inject.Inject
 
-class CreateIngredientActivity : AppCompatActivity() {
+class CreateIngredientActivity : PantryActivity() {
 
     private val title: EditText by bind(R.id.ingredient_name)
     private val amount: EditText by bind(R.id.quantity_amount)
@@ -36,11 +35,11 @@ class CreateIngredientActivity : AppCompatActivity() {
         setupButton()
         setupSpinner()
 
+        stateHandlers[CreateIngredientState.VALIDATION_ERROR] = { showToast(getString(R.string.create_ingredient_validation_error)) }
         viewModel.createItemState.observe(this) {
             when (it) {
-                OperationState.SUCCESS -> showToast(getString(R.string.create_ingredient_success))
-                OperationState.VALIDATION_ERROR -> showToast(getString(R.string.create_ingredient_validation_error))
-                OperationState.UNKNOWN_ERROR -> showToast(getString(R.string.create_ingredient_unknown_error))
+                CommonOperationState.SUCCESS -> showToast(getString(R.string.create_ingredient_success))
+                else -> handleOperationState(it)
             }
         }
     }

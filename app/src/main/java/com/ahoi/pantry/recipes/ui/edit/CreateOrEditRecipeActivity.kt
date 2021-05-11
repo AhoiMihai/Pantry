@@ -10,17 +10,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ahoi.pantry.PantryApp
 import com.ahoi.pantry.R
+import com.ahoi.pantry.common.operation.CommonOperationState
 import com.ahoi.pantry.common.uistuff.PantryActivity
 import com.ahoi.pantry.common.uistuff.bind
+import com.ahoi.pantry.common.uistuff.showToast
 import com.ahoi.pantry.recipes.data.Recipe
 import com.ahoi.pantry.recipes.di.RecipesComponent
-import com.ahoi.pantry.recipes.ui.addingredient.AddIngredientToRecipeActivity
+import com.ahoi.pantry.recipes.ui.RecipeStepsFormatter
+import com.ahoi.pantry.recipes.ui.addingredient.AddIngredientActivity
 import com.ahoi.pantry.recipes.ui.addingredient.REQUEST_CODE_ADD_INGREDIENT
 import javax.inject.Inject
 
 const val K_RECIPE_TO_EDIT = "pantryrecipetoedit"
 
-class CreateOrEditRecipeActivity : PantryActivity(), EditClickListener {
+class CreateOrEditRecipeActivity : PantryActivity() {
 
     private val recipeTitle: EditText by bind(R.id.recipe_title)
     private val recipeServings: EditText by bind(R.id.recipe_servings)
@@ -28,21 +31,42 @@ class CreateOrEditRecipeActivity : PantryActivity(), EditClickListener {
     private val recipeText: TextView by bind(R.id.recipe_steps)
     private val doneButton: Button by bind(R.id.done_button)
 
-    private val adapter = IngredientListAdapter(true, this)
+    private val adapter = IngredientListAdapter(true)
 
     @Inject
     lateinit var viewModel: CreateOrEditRecipeViewModel
+
+    @Inject
+    lateinit var recipeStepsFormatter: RecipeStepsFormatter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_recipe)
         (application as PantryApp).getComponent(RecipesComponent::class.java).inject(this)
 
+        setUpList()
+        setUpButton()
+        observeLiveData()
+
         if (intent.hasExtra(K_RECIPE_TO_EDIT) && intent.getParcelableExtra<Recipe>(K_RECIPE_TO_EDIT) != null) {
-//            viewModel.setCurrentRecipe(intent.getParcelableExtra(K_RECIPE_TO_EDIT)!!)
+            val recipe = intent.getParcelableExtra<Recipe>(K_RECIPE_TO_EDIT)
+            viewModel.updateRecipeName(recipe!!.name)
+            viewModel.updateRecipeServings(recipe.servings)
+            viewModel.updateRecipeSteps(recipe.steps)
+            viewModel.addIngredients(recipe.ingredients)
         }
 
-        setUpList()
+        stateHandlers[OperationResult.EMPTY_INGREDIENTS] = { showToast(getString(R.string.edit_recipe_empty_ingredients_error)) }
+        stateHandlers[OperationResult.EMPTY_STEPS] = { showToast(getString(R.string.edit_recipe_empty_steps_error)) }
+        stateHandlers[OperationResult.VALIDATION_ERROR] = { showToast(getString(R.string.edit_recipe_validation_error))}
+
+        adapter.editClicked
+            .subscribe {
+                startActivityForResult(
+                    Intent(this, AddIngredientActivity::class.java),
+                    REQUEST_CODE_ADD_INGREDIENT
+                )
+            }
     }
 
     private fun setUpList() {
@@ -51,10 +75,42 @@ class CreateOrEditRecipeActivity : PantryActivity(), EditClickListener {
         ingredientList.layoutManager = LinearLayoutManager(this)
     }
 
-    override fun onEditClick() {
-        startActivityForResult(
-            Intent(this, AddIngredientToRecipeActivity::class.java),
-            REQUEST_CODE_ADD_INGREDIENT
-        )
+    private fun setUpButton() {
+        val recipeName = viewModel.recipeName.value?: ""
+        val recipeServings = viewModel.recipeServings.value?: 0
+        val recipeSteps = viewModel.recipeSteps.value?: mutableListOf()
+        doneButton.setOnClickListener {
+            viewModel.createRecipe(
+                recipeName,
+                recipeServings,
+                recipeSteps
+            )
+        }
+    }
+
+    private fun observeLiveData() {
+        viewModel.recipeName.observe(this) {
+            recipeTitle.setText(it)
+        }
+
+        viewModel.recipeServings.observe(this) {
+            recipeServings.setText(it)
+        }
+
+        viewModel.addedIngredients.observe(this) {
+            adapter.updateItems(it)
+        }
+        viewModel.recipeSteps.observe(this) {
+            recipeText.text = recipeStepsFormatter.formatRecipeSteps(it)
+        }
+
+        viewModel.operationResult.observe(this) {
+            if (it == CommonOperationState.SUCCESS) {
+                showToast(getString(R.string.edit_recipe_operation_success))
+                finish()
+            } else {
+                handleOperationState(it)
+            }
+        }
     }
 }

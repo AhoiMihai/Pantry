@@ -7,14 +7,22 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ahoi.pantry.R
 import com.ahoi.pantry.ingredients.data.model.PantryItem
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.CompletableSubject
+import io.reactivex.rxjava3.subjects.PublishSubject
 
 class IngredientListAdapter(
     private val editable: Boolean,
-    private val editClickListener: EditClickListener,
     private val ingredients: ArrayList<PantryItem> = arrayListOf(),
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    fun updateItems(newItems: ArrayList<PantryItem>) {
+    private val clickedItemSubject = PublishSubject.create<PantryItem>()
+    val clickedItem: Observable<PantryItem> = clickedItemSubject.hide()
+    private val editClickedSubject = CompletableSubject.create()
+    val editClicked: Completable = editClickedSubject.hide()
+
+    fun updateItems(newItems: List<PantryItem>) {
         ingredients.clear()
         ingredients.addAll(newItems)
         notifyDataSetChanged()
@@ -36,7 +44,6 @@ class IngredientListAdapter(
         }
     }
 
-    // Create new views (invoked by the layout manager)
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (ViewType.values()[viewType]) {
             ViewType.CONTENT -> ItemViewHolder(LayoutInflater.from(viewGroup.context)
@@ -46,7 +53,6 @@ class IngredientListAdapter(
         }
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         when (ViewType.values()[viewHolder.itemViewType]) {
             ViewType.CONTENT -> {
@@ -55,21 +61,19 @@ class IngredientListAdapter(
                 viewHolder.nameText.text = ingredient.ingredientName
                 viewHolder.quantityText.text = ingredient.quantity.amount.toString()
                 viewHolder.unitText.text = ingredient.quantity.unit.name
+                viewHolder.itemView.setOnClickListener {
+                    clickedItemSubject.onNext(ingredients[position])
+                }
             }
             ViewType.FOOTER -> {
                 viewHolder.itemView.setOnClickListener {
-                    editClickListener.onEditClick()
+                    editClickedSubject.onComplete()
                 }
             }
         }
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
     override fun getItemCount() = if (editable) ingredients.size + 1 else ingredients.size
-}
-
-interface EditClickListener {
-    fun onEditClick()
 }
 
 enum class ViewType {

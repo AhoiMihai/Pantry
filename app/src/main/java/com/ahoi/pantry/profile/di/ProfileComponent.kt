@@ -1,7 +1,10 @@
 package com.ahoi.pantry.profile.di
 
 import com.ahoi.pantry.arch.PantryComponent
+import com.ahoi.pantry.auth.api.AuthManager
 import com.ahoi.pantry.profile.domain.ProfileRepository
+import com.ahoi.pantry.profile.ui.CreateInvitationActivity
+import com.ahoi.pantry.profile.ui.MyInvitationsActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.BindsInstance
@@ -16,8 +19,14 @@ interface ProfileComponent: PantryComponent {
         @BindsInstance
         fun firestore(value: FirebaseFirestore): Builder
 
+        @BindsInstance
+        fun authManager(value: AuthManager): Builder
+
         fun build(): ProfileComponent
     }
+
+    fun inject(activity: MyInvitationsActivity)
+    fun inject(activity: CreateInvitationActivity)
 
     fun profileRepository(): ProfileRepository
 }

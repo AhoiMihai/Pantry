@@ -9,7 +9,7 @@ import com.ahoi.pantry.launch.LandingActivity
 
 abstract class PantryActivity : AppCompatActivity() {
 
-    protected val errorHandlers: MutableMap<OperationState, () -> Unit> = mutableMapOf(
+    protected val stateHandlers: MutableMap<OperationState, () -> Unit> = mutableMapOf(
         CommonOperationState.UNAUTHORIZED to {
             showToast(getString(R.string.error_message_unauthorized))
             val intent = Intent(this, LandingActivity::class.java)
@@ -20,11 +20,11 @@ abstract class PantryActivity : AppCompatActivity() {
         CommonOperationState.UNKNOWN_ERROR to { showToast(getString(R.string.error_message_unknown_error)) }
     )
 
-    protected fun handleOperationError(error: OperationState) {
-        if (errorHandlers[error] != null) {
-            errorHandlers[error]!!()
+    protected fun handleOperationState(error: OperationState) {
+        if (stateHandlers[error] != null) {
+            stateHandlers[error]!!()
         } else {
-            errorHandlers[CommonOperationState.UNKNOWN_ERROR]!!()
+            stateHandlers[CommonOperationState.UNKNOWN_ERROR]!!()
         }
     }
 }

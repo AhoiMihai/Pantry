@@ -2,7 +2,7 @@ package com.ahoi.pantry.common.rx
 
 import io.reactivex.rxjava3.core.Scheduler
 
-interface ScheduleProvider {
+interface SchedulerProvider {
 
     fun computation(): Scheduler
 

@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
 import com.ahoi.pantry.HomeActivity
 import com.ahoi.pantry.PantryApp
 import com.ahoi.pantry.R
@@ -43,7 +42,7 @@ class LoginActivity : PantryActivity() {
             viewModel.authenticate(AuthMode.LOGIN)
         }
 
-        errorHandlers[OperationResult.MISSING_CREDENTIALS] =
+        stateHandlers[OperationResult.MISSING_CREDENTIALS] =
             { showToast(getString(R.string.missing_credentials)) }
     }
 
@@ -53,7 +52,7 @@ class LoginActivity : PantryActivity() {
             return
         }
 
-        handleOperationError(state)
+        handleOperationState(state)
     }
 
     private fun goToDashboard() {
