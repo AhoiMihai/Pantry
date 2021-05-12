@@ -43,7 +43,7 @@ class PantryImpl(
                 collectionRef.document(item.ingredientName),
                 mapOf(
                     "amount" to item.quantity.amount,
-                    "unitType" to item.unitType.name
+                    "unitType" to item.unitType.name,
                     "unit" to item.quantity.unit.name,
                     "tags" to item.tags.map { it.name },
                     "keywords" to generateKeywordsFromNameAlsoKnownAsFirestoreIsTrash(item.ingredientName)

@@ -7,4 +7,12 @@ import kotlinx.parcelize.Parcelize
 data class Quantity(
     val amount: Double,
     val unit: Unit
-) : Parcelable
+) : Parcelable, Comparable<Quantity> {
+    override fun compareTo(other: Quantity): Int {
+        return when {
+            amount > other.convertTo(this.unit) -> 1
+            amount > other.convertTo(this.unit) -> -1
+            else -> 0
+        }
+    }
+}

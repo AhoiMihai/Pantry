@@ -8,7 +8,6 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Recipe(
-    @DocumentId
     val name: String,
     val servings: Int,
     val ingredients: List<PantryItem>,

@@ -24,18 +24,22 @@ enum class Unit(
 }
 
 // FIXME: 15/04/2021 can't convert different unit types, need to factor in conversion factors
-fun Unit.convertTo(initialValue: Double, destination: Unit): Double {
-    if (this.type == UnitType.UNIQUE){
+fun Quantity.convertTo(destination: Unit): Double {
+    if (this.unit.type == UnitType.UNIQUE){
         throw IllegalArgumentException("Cannot convert unique types")
     }
-    return if (this.type == destination.type) {
-        val baseUnitValue = this.convertToBase(initialValue)
+    return if (this.unit.type == destination.type) {
+        val baseUnitValue = this.convertToBase(this.amount)
         baseUnitValue / destination.fractionOfBaseUnit
     } else {
         throw IllegalArgumentException("incompatible units")
     }
 }
 
-fun Unit.convertToBase(initialValue: Double): Double {
-    return initialValue + this.fractionOfBaseUnit
+fun Quantity.convertToBase(initialValue: Double): Double {
+    return initialValue / this.unit.fractionOfBaseUnit
+}
+
+fun Quantity.convertToBase(): Double {
+    return this.amount / this.unit.fractionOfBaseUnit
 }

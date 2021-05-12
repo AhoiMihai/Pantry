@@ -8,8 +8,8 @@
     <string name="missing_credentials">Please complete both fields.</string>
     <string name="log_in">Log In</string>
     <string name="welcome">Welcome to your virtual pantry!</string>
-    <string name="description_add_recipe_button">Add Recipe</string>
-    <string name="empty_recipe_list_text">No Recipes Yet</string>
+    <string name="description_list_create_new">Create new item</string>
+    <string name="empty_recipe_list_text">Nothing here</string>
     <string name="edit_recipe_recipe_name_hint">Name your Recipe</string>
     <string name="edit_recipe_servings_hint">How many servings will this make?</string>
     <string name="edit_ingredient_name_hint">name</string>
@@ -34,4 +34,6 @@
     <string name="create_invitation_email_hint">Email to invite</string>
     <string name="create_invitation_send">Send Invitation</string>
     <string name="create_invitation_invitation_sent">Invitation Sent</string>
+    <string name="ok">OK</string>
+    <string name="add_ingredient_invalid_ammount">Please select a quantity larger than 0</string>
 </resources>

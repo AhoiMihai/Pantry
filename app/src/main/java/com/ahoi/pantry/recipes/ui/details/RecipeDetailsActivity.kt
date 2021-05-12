@@ -1,13 +1,12 @@
-package com.ahoi.pantry.recipes.ui
+package com.ahoi.pantry.recipes.ui.details
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.ahoi.pantry.R
 import com.ahoi.pantry.common.uistuff.PantryActivity
 
-class MyRecipesActivity : PantryActivity() {
+class RecipeDetailsActivity : PantryActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_list_with_fab)
+        setContentView(R.layout.activity_recipe_details)
     }
 }
