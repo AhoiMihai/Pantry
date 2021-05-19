@@ -1,4 +1,4 @@
-package com.ahoi.pantry.recipes.ui.addingredient
+package com.ahoi.pantry.ingredients.ui.addingredient
 
 import android.content.Intent
 import android.os.Bundle
@@ -12,6 +12,7 @@ import com.ahoi.pantry.common.uistuff.PantryActivity
 import com.ahoi.pantry.common.uistuff.bind
 import com.ahoi.pantry.common.uistuff.showToast
 import com.ahoi.pantry.common.units.Quantity
+import com.ahoi.pantry.ingredients.di.IngredientsComponent
 import com.ahoi.pantry.ingredients.ui.CreateIngredientActivity
 import com.ahoi.pantry.recipes.di.RecipesComponent
 import com.ahoi.pantry.recipes.ui.edit.IngredientListAdapter
@@ -32,12 +33,12 @@ class AddIngredientActivity : PantryActivity(), QuantityPickedListener {
     private val adapter = IngredientListAdapter(false)
 
     @Inject
-    lateinit var viewModel: AddIngredientToRecipeViewModel
+    lateinit var viewModel: AddIngredientViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_ingredient_to_recipe)
-        (application as PantryApp).getComponent(RecipesComponent::class.java).inject(this)
+        (application as PantryApp).getComponent(IngredientsComponent::class.java).inject(this)
 
         setUpList()
         setupSearchView()

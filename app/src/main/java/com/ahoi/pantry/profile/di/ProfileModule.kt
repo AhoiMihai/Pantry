@@ -1,11 +1,14 @@
 package com.ahoi.pantry.profile.di
 
+import android.content.Context
 import com.ahoi.pantry.auth.api.AuthManager
 import com.ahoi.pantry.common.rx.DefaultSchedulerProvider
 import com.ahoi.pantry.common.rx.SchedulerProvider
 import com.ahoi.pantry.common.uistuff.FirestoreErrorHandler
 import com.ahoi.pantry.profile.domain.InvitationRepository
 import com.ahoi.pantry.profile.domain.ProfileRepository
+import com.ahoi.pantry.profile.ui.CreateInvitationViewModel
+import com.ahoi.pantry.profile.ui.InvitationsAdapter
 import com.ahoi.pantry.profile.ui.MyInvitationsViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -36,6 +39,11 @@ class ProfileModule {
     }
 
     @Provides
+    fun provideInvitationsAdapter(context: Context): InvitationsAdapter {
+        return InvitationsAdapter(context)
+    }
+
+    @Provides
     fun provideMyInvitationsViewModel(
         profileRepository: ProfileRepository,
         invitationRepository: InvitationRepository,
@@ -47,6 +55,21 @@ class ProfileModule {
             profileRepository,
             invitationRepository,
             authManager,
+            schedulerProvider,
+            errorHandler
+        )
+    }
+
+    @Provides
+    fun provideCreateInvitationViewModel(
+        invitationRepository: InvitationRepository,
+        profileRepository: ProfileRepository,
+        schedulerProvider: SchedulerProvider,
+        errorHandler: FirestoreErrorHandler
+    ): CreateInvitationViewModel {
+        return CreateInvitationViewModel(
+            invitationRepository,
+            profileRepository,
             schedulerProvider,
             errorHandler
         )

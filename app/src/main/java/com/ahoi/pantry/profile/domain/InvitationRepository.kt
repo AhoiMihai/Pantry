@@ -29,8 +29,7 @@ class InvitationRepository(
         return Completable.create {
             firestore
                 .collection("invitations")
-                .document()
-                .set(invitation)
+                .add(invitation)
                 .addOnSuccessListener {
                     Completable.complete()
                 }

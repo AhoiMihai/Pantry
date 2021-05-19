@@ -1,6 +1,5 @@
 package com.ahoi.pantry.recipes.domain
 
-import androidx.annotation.experimental.Experimental
 import com.ahoi.pantry.auth.api.AuthManager
 import com.ahoi.pantry.common.units.Quantity
 import com.ahoi.pantry.common.units.convertTo
@@ -29,10 +28,7 @@ class RecipeCardsGenerator(
             pantry.getQuantitiesForIngredients(recipe.ingredients.map { it.ingredientName })
                 .map { RecipeCardInfo(recipe, calculateMissingIngredients(recipe, it)) }
                 .toFlowable()
-        }.collect(
-            { ArrayList() }, { a, b ->
-                a.add(b)
-            })
+        }.collect({ ArrayList() }, { a, b -> a.add(b) })
     }
 
     fun loadRecipeCardsWithSingleAndBlockingGets(
@@ -41,12 +37,12 @@ class RecipeCardsGenerator(
     ): Single<List<RecipeCardInfo>> {
         return recipeRepository.loadRecipes(authManager.currentUserId, size, recipeNameToStartAfter)
             .map { recipes ->
-                recipes.map {
+                recipes.map { recipe ->
                     val pantryContents =
-                        pantry.getQuantitiesForIngredients(it.ingredients.map { it.ingredientName })
+                        pantry.getQuantitiesForIngredients(recipe.ingredients.map { it.ingredientName })
                             .blockingGet()
-                    val missingIngredients = calculateMissingIngredients(it, pantryContents)
-                    RecipeCardInfo(it, missingIngredients)
+                    val missingIngredients = calculateMissingIngredients(recipe, pantryContents)
+                    RecipeCardInfo(recipe, missingIngredients)
                 }
             }
     }
@@ -57,9 +53,7 @@ class RecipeCardsGenerator(
     ): List<PantryItem> {
         val excludedIngredients = recipe.ingredients.filter { !ingredientsFromPantry.contains(it) }
         return recipe.ingredients.filter {
-            ingredientsFromPantry.contains(it) && it.quantity > ingredientsFromPantry[ingredientsFromPantry.indexOf(
-                it
-            )].quantity
+            ingredientsFromPantry.contains(it) && it.quantity > ingredientsFromPantry[ingredientsFromPantry.indexOf(it)].quantity
         }.map {
             PantryItem(
                 ingredientName = it.ingredientName,

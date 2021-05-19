@@ -36,4 +36,7 @@
     <string name="create_invitation_invitation_sent">Invitation Sent</string>
     <string name="ok">OK</string>
     <string name="add_ingredient_invalid_ammount">Please select a quantity larger than 0</string>
+    <string name="hint_add">add</string>
+    <string name="menu_save_title">Save</string>
+    <string name="menu_checkout_title">Checkout</string>
 </resources>

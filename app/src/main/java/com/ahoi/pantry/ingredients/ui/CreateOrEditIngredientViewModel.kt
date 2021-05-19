@@ -17,6 +17,7 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 class CreateOrEditIngredientViewModel(
     private val pantry: Pantry
 ) : LifecycleObserver {
+
     private val _createItemState = MutableLiveData<OperationState>()
     val createItemState: LiveData<OperationState> = _createItemState
 

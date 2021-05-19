@@ -4,6 +4,7 @@ import com.ahoi.pantry.arch.PantryComponent
 import com.ahoi.pantry.auth.di.AuthenticationComponent
 import com.ahoi.pantry.ingredients.api.Pantry
 import com.ahoi.pantry.ingredients.ui.CreateIngredientActivity
+import com.ahoi.pantry.ingredients.ui.addingredient.AddIngredientActivity
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.BindsInstance
 import dagger.Component
@@ -26,4 +27,6 @@ interface IngredientsComponent: PantryComponent {
     fun inject(activity: CreateIngredientActivity)
 
     fun pantry(): Pantry
+
+    fun inject(activity: AddIngredientActivity)
 }

@@ -1,4 +1,4 @@
-package com.ahoi.pantry.recipes.ui.addingredient
+package com.ahoi.pantry.ingredients.ui.addingredient
 
 import android.content.Context
 import android.os.Bundle

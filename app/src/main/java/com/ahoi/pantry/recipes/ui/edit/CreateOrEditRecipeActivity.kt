@@ -18,9 +18,9 @@ import com.ahoi.pantry.ingredients.data.model.PantryItem
 import com.ahoi.pantry.recipes.data.Recipe
 import com.ahoi.pantry.recipes.di.RecipesComponent
 import com.ahoi.pantry.recipes.ui.RecipeStepsFormatter
-import com.ahoi.pantry.recipes.ui.addingredient.AddIngredientActivity
-import com.ahoi.pantry.recipes.ui.addingredient.K_SELECTED_INGREDIENT
-import com.ahoi.pantry.recipes.ui.addingredient.REQUEST_CODE_ADD_INGREDIENT
+import com.ahoi.pantry.ingredients.ui.addingredient.AddIngredientActivity
+import com.ahoi.pantry.ingredients.ui.addingredient.K_SELECTED_INGREDIENT
+import com.ahoi.pantry.ingredients.ui.addingredient.REQUEST_CODE_ADD_INGREDIENT
 import com.ahoi.pantry.recipes.ui.addsteps.K_RECIPE_STEPS
 import com.ahoi.pantry.recipes.ui.addsteps.REQUEST_CODE_ADD_STEPS
 import javax.inject.Inject

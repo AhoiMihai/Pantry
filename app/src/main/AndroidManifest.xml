@@ -10,7 +10,15 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/Theme.Pantry">
-        <activity android:name=".recipes.ui.details.RecipeDetailsActivity"></activity>
+        <activity
+                android:name=".shopping.ui.listdetails.ListDetailsActivity"
+                android:screenOrientation="portrait" />
+        <activity
+                android:name=".shopping.ui.mylists.ShoppingListsActivity"
+                android:screenOrientation="portrait" />
+        <activity
+                android:name=".recipes.ui.details.RecipeDetailsActivity"
+                android:screenOrientation="portrait" />
         <activity
                 android:name=".profile.ui.CreateInvitationActivity"
                 android:screenOrientation="portrait" />
@@ -21,13 +29,13 @@
                 android:name=".recipes.ui.addsteps.AddStepsToRecipeActivity"
                 android:screenOrientation="portrait" />
         <activity
-                android:name=".recipes.ui.addingredient.AddIngredientActivity"
+                android:name=".ingredients.ui.addingredient.AddIngredientActivity"
                 android:screenOrientation="portrait" />
         <activity
                 android:name=".ingredients.ui.CreateIngredientActivity"
                 android:screenOrientation="portrait" />
         <activity
-                android:name=".recipes.ui.MyRecipesActivity"
+                android:name=".recipes.ui.myrecipes.MyRecipesActivity"
                 android:screenOrientation="portrait" />
         <activity
                 android:name=".recipes.ui.edit.CreateOrEditRecipeActivity"

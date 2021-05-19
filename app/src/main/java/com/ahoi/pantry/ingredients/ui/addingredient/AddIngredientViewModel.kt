@@ -1,4 +1,4 @@
-package com.ahoi.pantry.recipes.ui.addingredient
+package com.ahoi.pantry.ingredients.ui.addingredient
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -12,7 +12,7 @@ import com.ahoi.pantry.ingredients.api.Pantry
 import com.ahoi.pantry.ingredients.data.model.PantryItem
 import com.ahoi.pantry.ingredients.data.model.Tag
 
-class AddIngredientToRecipeViewModel(
+class AddIngredientViewModel(
     private val pantry: Pantry,
     private val schedulers: SchedulerProvider,
     private val errorHandler: FirestoreErrorHandler

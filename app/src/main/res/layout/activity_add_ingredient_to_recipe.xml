@@ -6,7 +6,7 @@
         android:layout_height="match_parent"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        tools:context=".recipes.ui.addingredient.AddIngredientActivity">
+        tools:context=".ingredients.ui.addingredient.AddIngredientActivity">
 
     <SearchView
             android:id="@+id/ingredient_search"

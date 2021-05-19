@@ -1,5 +1,6 @@
 package com.ahoi.pantry.profile.di
 
+import android.content.Context
 import com.ahoi.pantry.arch.PantryComponent
 import com.ahoi.pantry.auth.api.AuthManager
 import com.ahoi.pantry.profile.domain.ProfileRepository
@@ -21,6 +22,9 @@ interface ProfileComponent: PantryComponent {
 
         @BindsInstance
         fun authManager(value: AuthManager): Builder
+
+        @BindsInstance
+        fun context(context: Context): Builder
 
         fun build(): ProfileComponent
     }
