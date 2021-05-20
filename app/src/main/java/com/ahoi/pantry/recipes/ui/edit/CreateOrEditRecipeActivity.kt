@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -51,11 +52,17 @@ class CreateOrEditRecipeActivity : PantryActivity() {
         setUpList()
         setUpButton()
         observeLiveData()
+        recipeTitle.doOnTextChanged { text, _, _, _ -> viewModel.updateRecipeName(text.toString()) }
+        recipeServings.doOnTextChanged { text, _, _, _ ->
+            viewModel.updateRecipeServings(
+                text.toString().toInt()
+            )
+        }
 
         if (intent.hasExtra(K_RECIPE_TO_EDIT) && intent.getParcelableExtra<Recipe>(K_RECIPE_TO_EDIT) != null) {
             val recipe = intent.getParcelableExtra<Recipe>(K_RECIPE_TO_EDIT)
-            viewModel.updateRecipeName(recipe!!.name)
-            viewModel.updateRecipeServings(recipe.servings)
+            recipeTitle.setText(recipe!!.name)
+            recipeServings.setText(recipe.servings)
             viewModel.updateRecipeSteps(recipe.steps)
             viewModel.addIngredients(recipe.ingredients)
         }
@@ -101,13 +108,6 @@ class CreateOrEditRecipeActivity : PantryActivity() {
     }
 
     private fun observeLiveData() {
-        viewModel.recipeName.observe(this) {
-            recipeTitle.setText(it)
-        }
-
-        viewModel.recipeServings.observe(this) {
-            recipeServings.setText(it)
-        }
 
         viewModel.addedIngredients.observe(this) {
             adapter.updateItems(it)

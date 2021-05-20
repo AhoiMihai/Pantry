@@ -8,6 +8,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class ShoppingList (
     @DocumentId
+    val id: String?,
     val name: String,
     val contents: MutableList<ShoppingListItem>
 ) : Parcelable {
@@ -16,6 +17,7 @@ data class ShoppingList (
 
         fun fromIngredientList(list: List<PantryItem>): ShoppingList {
             return ShoppingList(
+                null,
                 "",
                 list.map { ShoppingListItem(it, false) }.toMutableList()
             )

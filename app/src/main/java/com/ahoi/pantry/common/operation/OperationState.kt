@@ -5,5 +5,6 @@ interface OperationState
 enum class CommonOperationState: OperationState {
     SUCCESS,
     UNAUTHORIZED,
-    UNKNOWN_ERROR
+    UNKNOWN_ERROR,
+    DUPLICATE,
 }

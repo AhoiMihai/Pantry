@@ -2,10 +2,13 @@ package com.ahoi.pantry.shopping.ui.listdetails
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.ahoi.pantry.common.operation.CommonOperationState
 import com.ahoi.pantry.common.operation.OperationState
 import com.ahoi.pantry.common.rx.SchedulerProvider
 import com.ahoi.pantry.common.uistuff.FirestoreErrorHandler
 import com.ahoi.pantry.common.units.Quantity
+import com.ahoi.pantry.common.units.Unit
+import com.ahoi.pantry.common.units.convertTo
 import com.ahoi.pantry.ingredients.api.Pantry
 import com.ahoi.pantry.ingredients.data.model.PantryItem
 import com.ahoi.pantry.shopping.data.ShoppingList
@@ -22,7 +25,6 @@ class ShoppingListDetailsViewModel(
     val operationState: LiveData<OperationState> = _operationState
 
     private val _listName = MutableLiveData<String>()
-    val listName: LiveData<String> = _listName
 
     private val _items = MutableLiveData<List<ShoppingListItem>>()
     val items: LiveData<List<ShoppingListItem>> = _items
@@ -33,14 +35,24 @@ class ShoppingListDetailsViewModel(
     private val _updatedItem = MutableLiveData<ShoppingListItem>()
     val updatedItem: LiveData<ShoppingListItem> = _updatedItem
 
-    fun setShoppingList(shoppingList: ShoppingList) {
+    private var shoppingListId: String? = null
+
+    fun setShoppingList(shoppingList: ShoppingList?) {
+        if (shoppingList == null) {
+            return
+        }
         _listName.postValue(shoppingList.name)
         _items.postValue(shoppingList.contents)
+        shoppingListId = shoppingList.id
+    }
+
+    fun setName(name: String) {
+        _listName.value = name
     }
 
     fun finishShopping() {
         val shoppingList = items.value ?: return
-        val name = listName.value ?: return
+        val name = _listName.value ?: return
         val updates = shoppingList.filter { it.purchased }.map { it.item }
         if (updates.isEmpty()) {
             _operationState.postValue(ShoppingListState.NO_UPDATES)
@@ -58,13 +70,108 @@ class ShoppingListDetailsViewModel(
 
     }
 
+    fun selectItem(item: ShoppingListItem) {
+        _selectedItem.postValue(item)
+    }
+
+    fun purchaseItem(position: Int, purchased: Boolean) {
+        val shoppingList = items.value?.toMutableList() ?: return
+
+        val selection = shoppingList[position]
+        shoppingList[position] = ShoppingListItem(
+            item = PantryItem(
+                selection.item.ingredientName,
+                selection.item.unitType,
+                selection.item.quantity,
+                selection.item.tags
+            ),
+            purchased = purchased
+        )
+
+        _items.postValue(shoppingList)
+    }
+
+    fun selectUnit(unit: Unit) {
+        val selection = selectedItem.value ?: return
+
+        val newValue: Double = if (unit.type != selection.item.unitType) {
+            0.0
+        } else {
+            selection.item.quantity.convertTo(unit)
+        }
+
+        _selectedItem.postValue(
+            ShoppingListItem(
+                PantryItem(
+                    selection.item.ingredientName,
+                    unit.type,
+                    Quantity(newValue, unit),
+                    selection.item.tags
+                ), selection.purchased
+            )
+        )
+
+    }
+
+    fun addItem(pantryItem: PantryItem) {
+        val shoppingList = items.value?.toMutableList() ?: return
+
+        shoppingList.add(
+            ShoppingListItem(
+                pantryItem,
+                false
+            )
+        )
+        _items.postValue(shoppingList)
+    }
+
     fun saveShoppingList() {
-        val name = listName.value
+        val name = _listName.value
         val shoppingItems = items.value
 
         if (name.isNullOrEmpty()) {
-            _operationState
+            _operationState.postValue(ShoppingListState.NO_NAME_SET)
+            return
         }
+
+        if (shoppingItems == null || shoppingItems.isEmpty()) {
+            _operationState.postValue(ShoppingListState.EMPTY_LIST)
+            return
+        }
+
+        val shoppingList = ShoppingList(
+            shoppingListId,
+            name,
+            shoppingItems.toMutableList()
+        )
+
+        if (shoppingListId == null) {
+            createNewShoppingList(shoppingList)
+        } else {
+            updateShoppingList(shoppingList)
+        }
+    }
+
+    private fun createNewShoppingList(shoppingList: ShoppingList) {
+        repository.saveShoppingList(shoppingList)
+            .subscribeOn(schedulers.io())
+            .observeOn(schedulers.mainThread())
+            .subscribe({
+                _operationState.postValue(ShoppingListState.SAVED)
+            }, {
+                _operationState.postValue(errorHandler.handleError(it))
+            })
+    }
+
+    private fun updateShoppingList(shoppingList: ShoppingList) {
+        repository.updateShoppingList(shoppingList)
+            .subscribeOn(schedulers.io())
+            .observeOn(schedulers.mainThread())
+            .subscribe({
+                _operationState.postValue(ShoppingListState.SAVED)
+            }, {
+                _operationState.postValue(errorHandler.handleError(it))
+            })
     }
 
     fun updateSelectedQuantity(quantity: Quantity) {
@@ -73,24 +180,28 @@ class ShoppingListDetailsViewModel(
             _operationState.postValue(ShoppingListState.ZERO_QUANTITY)
             return
         }
-        _updatedItem.postValue(
-            ShoppingListItem(
-                item = PantryItem(
-                    selection.item.ingredientName,
-                    selection.item.unitType,
-                    quantity,
-                    selection.item.tags
-                ),
-                purchased = selection.purchased
-            )
+        if (items.value == null) {
+            _operationState.postValue(CommonOperationState.UNKNOWN_ERROR)
+            return
+        }
+        val newList = items.value!!.toMutableList()
+        val update = ShoppingListItem(
+            item = PantryItem(
+                selection.item.ingredientName,
+                selection.item.unitType,
+                quantity,
+                selection.item.tags
+            ),
+            purchased = selection.purchased
         )
+        newList[newList.indexOf(selection)] = update
+        _items.postValue(newList)
     }
 
 }
 
 enum class ShoppingListState : OperationState {
     NO_NAME_SET,
-    DUPLICATE_NAME,
     ZERO_QUANTITY,
     EMPTY_LIST,
     NO_UPDATES,

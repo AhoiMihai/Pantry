@@ -20,9 +20,6 @@ class MyRecipesViewModel(
     private val _operationState = MutableLiveData<OperationState>()
     val operationState: LiveData<OperationState> = _operationState
 
-    private val _shoppingIngredients = MutableLiveData<ShoppingList>()
-    val shoppingIngredients: LiveData<ShoppingList> = _shoppingIngredients
-
     private var loading: Boolean = false
 
     fun loadRecipes(pageSize: Int, startingPoint: String?) {
@@ -46,10 +43,6 @@ class MyRecipesViewModel(
                 loading = false
                 _operationState.postValue(errorHandler.handleError(it))
             })
-    }
-
-    fun prepareShoppingList(it: RecipeCardInfo?) {
-        TODO("Not yet implemented")
     }
 
 }

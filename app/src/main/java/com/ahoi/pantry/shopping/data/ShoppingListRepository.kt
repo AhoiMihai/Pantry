@@ -3,6 +3,7 @@ package com.ahoi.pantry.shopping.data
 import com.google.firebase.firestore.FirebaseFirestore
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
+import java.lang.IllegalArgumentException
 
 class ShoppingListRepository(
     private val firestore: FirebaseFirestore,
@@ -13,8 +14,25 @@ class ShoppingListRepository(
         val pantryRef = pantryRefSupplier()
         return Completable.create {
             firestore.collection("pantries/$pantryRef/shoppingLists")
-                .document(shoppingList.name)
-                .set(shoppingList.contents)
+                .add(shoppingList)
+                .addOnSuccessListener {
+                    Completable.complete()
+                }
+                .addOnFailureListener {
+                    Completable.error(it)
+                }
+        }
+    }
+
+    fun updateShoppingList(shoppingList: ShoppingList): Completable {
+        if (shoppingList.id.isNullOrEmpty()) {
+            return Completable.error(IllegalArgumentException("Null IDs not allowed"))
+        }
+        val pantryRef = pantryRefSupplier()
+        return Completable.create {
+            firestore.collection("pantries/$pantryRef/shoppingLists")
+                .document(shoppingList.id)
+                .set(shoppingList)
                 .addOnSuccessListener {
                     Completable.complete()
                 }
@@ -38,11 +56,11 @@ class ShoppingListRepository(
         }
     }
 
-    fun deleteShoppingList(name: String): Completable {
+    fun deleteShoppingList(id: String): Completable {
         val pantryRef = pantryRefSupplier()
         return Completable.create {
             firestore.collection("pantries/$pantryRef/shoppingLists")
-                .document(name)
+                .document(id)
                 .delete()
                 .addOnSuccessListener {
                     Completable.complete()

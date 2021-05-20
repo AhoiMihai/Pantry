@@ -16,6 +16,8 @@ import com.ahoi.pantry.recipes.di.RecipesComponent
 import com.ahoi.pantry.recipes.ui.details.K_RECIPE
 import com.ahoi.pantry.recipes.ui.details.RecipeDetailsActivity
 import com.ahoi.pantry.recipes.ui.edit.CreateOrEditRecipeActivity
+import com.ahoi.pantry.shopping.ui.listdetails.K_INGREDIENT_LIST
+import com.ahoi.pantry.shopping.ui.listdetails.ListDetailsActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import javax.inject.Inject
 
@@ -89,7 +91,9 @@ class MyRecipesActivity : PantryActivity() {
         }
 
         adapter.shoppingList.subscribe {
-            viewModel.prepareShoppingList(it)
+            val intent = Intent(this, ListDetailsActivity::class.java)
+            intent.putParcelableArrayListExtra(K_INGREDIENT_LIST, ArrayList(it.missingIngredients))
+            startActivity(intent)
         }
     }
 

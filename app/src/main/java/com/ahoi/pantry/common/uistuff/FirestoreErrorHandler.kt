@@ -7,8 +7,12 @@ import com.google.firebase.firestore.FirebaseFirestoreException
 class FirestoreErrorHandler {
 
     fun handleError(throwable: Throwable): OperationState {
-        return if (throwable is FirebaseFirestoreException && throwable.code == FirebaseFirestoreException.Code.UNAUTHENTICATED) {
-            CommonOperationState.UNAUTHORIZED
+        return if (throwable is FirebaseFirestoreException) {
+            when (throwable.code) {
+                FirebaseFirestoreException.Code.UNAUTHENTICATED -> CommonOperationState.UNAUTHORIZED
+                FirebaseFirestoreException.Code.ALREADY_EXISTS -> CommonOperationState.DUPLICATE
+                else -> CommonOperationState.UNKNOWN_ERROR
+            }
         } else {
             CommonOperationState.UNKNOWN_ERROR
         }
