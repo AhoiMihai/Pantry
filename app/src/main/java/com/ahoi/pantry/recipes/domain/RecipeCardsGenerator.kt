@@ -25,7 +25,7 @@ class RecipeCardsGenerator(
             size,
             recipeNameToStartAfter
         ).flatMap { recipe ->
-            pantry.getQuantitiesForIngredients(recipe.ingredients.map { it.ingredientName })
+            pantry.getIngredientsFromPantry(recipe.ingredients.map { it.ingredientName })
                 .map { RecipeCardInfo(recipe, calculateMissingIngredients(recipe, it)) }
                 .toFlowable()
         }.collect({ ArrayList() }, { a, b -> a.add(b) })
@@ -39,7 +39,7 @@ class RecipeCardsGenerator(
             .map { recipes ->
                 recipes.map { recipe ->
                     val pantryContents =
-                        pantry.getQuantitiesForIngredients(recipe.ingredients.map { it.ingredientName })
+                        pantry.getIngredientsFromPantry(recipe.ingredients.map { it.ingredientName })
                             .blockingGet()
                     val missingIngredients = calculateMissingIngredients(recipe, pantryContents)
                     RecipeCardInfo(recipe, missingIngredients)

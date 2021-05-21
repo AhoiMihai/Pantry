@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+            android:id="@+id/generate_shopping_list"
+            android:icon="@drawable/baseline_add_shopping_cart_24"
+            app:showAsAction="ifRoom"
+            android:title="@string/menu_create_shopping_list">
+    </item>
+    <item
+            android:id="@+id/edit"
+            android:icon="@drawable/baseline_done_white_24"
+            app:showAsAction="never"
+            android:title="@string/edit">
+    </item>
+</menu>

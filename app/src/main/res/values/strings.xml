@@ -45,4 +45,10 @@
     <string name="shopping_list_error_no_name">List must have a name</string>
     <string name="no_buy_nothing">Cannot set quantity to 0</string>
     <string name="oh_no">oh no</string>
+    <string name="label_recipe_steps">Steps:</string>
+    <string name="menu_create_shopping_list">Create shopping list</string>
+    <string name="edit">edit</string>
+    <string name="recipe_details_make">Make recipe</string>
+    <string name="recipe_not_enough_ingredients">You don\'t have enough ingredients to make this</string>
+    <string name="enjoy_your_meal">Enjoy your meal!</string>
 </resources>

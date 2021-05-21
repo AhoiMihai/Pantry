@@ -6,7 +6,7 @@ import io.reactivex.rxjava3.core.Single
 
 interface Pantry {
 
-    fun getQuantitiesForIngredients(ingredientNames: List<String>): Single<List<PantryItem>>
+    fun getIngredientsFromPantry(ingredientNames: List<String>): Single<List<PantryItem>>
 
     fun updateOrCreateItems(updates: List<PantryItem>): Completable
 

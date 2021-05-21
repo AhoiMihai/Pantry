@@ -18,7 +18,7 @@ class PantryImpl(
     private val firestore: FirebaseFirestore
 ) : Pantry {
 
-    override fun getQuantitiesForIngredients(ingredientNames: List<String>): Single<List<PantryItem>> {
+    override fun getIngredientsFromPantry(ingredientNames: List<String>): Single<List<PantryItem>> {
         return Single.create {
             generateGetTask(ingredientNames)
                 .addOnSuccessListener { querySnapshot ->
