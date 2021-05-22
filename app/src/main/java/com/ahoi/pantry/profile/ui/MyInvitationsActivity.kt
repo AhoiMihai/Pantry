@@ -67,7 +67,7 @@ class MyInvitationsActivity : PantryActivity() {
         }
 
         viewModel.invitations.observe(this) {
-            showEmptyState()
+            showPopulatedState()
             adapter.setItems(it)
         }
     }
