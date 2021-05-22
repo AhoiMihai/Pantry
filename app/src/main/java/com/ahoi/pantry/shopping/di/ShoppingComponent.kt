@@ -1,6 +1,7 @@
 package com.ahoi.pantry.shopping.di
 
 import com.ahoi.pantry.arch.PantryComponent
+import com.ahoi.pantry.ingredients.api.Pantry
 import com.ahoi.pantry.shopping.ui.listdetails.ListDetailsActivity
 import com.ahoi.pantry.shopping.ui.mylists.ShoppingListsActivity
 import com.google.firebase.firestore.FirebaseFirestore
@@ -15,6 +16,9 @@ interface ShoppingComponent: PantryComponent {
 
         @BindsInstance
         fun firestore(value: FirebaseFirestore): Builder
+
+        @BindsInstance
+        fun pantry(pantry: Pantry): Builder
 
         @BindsInstance
         fun pantryRefSupplier(value: () -> String): Builder

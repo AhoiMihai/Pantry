@@ -7,6 +7,7 @@ import com.ahoi.pantry.common.uistuff.FirestoreErrorHandler
 import com.ahoi.pantry.ingredients.api.Pantry
 import com.ahoi.pantry.recipes.domain.RecipeCardsGenerator
 import com.ahoi.pantry.recipes.domain.RecipesRepository
+import com.ahoi.pantry.recipes.ui.RecipeIngredientFormatter
 import com.ahoi.pantry.recipes.ui.RecipeStepsFormatter
 import com.ahoi.pantry.recipes.ui.addsteps.AddStepsToRecipeViewModel
 import com.ahoi.pantry.recipes.ui.details.RecipeDetailsViewModel
@@ -59,6 +60,11 @@ class RecipesModule {
     }
 
     @Provides
+    fun provideIngredientsFormatter(): RecipeIngredientFormatter {
+        return RecipeIngredientFormatter()
+    }
+
+    @Provides
     fun provideRecipesAdapter(picasso: Picasso): RecipesAdapter {
         return RecipesAdapter(picasso)
     }
@@ -78,8 +84,16 @@ class RecipesModule {
     }
 
     @Provides
-    fun provideRecipeDetailsViewModel(): RecipeDetailsViewModel {
-        return RecipeDetailsViewModel()
+    fun provideRecipeDetailsViewModel(
+        pantry: Pantry,
+        schedulerProvider: SchedulerProvider,
+        firestoreErrorHandler: FirestoreErrorHandler
+    ): RecipeDetailsViewModel {
+        return RecipeDetailsViewModel(
+            pantry,
+            schedulerProvider,
+            firestoreErrorHandler
+        )
     }
 
     @Provides

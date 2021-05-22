@@ -51,4 +51,6 @@
     <string name="recipe_details_make">Make recipe</string>
     <string name="recipe_not_enough_ingredients">You don\'t have enough ingredients to make this</string>
     <string name="enjoy_your_meal">Enjoy your meal!</string>
+    <string name="add">Add</string>
+    <string name="remove">remove</string>
 </resources>

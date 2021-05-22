@@ -22,10 +22,8 @@ import com.ahoi.pantry.common.uistuff.bind
 import com.ahoi.pantry.common.uistuff.showToast
 import com.ahoi.pantry.common.units.Quantity
 import com.ahoi.pantry.common.units.Unit
-import com.ahoi.pantry.common.units.UnitType
 import com.ahoi.pantry.ingredients.data.model.PantryItem
 import com.ahoi.pantry.ingredients.ui.addingredient.AddIngredientActivity
-import com.ahoi.pantry.ingredients.ui.addingredient.AddIngredientActivity_MembersInjector
 import com.ahoi.pantry.ingredients.ui.addingredient.K_SELECTED_INGREDIENT
 import com.ahoi.pantry.ingredients.ui.addingredient.REQUEST_CODE_ADD_INGREDIENT
 import com.ahoi.pantry.shopping.data.ShoppingList

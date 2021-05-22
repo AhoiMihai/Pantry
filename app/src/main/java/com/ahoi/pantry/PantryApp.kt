@@ -63,6 +63,7 @@ class PantryApp : Application() {
             .builder()
             .firestore(FirebaseFirestore.getInstance())
             .pantryRefSupplier { getComponent(ProfileComponent::class.java).profileRepository().pantryReference }
+            .pantry(getComponent(IngredientsComponent::class.java).pantry())
             .build()
     }
 

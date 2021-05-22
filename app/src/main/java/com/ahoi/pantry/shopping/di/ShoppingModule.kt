@@ -3,6 +3,7 @@ package com.ahoi.pantry.shopping.di
 import com.ahoi.pantry.common.rx.DefaultSchedulerProvider
 import com.ahoi.pantry.common.rx.SchedulerProvider
 import com.ahoi.pantry.common.uistuff.FirestoreErrorHandler
+import com.ahoi.pantry.ingredients.api.Pantry
 import com.ahoi.pantry.shopping.data.ShoppingListRepository
 import com.ahoi.pantry.shopping.ui.listdetails.ListItemsAdapter
 import com.ahoi.pantry.shopping.ui.listdetails.ShoppingListDetailsViewModel
@@ -46,11 +47,13 @@ class ShoppingModule {
     @Provides
     fun provideShoppingListDetailsViewModel(
         repository: ShoppingListRepository,
+        pantry: Pantry,
         schedulerProvider: SchedulerProvider,
         errorHandler: FirestoreErrorHandler
     ): ShoppingListDetailsViewModel {
         return ShoppingListDetailsViewModel(
             repository,
+            pantry,
             schedulerProvider,
             errorHandler
         )
