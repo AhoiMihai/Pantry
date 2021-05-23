@@ -15,7 +15,7 @@ class AuthManagerImpl(
     override val observeCurrentUserId: Observable<String> = userIdSubject.hide()
 
     override val currentUserId: String
-        get() = userIdSubject.value
+        get() = firebaseAuth.currentUser.uid
 
     override fun loginWithEmailAndPassword(email: String, password: String): Completable {
         return Completable.create { emitter ->

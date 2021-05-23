@@ -7,12 +7,18 @@ import com.ahoi.pantry.ingredients.api.Pantry
 import com.ahoi.pantry.ingredients.data.PantryImpl
 import com.ahoi.pantry.ingredients.ui.CreateOrEditIngredientViewModel
 import com.ahoi.pantry.ingredients.ui.addingredient.AddIngredientViewModel
+import com.ahoi.pantry.profile.domain.ProfileRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 
 @Module
 class IngredientsModule {
+
+    @Provides
+    fun providePantryRefSupplier(profileRepository: ProfileRepository): () -> String {
+        return { profileRepository.pantryReference }
+    }
 
     @Provides
     fun providePantry(firestore: FirebaseFirestore, pantryRefSupplier: () -> String): Pantry {

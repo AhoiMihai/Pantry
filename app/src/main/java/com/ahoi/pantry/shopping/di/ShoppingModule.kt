@@ -4,6 +4,7 @@ import com.ahoi.pantry.common.rx.DefaultSchedulerProvider
 import com.ahoi.pantry.common.rx.SchedulerProvider
 import com.ahoi.pantry.common.uistuff.FirestoreErrorHandler
 import com.ahoi.pantry.ingredients.api.Pantry
+import com.ahoi.pantry.profile.domain.ProfileRepository
 import com.ahoi.pantry.shopping.data.ShoppingListRepository
 import com.ahoi.pantry.shopping.ui.listdetails.ListItemsAdapter
 import com.ahoi.pantry.shopping.ui.listdetails.ShoppingListDetailsViewModel
@@ -15,6 +16,11 @@ import dagger.Provides
 
 @Module
 class ShoppingModule {
+
+    @Provides
+    fun providePantryRefSupplier(profileRepository: ProfileRepository): () -> String {
+        return { profileRepository.pantryReference }
+    }
 
     @Provides
     fun provideSchedulers(): SchedulerProvider {

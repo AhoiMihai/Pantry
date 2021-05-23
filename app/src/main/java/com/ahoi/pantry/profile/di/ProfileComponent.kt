@@ -10,8 +10,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.BindsInstance
 import dagger.Component
+import javax.inject.Singleton
 
 @Component(modules = [ProfileModule::class])
+@Singleton
 interface ProfileComponent: PantryComponent {
 
     @Component.Builder

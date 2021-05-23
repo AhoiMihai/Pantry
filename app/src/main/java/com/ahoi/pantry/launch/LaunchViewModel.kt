@@ -1,10 +1,13 @@
-package com.ahoi.pantry.landing
+package com.ahoi.pantry.launch
 
 import androidx.lifecycle.*
+import com.ahoi.pantry.common.rx.SchedulerProvider
+import com.ahoi.pantry.profile.domain.ProfileRepository
 import com.google.firebase.auth.FirebaseAuth
 
 class LaunchViewModel(
-    private val firebaseAuth: FirebaseAuth
+    private val firebaseAuth: FirebaseAuth,
+    private val profileRepository: ProfileRepository,
 ): LifecycleObserver {
 
     private val _authState = MutableLiveData<AuthState>()
@@ -15,7 +18,10 @@ class LaunchViewModel(
         if (firebaseAuth.currentUser == null) {
             _authState.postValue(AuthState.UNAUTHENTICATED)
         } else {
-            _authState.postValue(AuthState.AUTHENTICATED)
+            profileRepository.loadProfile(firebaseAuth.currentUser.uid)
+                .subscribe {
+                    _authState.postValue(AuthState.AUTHENTICATED)
+                }
         }
     }
 }

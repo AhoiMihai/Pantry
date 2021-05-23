@@ -45,6 +45,7 @@ class MyInvitationsViewModel(
 
     fun acceptInvitation(invitation: Invitation) {
         profileRepository.updateProfilePantryRef(userIdSupplier(), invitation.pantryId)
+            .andThen(profileRepository.loadProfile(userIdSupplier()))
             .doOnComplete { invitationRepository.deleteInvitation(invitation.id) }
             .subscribeOn(schedulers.io())
             .observeOn(schedulers.mainThread())

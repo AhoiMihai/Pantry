@@ -22,6 +22,7 @@ import com.ahoi.pantry.recipes.ui.RecipeStepsFormatter
 import com.ahoi.pantry.ingredients.ui.addingredient.AddIngredientActivity
 import com.ahoi.pantry.ingredients.ui.addingredient.K_SELECTED_INGREDIENT
 import com.ahoi.pantry.ingredients.ui.addingredient.REQUEST_CODE_ADD_INGREDIENT
+import com.ahoi.pantry.recipes.ui.addsteps.AddStepsToRecipeActivity
 import com.ahoi.pantry.recipes.ui.addsteps.K_RECIPE_STEPS
 import com.ahoi.pantry.recipes.ui.addsteps.REQUEST_CODE_ADD_STEPS
 import javax.inject.Inject
@@ -81,6 +82,11 @@ class CreateOrEditRecipeActivity : PantryActivity() {
                     REQUEST_CODE_ADD_INGREDIENT
                 )
             }
+
+        recipeText.setOnClickListener {
+            val intent = Intent(this, AddStepsToRecipeActivity::class.java)
+            startActivityForResult(intent, REQUEST_CODE_ADD_STEPS)
+        }
     }
 
     private fun setUpList() {
@@ -95,10 +101,10 @@ class CreateOrEditRecipeActivity : PantryActivity() {
     }
 
     private fun setUpButton() {
-        val recipeName = viewModel.recipeName.value ?: ""
-        val recipeServings = viewModel.recipeServings.value ?: 0
-        val recipeSteps = viewModel.recipeSteps.value ?: mutableListOf()
         doneButton.setOnClickListener {
+            val recipeName = viewModel.recipeName.value ?: ""
+            val recipeServings = viewModel.recipeServings.value ?: 0
+            val recipeSteps = viewModel.recipeSteps.value ?: mutableListOf()
             viewModel.createRecipe(
                 recipeName,
                 recipeServings,
@@ -131,11 +137,13 @@ class CreateOrEditRecipeActivity : PantryActivity() {
         if (requestCode == REQUEST_CODE_ADD_INGREDIENT && resultCode == RESULT_OK) {
             data?.extras?.getParcelable<PantryItem>(K_SELECTED_INGREDIENT)?.let {
                 viewModel.addIngredients(listOf(it))
+                return
             }
         }
         if (requestCode == REQUEST_CODE_ADD_STEPS && resultCode == RESULT_OK) {
             data?.extras?.getStringArrayList(K_RECIPE_STEPS)?.let {
                 viewModel.updateRecipeSteps(it)
+                return
             }
         }
     }

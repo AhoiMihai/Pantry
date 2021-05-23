@@ -31,7 +31,7 @@ class CreateOrEditRecipeViewModel(
     val operationResult: LiveData<OperationState> = _operationState
 
     fun addIngredients(ingredient: List<PantryItem>) {
-        val ingredients = ArrayList(addedIngredients.value)
+        val ingredients = ArrayList(addedIngredients.value?: ArrayList())
         ingredients.addAll(ingredient)
         _addedIngredients.postValue(ingredients)
     }

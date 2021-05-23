@@ -19,8 +19,8 @@ class IngredientListAdapter(
 
     private val clickedItemSubject = PublishSubject.create<PantryItem>()
     val clickedItem: Observable<PantryItem> = clickedItemSubject.hide()
-    private val editClickedSubject = CompletableSubject.create()
-    val editClicked: Completable = editClickedSubject.hide()
+    private val editClickedSubject = PublishSubject.create<ClickEvent>()
+    val editClicked: Observable<ClickEvent> = editClickedSubject.hide()
 
     fun updateItems(newItems: List<PantryItem>) {
         ingredients.clear()
@@ -37,7 +37,7 @@ class IngredientListAdapter(
     class FooterViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
     override fun getItemViewType(position: Int): Int {
-        return if (position == itemCount && editable) {
+        return if (position == itemCount -1 && editable) {
             ViewType.FOOTER.ordinal
         } else {
             ViewType.CONTENT.ordinal
@@ -67,7 +67,7 @@ class IngredientListAdapter(
             }
             ViewType.FOOTER -> {
                 viewHolder.itemView.setOnClickListener {
-                    editClickedSubject.onComplete()
+                    editClickedSubject.onNext(ClickEvent())
                 }
             }
         }
@@ -75,6 +75,8 @@ class IngredientListAdapter(
 
     override fun getItemCount() = if (editable) ingredients.size + 1 else ingredients.size
 }
+
+class ClickEvent
 
 enum class ViewType {
     CONTENT,

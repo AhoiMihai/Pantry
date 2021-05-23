@@ -100,7 +100,7 @@ class ListItemsAdapter(
         }
     }
 
-    override fun getItemCount() = items.size + 1
+    override fun getItemCount() = if (items.isEmpty()) 0 else items.size + 1
 
     fun setItems(newItems: List<ShoppingListItem>) {
         items.clear()

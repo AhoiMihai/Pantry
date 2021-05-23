@@ -50,7 +50,7 @@ class AddIngredientActivity : PantryActivity(), QuantityPickedListener {
 
         viewModel.selectedIngredient.observe(this) {
             val fragment: IngredientQuantityPicker? =
-                supportFragmentManager.findFragmentByTag(DIALOG_TAG) as IngredientQuantityPicker
+                supportFragmentManager.findFragmentByTag(DIALOG_TAG) as IngredientQuantityPicker?
             fragment?.dismiss()
 
             IngredientQuantityPicker.newInstance(it.unitType)

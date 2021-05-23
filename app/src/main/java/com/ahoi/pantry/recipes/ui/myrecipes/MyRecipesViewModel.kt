@@ -27,7 +27,7 @@ class MyRecipesViewModel(
             return
         }
         loading = true
-        recipeCardsGenerator.loadRecipeCards(pageSize, startingPoint)
+        recipeCardsGenerator.loadRecipeCardsWithSingleAndBlockingGets(pageSize, startingPoint)
             .subscribeOn(schedulers.computation())
             .observeOn(schedulers.mainThread())
             .subscribe({

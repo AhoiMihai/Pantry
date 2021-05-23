@@ -20,10 +20,12 @@ class ProfileRepository(
 
     private val profileSubject = BehaviorSubject.create<Profile>()
     private val profilePantrySubject: BehaviorSubject<String> = BehaviorSubject.create()
+    private lateinit var _currentProfile: Profile
+    private lateinit var currentPantryRefference: String
     val pantryReference: String
-        get() = profilePantrySubject.value
+        get() = _currentProfile.pantryReference
     val currentProfile: Profile
-        get() = profileSubject.value
+        get() = _currentProfile
 
     fun createProfile(id: String, name: String?, email: String): Completable {
         return Completable.create { emitter ->
@@ -70,20 +72,21 @@ class ProfileRepository(
         }
     }
 
-    fun loadProfile(id: String) {
-        firestore
-            .collection("profiles")
-            .document(id)
-            .get()
-            .addOnSuccessListener { document ->
-                profileSubject.onNext(document.toProfile())
-            }
-            .addOnFailureListener { error ->
-                throw error
-            }
+    fun loadProfile(id: String): Completable {
+        return Completable.create { emitter ->
+            firestore
+                .collection("profiles")
+                .document(id)
+                .get()
+                .addOnSuccessListener { document ->
+                    _currentProfile = document.toProfile()
+                    emitter.onComplete()
+                }
+                .addOnFailureListener { error ->
+                    emitter.onError(error)
+                }
+        }
     }
-
-    fun observeProfile(): Observable<Profile> = profileSubject.hide()
 }
 
 fun DocumentSnapshot.toProfile(): Profile {

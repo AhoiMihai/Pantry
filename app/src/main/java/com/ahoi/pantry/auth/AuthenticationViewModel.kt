@@ -6,12 +6,14 @@ import com.ahoi.pantry.R
 import com.ahoi.pantry.auth.api.AuthManager
 import com.ahoi.pantry.common.operation.CommonOperationState
 import com.ahoi.pantry.common.operation.OperationState
+import com.ahoi.pantry.common.rx.SchedulerProvider
 import com.ahoi.pantry.profile.domain.ProfileRepository
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 
 class AuthenticationViewModel(
     private val authManager: AuthManager,
+    private val schedulers: SchedulerProvider,
     private val profileRepo: ProfileRepository
 ) {
 
@@ -45,7 +47,13 @@ class AuthenticationViewModel(
                 .subscribe(
                     {
                         profileRepo.loadProfile(authManager.currentUserId)
-                        _signupState.postValue(CommonOperationState.SUCCESS)
+                            .observeOn(schedulers.io())
+                            .subscribeOn(schedulers.mainThread())
+                            .subscribe({
+                                _signupState.postValue(CommonOperationState.SUCCESS)
+                            }, {
+                                _signupState.postValue(CommonOperationState.UNKNOWN_ERROR)
+                            })
                     },
                     {
                         _signupState.postValue(CommonOperationState.UNKNOWN_ERROR)

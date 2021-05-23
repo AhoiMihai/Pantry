@@ -10,15 +10,16 @@ import com.ahoi.pantry.profile.domain.ProfileRepository
 import com.ahoi.pantry.profile.ui.CreateInvitationViewModel
 import com.ahoi.pantry.profile.ui.InvitationsAdapter
 import com.ahoi.pantry.profile.ui.MyInvitationsViewModel
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
+import javax.inject.Singleton
 
 @Module
 class ProfileModule {
 
     @Provides
+    @Singleton
     fun provideProfileRepo(firestore: FirebaseFirestore): ProfileRepository {
         return ProfileRepository(firestore)
     }

@@ -19,8 +19,11 @@ class PantryImpl(
 ) : Pantry {
 
     override fun getIngredientsFromPantry(ingredientNames: List<String>): Single<List<PantryItem>> {
+        val pantryRef = pantryRefSupplier()
         return Single.create { emitter ->
-            generateGetTask(ingredientNames)
+            firestore.collection("pantries/$pantryRef/contents")
+                .whereIn(FieldPath.documentId(), ingredientNames)
+                .get()
                 .addOnSuccessListener { querySnapshot ->
                     val result = ArrayList<PantryItem>()
                     querySnapshot.documents.map {
@@ -50,13 +53,13 @@ class PantryImpl(
                 )
             )
         }
-        return Completable.create {
+        return Completable.create { emitter ->
             writeBatch.commit()
                 .addOnSuccessListener {
-                    Completable.complete()
+                    emitter.onComplete()
                 }
                 .addOnFailureListener {
-                    Completable.error(it)
+                    emitter.onError(it)
                 }
         }
     }
@@ -92,13 +95,6 @@ class PantryImpl(
                     emitter.onError(it)
                 }
         }
-    }
-
-    private fun generateGetTask(ingredientNames: List<String>): Task<QuerySnapshot> {
-        val pantryRef = pantryRefSupplier()
-        return firestore.collection("pantries/$pantryRef/contents")
-            .whereIn(FieldPath.documentId(), ingredientNames)
-            .get()
     }
 
     private fun createPantryItemFromDocument(document: DocumentSnapshot): PantryItem {

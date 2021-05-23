@@ -52,11 +52,14 @@ class MyRecipesActivity : PantryActivity() {
             handleOperationState(it)
         }
 
-        viewModel.loadRecipes(PAGE_SIZE, "")
-
         fab.setOnClickListener {
             goToCreateRecipe()
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.loadRecipes(PAGE_SIZE, null)
     }
 
     private fun showEmptyView() {

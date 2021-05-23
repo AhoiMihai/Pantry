@@ -20,7 +20,7 @@
                 android:id="@+id/ingredient_amount"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.6"
+                android:layout_weight="0.5"
                 android:hint="@string/edit_ingredient_amount_hint"
                 android:importantForAutofill="no"
                 android:inputType="numberDecimal" />
@@ -30,7 +30,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="32dp"
-                android:layout_weight="0.3" />
+                android:layout_weight="0.4" />
     </LinearLayout>
 
     <View
@@ -45,7 +45,8 @@
             android:id="@+id/ok_button"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:gravity="center"
+            android:layout_marginTop="16dp"
+            android:gravity="center_horizontal"
             android:text="@string/ok"
             app:layout_constraintTop_toBottomOf="@+id/separator" />
 

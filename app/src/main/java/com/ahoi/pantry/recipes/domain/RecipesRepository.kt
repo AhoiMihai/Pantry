@@ -51,7 +51,6 @@ class RecipesRepository(
         return Single.create { emitter ->
             firestore.collection("profiles/$userId/recipes")
                 .limit(numberToLoad.toLong())
-                .orderBy("name")
                 .get()
                 .addOnSuccessListener { recipeDocuments ->
                     emitter.onSuccess(recipeDocuments.documents.map {
@@ -72,7 +71,6 @@ class RecipesRepository(
         return Single.create { emitter ->
             firestore.collection("profiles/$userId/recipes")
                 .limit(numberToLoad.toLong())
-                .orderBy("name")
                 .startAfter(idToStartFrom)
                 .get()
                 .addOnSuccessListener { recipeDocuments ->
@@ -127,7 +125,6 @@ class RecipesRepository(
         return Flowable.create({ emitter ->
             firestore.collection("profiles/$userId/recipes")
                 .limit(numberToLoad.toLong())
-                .orderBy("name")
                 .startAfter(idToStartFrom)
                 .get()
                 .addOnSuccessListener { recipeDocuments ->
@@ -162,7 +159,7 @@ class RecipesRepository(
 fun DocumentSnapshot.toRecipe(): Recipe {
     return Recipe(
         this.id,
-        this["servings"] as Int,
+        (this["servings"] as Long).toInt(),
         (this["ingredients"] as List<Map<String, Any>>).toPantryItems(),
         this["steps"] as List<String>
     )

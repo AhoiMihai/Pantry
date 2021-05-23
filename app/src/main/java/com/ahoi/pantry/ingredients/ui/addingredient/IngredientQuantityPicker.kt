@@ -84,7 +84,7 @@ class IngredientQuantityPicker : DialogFragment() {
     }
 
     private fun isQuantityValid(editText: EditText): Boolean {
-        return editText.text.toString().isEmpty() && editText.text.toString().toDouble() > 0
+        return editText.text.toString().isNotEmpty() && editText.text.toString().toDouble() > 0
     }
 }
 

@@ -1,6 +1,7 @@
 package com.ahoi.pantry.launch.di
 
-import com.ahoi.pantry.landing.LaunchViewModel
+import com.ahoi.pantry.launch.LaunchViewModel
+import com.ahoi.pantry.profile.domain.ProfileRepository
 import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
 import dagger.Provides
@@ -10,8 +11,9 @@ class LandingModule {
 
     @Provides
     fun provideLandingViewModel(
-        auth: FirebaseAuth
+        auth: FirebaseAuth,
+        profileRepository: ProfileRepository
     ): LaunchViewModel {
-        return LaunchViewModel(auth)
+        return LaunchViewModel(auth, profileRepository)
     }
 }

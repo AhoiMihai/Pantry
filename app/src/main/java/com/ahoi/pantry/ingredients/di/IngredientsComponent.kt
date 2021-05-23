@@ -5,6 +5,7 @@ import com.ahoi.pantry.auth.di.AuthenticationComponent
 import com.ahoi.pantry.ingredients.api.Pantry
 import com.ahoi.pantry.ingredients.ui.CreateIngredientActivity
 import com.ahoi.pantry.ingredients.ui.addingredient.AddIngredientActivity
+import com.ahoi.pantry.profile.domain.ProfileRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.BindsInstance
 import dagger.Component
@@ -19,7 +20,7 @@ interface IngredientsComponent: PantryComponent {
         fun firestore(value: FirebaseFirestore): Builder
 
         @BindsInstance
-        fun pantryRefSupplier(value: () -> String): Builder
+        fun profileRepository(value: ProfileRepository): Builder
 
         fun build(): IngredientsComponent
     }

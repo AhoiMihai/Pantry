@@ -1,13 +1,11 @@
 package com.ahoi.pantry.launch
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.ahoi.pantry.HomeActivity
 import com.ahoi.pantry.PantryApp
 import com.ahoi.pantry.R
-import com.ahoi.pantry.landing.AuthState
-import com.ahoi.pantry.landing.LaunchViewModel
 import com.ahoi.pantry.launch.di.LaunchComponent
 import javax.inject.Inject
 
@@ -24,7 +22,9 @@ class LaunchActivity : AppCompatActivity() {
         viewModel.authState.observe(this) {
             it?.let {
                 when (it) {
-                    AuthState.AUTHENTICATED -> startActivity(Intent(this, HomeActivity::class.java))
+                    AuthState.AUTHENTICATED -> {
+                        startActivity(Intent(this, HomeActivity::class.java))
+                    }
                     AuthState.UNAUTHENTICATED -> startActivity(
                         Intent(
                             this,

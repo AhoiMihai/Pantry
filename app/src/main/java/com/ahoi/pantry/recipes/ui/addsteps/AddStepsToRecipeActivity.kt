@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import com.ahoi.pantry.PantryApp
@@ -23,8 +23,8 @@ class AddStepsToRecipeActivity : PantryActivity() {
 
     private val addedSteps: TextView by bind(R.id.steps)
     private val textEdit: TextInputEditText by bind(R.id.step_input)
-    private val addButton: Button by bind(R.id.add_button)
-    private val removeButton: Button by bind(R.id.remove_button)
+    private val addButton: ImageButton by bind(R.id.add_button)
+    private val removeButton: ImageButton by bind(R.id.remove_button)
     private val toolbar: Toolbar by bind(R.id.toolbar)
 
     @Inject
