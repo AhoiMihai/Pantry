@@ -7,6 +7,8 @@ import com.ahoi.pantry.auth.api.AuthManager
 import com.ahoi.pantry.common.operation.CommonOperationState
 import com.ahoi.pantry.common.operation.OperationState
 import com.ahoi.pantry.profile.domain.ProfileRepository
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 
 class AuthenticationViewModel(
     private val authManager: AuthManager,
@@ -49,6 +51,8 @@ class AuthenticationViewModel(
                         _signupState.postValue(CommonOperationState.UNKNOWN_ERROR)
                     })
             AuthMode.SIGN_UP -> authManager.signUpWithEmailAndPassword(email, password)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     {
                         profileRepo.createProfile(it.uid, it.email!!, it.displayName!!)

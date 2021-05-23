@@ -32,6 +32,7 @@ class PantryApp : Application() {
         componentRegistry[ProfileComponent::class.java] = DaggerProfileComponent
             .builder()
             .firestore(FirebaseFirestore.getInstance())
+            .userIdSupplier { getComponent(AuthenticationComponent::class.java).authManager().currentUserId }
             .context(this)
             .build()
 

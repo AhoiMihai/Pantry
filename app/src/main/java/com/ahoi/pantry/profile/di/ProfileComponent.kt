@@ -21,7 +21,7 @@ interface ProfileComponent: PantryComponent {
         fun firestore(value: FirebaseFirestore): Builder
 
         @BindsInstance
-        fun authManager(value: AuthManager): Builder
+        fun userIdSupplier(value: () -> String): Builder
 
         @BindsInstance
         fun context(context: Context): Builder

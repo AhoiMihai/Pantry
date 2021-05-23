@@ -14,7 +14,7 @@ import com.ahoi.pantry.profile.domain.ProfileRepository
 class MyInvitationsViewModel(
     private val profileRepository: ProfileRepository,
     private val invitationRepository: InvitationRepository,
-    private val authManager: AuthManager,
+    private val userIdSupplier: () -> String,
     private val schedulers: SchedulerProvider,
     private val errorHandler: FirestoreErrorHandler
 ) {
@@ -44,7 +44,7 @@ class MyInvitationsViewModel(
     }
 
     fun acceptInvitation(invitation: Invitation) {
-        profileRepository.updateProfilePantryRef(authManager.currentUserId, invitation.pantryId)
+        profileRepository.updateProfilePantryRef(userIdSupplier(), invitation.pantryId)
             .doOnComplete { invitationRepository.deleteInvitation(invitation.id) }
             .subscribeOn(schedulers.io())
             .observeOn(schedulers.mainThread())

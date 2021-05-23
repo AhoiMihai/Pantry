@@ -35,7 +35,7 @@ class AuthManagerImpl(
             firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener {
                     userIdSubject.onNext(it.user?.uid)
-                    Single.just(it.user)
+                    it.user
                 }.addOnFailureListener {
                     Single.error<FirebaseUser>(it)
                 }

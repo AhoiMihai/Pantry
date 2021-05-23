@@ -8,9 +8,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.ahoi.pantry.PantryApp
 import com.ahoi.pantry.R
 import com.ahoi.pantry.common.uistuff.PantryActivity
 import com.ahoi.pantry.common.uistuff.bind
+import com.ahoi.pantry.shopping.di.ShoppingComponent
 import com.ahoi.pantry.shopping.ui.listdetails.K_SELECTED_SHOPPING_LIST
 import com.ahoi.pantry.shopping.ui.listdetails.ListDetailsActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -31,7 +33,7 @@ class ShoppingListsActivity : PantryActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list_with_fab)
-
+        (application as PantryApp).getComponent(ShoppingComponent::class.java).inject(this)
         setupList()
 
         viewModel.operationState.observe(this) {

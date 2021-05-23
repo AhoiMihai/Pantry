@@ -47,14 +47,14 @@ class ProfileModule {
     fun provideMyInvitationsViewModel(
         profileRepository: ProfileRepository,
         invitationRepository: InvitationRepository,
-        authManager: AuthManager,
+        supplier: () -> String,
         schedulerProvider: SchedulerProvider,
         errorHandler: FirestoreErrorHandler
     ): MyInvitationsViewModel {
         return MyInvitationsViewModel(
             profileRepository,
             invitationRepository,
-            authManager,
+            supplier,
             schedulerProvider,
             errorHandler
         )

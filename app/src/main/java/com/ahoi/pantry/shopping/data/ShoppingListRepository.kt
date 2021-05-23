@@ -48,7 +48,7 @@ class ShoppingListRepository(
             firestore.collection("pantries/$pantryRef/shoppingLists")
                 .get()
                 .addOnSuccessListener { query ->
-                    Single.just(query.documents.map { it.toObject(ShoppingList::class.java) })
+                    query.documents.map { it.toObject(ShoppingList::class.java) }
                 }
                 .addOnFailureListener {
                     Single.error<List<ShoppingList>>(it)
