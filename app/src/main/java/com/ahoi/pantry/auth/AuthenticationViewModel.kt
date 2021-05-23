@@ -55,7 +55,7 @@ class AuthenticationViewModel(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     {
-                        profileRepo.createProfile(it.uid, it.email!!, it.displayName!!)
+                        profileRepo.createProfile(it.uid, it.displayName, it.email!!)
                             .subscribe { _signupState.postValue(CommonOperationState.SUCCESS) }
                     }, {
                         _signupState.postValue(CommonOperationState.UNKNOWN_ERROR)

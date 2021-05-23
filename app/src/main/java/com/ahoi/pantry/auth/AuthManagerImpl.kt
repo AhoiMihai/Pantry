@@ -18,26 +18,26 @@ class AuthManagerImpl(
         get() = userIdSubject.value
 
     override fun loginWithEmailAndPassword(email: String, password: String): Completable {
-        return Completable.create {
+        return Completable.create { emitter ->
             firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener {
                     userIdSubject.onNext(it.user?.uid)
-                    Completable.complete()
+                    emitter.onComplete()
                 }
                 .addOnFailureListener {
-                    Completable.error(it)
+                    emitter.onError(it)
                 }
         }
     }
 
     override fun signUpWithEmailAndPassword(email: String, password: String): Single<FirebaseUser> {
-        return Single.create {
+        return Single.create { emitter ->
             firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener {
                     userIdSubject.onNext(it.user?.uid)
-                    it.user
+                    emitter.onSuccess(it.user)
                 }.addOnFailureListener {
-                    Single.error<FirebaseUser>(it)
+                    emitter.onError(it)
                 }
         }
     }

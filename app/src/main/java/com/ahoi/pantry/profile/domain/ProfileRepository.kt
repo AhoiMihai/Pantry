@@ -4,6 +4,7 @@ import com.ahoi.pantry.profile.data.Profile
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.core.FirestoreClient
@@ -24,8 +25,8 @@ class ProfileRepository(
     val currentProfile: Profile
         get() = profileSubject.value
 
-    fun createProfile(id: String, name: String, email: String): Completable {
-        return Completable.create {
+    fun createProfile(id: String, name: String?, email: String): Completable {
+        return Completable.create { emitter ->
             firestore.collection("pantries")
                 .add(
                     mapOf(
@@ -33,7 +34,7 @@ class ProfileRepository(
                     )
                 ).addOnSuccessListener {
                     val profile = Profile(
-                        name = name,
+                        name = name ?: "jeffrey",
                         email = email,
                         pantryReference = it.id
                     )
@@ -43,28 +44,28 @@ class ProfileRepository(
                         .set(profile)
                         .addOnSuccessListener {
                             profilePantrySubject.onNext(profile.pantryReference)
-                            Completable.complete()
+                            emitter.onComplete()
                         }
                         .addOnFailureListener { error ->
-                            Completable.error(error)
+                            emitter.onError(error)
                         }
                 }.addOnFailureListener {
-                    Completable.error(it)
+                    emitter.onError(it)
                 }
 
         }
     }
 
     fun updateProfilePantryRef(id: String, reference: String): Completable {
-        return Completable.create {
+        return Completable.create { emitter ->
             firestore.collection("profiles")
                 .document(id)
                 .update("pantryReference", reference)
                 .addOnSuccessListener {
-                    Completable.complete()
+                    emitter.onComplete()
                 }
                 .addOnFailureListener {
-                    Completable.error(it)
+                    emitter.onError(it)
                 }
         }
     }
@@ -75,7 +76,7 @@ class ProfileRepository(
             .document(id)
             .get()
             .addOnSuccessListener { document ->
-                profileSubject.onNext(document.toObject(Profile::class.java))
+                profileSubject.onNext(document.toProfile())
             }
             .addOnFailureListener { error ->
                 throw error
@@ -83,4 +84,12 @@ class ProfileRepository(
     }
 
     fun observeProfile(): Observable<Profile> = profileSubject.hide()
+}
+
+fun DocumentSnapshot.toProfile(): Profile {
+    return Profile(
+        this["name"] as String,
+        this["email"] as String,
+        this["pantryReference"] as String
+    )
 }

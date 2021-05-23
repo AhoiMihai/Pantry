@@ -1,7 +1,13 @@
 package com.ahoi.pantry.recipes.domain
 
+import com.ahoi.pantry.common.units.Quantity
+import com.ahoi.pantry.common.units.Unit
+import com.ahoi.pantry.common.units.UnitType
+import com.ahoi.pantry.ingredients.data.model.PantryItem
+import com.ahoi.pantry.ingredients.data.model.Tag
 import com.ahoi.pantry.recipes.api.RecipeRepository
 import com.ahoi.pantry.recipes.data.Recipe
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import io.reactivex.rxjava3.core.BackpressureStrategy
 import io.reactivex.rxjava3.core.Completable
@@ -14,14 +20,14 @@ class RecipesRepository(
 
     override fun createOrUpdate(userId: String, recipe: Recipe): Completable {
 
-        return Completable.create {
+        return Completable.create { emitter ->
             firestore.collection("profiles/$userId/recipes")
                 .document(recipe.name)
-                .set(recipe)
+                .set(recipe.toMap())
                 .addOnSuccessListener {
-                    Completable.complete()
+                    emitter.onComplete()
                 }.addOnFailureListener {
-                    Completable.error(it)
+                    emitter.onError(it)
                 }
         }
     }
@@ -42,18 +48,18 @@ class RecipesRepository(
         userId: String,
         numberToLoad: Int,
     ): Single<List<Recipe>> {
-        return Single.create {
+        return Single.create { emitter ->
             firestore.collection("profiles/$userId/recipes")
                 .limit(numberToLoad.toLong())
                 .orderBy("name")
                 .get()
                 .addOnSuccessListener { recipeDocuments ->
-                    Single.just(recipeDocuments.documents.map {
-                        it.toObject(Recipe::class.java)
+                    emitter.onSuccess(recipeDocuments.documents.map {
+                        it.toRecipe()
                     })
                 }
                 .addOnFailureListener {
-                    Single.error<List<Recipe>>(it)
+                    emitter.onError(it)
                 }
         }
     }
@@ -63,19 +69,20 @@ class RecipesRepository(
         numberToLoad: Int,
         idToStartFrom: String
     ): Single<List<Recipe>> {
-        return Single.create {
+        return Single.create { emitter ->
             firestore.collection("profiles/$userId/recipes")
                 .limit(numberToLoad.toLong())
                 .orderBy("name")
                 .startAfter(idToStartFrom)
                 .get()
                 .addOnSuccessListener { recipeDocuments ->
-                    Single.just(recipeDocuments.documents.map {
-                        it.toObject(Recipe::class.java)
-                    })
+                    val result = recipeDocuments.documents.map {
+                        it.toRecipe()
+                    }
+                    emitter.onSuccess(result)
                 }
                 .addOnFailureListener {
-                    Single.error<List<Recipe>>(it)
+                    emitter.onError(it)
                 }
         }
     }
@@ -96,18 +103,18 @@ class RecipesRepository(
         userId: String,
         numberToLoad: Int
     ): Flowable<Recipe> {
-        return Flowable.create({
+        return Flowable.create({ emitter ->
             firestore.collection("profiles/$userId/recipes")
                 .limit(numberToLoad.toLong())
                 .orderBy("name")
                 .get()
                 .addOnSuccessListener { recipeDocuments ->
-                    Flowable.fromIterable(recipeDocuments.documents.map {
-                        it.toObject(Recipe::class.java)
-                    })
+                    recipeDocuments.documents.forEach {
+                        emitter.onNext(it.toRecipe())
+                    }
                 }
                 .addOnFailureListener {
-                    Flowable.error<Recipe>(it)
+                    emitter.onError(it)
                 }
         }, BackpressureStrategy.BUFFER)
     }
@@ -117,19 +124,19 @@ class RecipesRepository(
         numberToLoad: Int,
         idToStartFrom: String
     ): Flowable<Recipe> {
-        return Flowable.create({
+        return Flowable.create({ emitter ->
             firestore.collection("profiles/$userId/recipes")
                 .limit(numberToLoad.toLong())
                 .orderBy("name")
                 .startAfter(idToStartFrom)
                 .get()
                 .addOnSuccessListener { recipeDocuments ->
-                    Flowable.fromIterable(recipeDocuments.documents.map {
-                        it.toObject(Recipe::class.java)
-                    })
+                    recipeDocuments.documents.forEach {
+                        emitter.onNext(it.toRecipe())
+                    }
                 }
                 .addOnFailureListener {
-                    Flowable.error<Recipe>(it)
+                    emitter.onError(it)
                 }
         }, BackpressureStrategy.BUFFER)
     }
@@ -137,17 +144,60 @@ class RecipesRepository(
 
     override fun loadFullRecipe(userId: String, name: String): Single<Recipe> {
 
-        return Single.create {
+        return Single.create { emitter ->
             firestore.collection("profiles/$userId/recipes")
                 .whereEqualTo("name", name)
                 .limit(1)
                 .get()
                 .addOnSuccessListener {
-                    Single.just(it.documents[0].toObject(Recipe::class.java))
+                    emitter.onSuccess(it.documents[0].toRecipe())
                 }
                 .addOnFailureListener {
-                    Single.error<Recipe>(it)
+                    emitter.onError(it)
                 }
         }
     }
+}
+
+fun DocumentSnapshot.toRecipe(): Recipe {
+    return Recipe(
+        this.id,
+        this["servings"] as Int,
+        (this["ingredients"] as List<Map<String, Any>>).toPantryItems(),
+        this["steps"] as List<String>
+    )
+}
+
+fun List<Map<String, Any>>.toPantryItems(): List<PantryItem> {
+    return this.map {
+        PantryItem(
+            it["ingredientName"] as String,
+            UnitType.valueOf(it["unitType"] as String),
+            Quantity(
+                it["amount"] as Double,
+                Unit.valueOf(it["unit"] as String)
+            ),
+            (it["tags"] as List<String>).map { Tag.valueOf(it) }
+        )
+    }
+}
+
+fun List<PantryItem>.toStoreEntries(): List<Map<String, Any>> {
+    return this.map {
+        mapOf(
+            "ingredientName" to it.ingredientName,
+            "unitType" to it.unitType.name,
+            "amount" to it.quantity.amount,
+            "unit" to it.quantity.unit.name,
+            "tags" to it.tags.map { tag -> tag.name }
+        )
+    }
+}
+
+fun Recipe.toMap(): Map<String, Any> {
+    return mapOf(
+        "servings" to this.servings,
+        "ingredients" to this.ingredients.toStoreEntries(),
+        "steps" to this.steps
+    )
 }

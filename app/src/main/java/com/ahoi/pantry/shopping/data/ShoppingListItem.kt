@@ -20,4 +20,10 @@ data class ShoppingListItem(
 
         return true
     }
+
+    override fun hashCode(): Int {
+        var result = item.hashCode()
+        result = 31 * result + purchased.hashCode()
+        return result
+    }
 }

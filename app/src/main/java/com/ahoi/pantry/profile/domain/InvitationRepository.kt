@@ -1,6 +1,7 @@
 package com.ahoi.pantry.profile.domain
 
 import com.ahoi.pantry.profile.data.Invitation
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
@@ -11,44 +12,52 @@ class InvitationRepository(
 
     fun getInvitationsForUser(email: String): Single<List<Invitation>> {
 
-        return Single.create {
+        return Single.create { emitter ->
             firestore
                 .collection("invitations")
                 .whereEqualTo("invitedEmail", email)
                 .get()
                 .addOnSuccessListener { que ->
-                    Single.just(que.documents.map { it.toObject(Invitation::class.java) })
+                    emitter.onSuccess(que.documents.map { it.toInvitation() })
                 }
                 .addOnFailureListener {
-                    Single.error<List<Invitation>>(it)
+                    emitter.onError(it)
                 }
         }
     }
 
     fun createInvitationForEmail(invitation: Invitation): Completable {
-        return Completable.create {
+        return Completable.create { emitter ->
             firestore
                 .collection("invitations")
                 .add(invitation)
                 .addOnSuccessListener {
-                    Completable.complete()
+                    emitter.onComplete()
                 }
-                .addOnFailureListener { Completable.error(it) }
+                .addOnFailureListener { emitter.onError(it) }
         }
     }
 
     fun deleteInvitation(id: String): Completable {
-        return Completable.create{
+        return Completable.create { emitter ->
             firestore.collection("invitations")
                 .document(id)
                 .delete()
                 .addOnSuccessListener {
-                    Completable.complete()
+                    emitter.onComplete()
                 }
                 .addOnFailureListener {
-                    Completable.error(it)
+                    emitter.onError(it)
                 }
         }
     }
+}
 
+fun DocumentSnapshot.toInvitation(): Invitation {
+    return Invitation(
+        this.id,
+        this["invitedEmail"] as String,
+        this["sourceDisplayName"] as String,
+        this["pantryId"] as String
+    )
 }

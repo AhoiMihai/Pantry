@@ -19,17 +19,17 @@ class PantryImpl(
 ) : Pantry {
 
     override fun getIngredientsFromPantry(ingredientNames: List<String>): Single<List<PantryItem>> {
-        return Single.create {
+        return Single.create { emitter ->
             generateGetTask(ingredientNames)
                 .addOnSuccessListener { querySnapshot ->
                     val result = ArrayList<PantryItem>()
                     querySnapshot.documents.map {
                         createPantryItemFromDocument(it)
                     }
-                    Single.just(result)
+                    emitter.onSuccess(result)
                 }
                 .addOnFailureListener {
-                    Single.error<HashMap<String, Quantity>>(it)
+                    emitter.onError(it)
                 }
         }
     }
@@ -63,7 +63,7 @@ class PantryImpl(
 
     override fun searchPantryItems(query: String): Single<List<PantryItem>> {
         val pantryRef = pantryRefSupplier()
-        return Single.create {
+        return Single.create { emitter ->
             firestore.collection("pantries/$pantryRef/contents")
                 .whereArrayContains("keywords", query)
                 .get()
@@ -71,25 +71,25 @@ class PantryImpl(
                     val result = query.documents.map {
                         createPantryItemFromDocument(it)
                     }
-                    Single.just(result)
+                    emitter.onSuccess(result)
                 }
                 .addOnFailureListener {
-                    Single.error<List<PantryItem>>(it)
+                    emitter.onError(it)
                 }
         }
     }
 
     override fun getPantryItemByName(name: String): Single<PantryItem> {
         val pantryRef = pantryRefSupplier()
-        return Single.create {
+        return Single.create { emitter ->
             firestore.collection("pantries/$pantryRef/contents")
                 .document(name)
                 .get()
                 .addOnSuccessListener {
-                    Single.just(createPantryItemFromDocument(it))
+                    emitter.onSuccess(createPantryItemFromDocument(it))
                 }
                 .addOnFailureListener {
-                    Single.error<List<PantryItem>>(it)
+                    emitter.onError(it)
                 }
         }
     }

@@ -2,8 +2,10 @@ package com.ahoi.pantry.ingredients.data.model
 
 import android.os.Parcelable
 import com.ahoi.pantry.common.units.Quantity
+import com.ahoi.pantry.common.units.Unit
 import com.ahoi.pantry.common.units.UnitType
 import com.google.firebase.firestore.DocumentId
+import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -25,6 +27,37 @@ data class PantryItem(
 
         return true
     }
+
+    override fun hashCode(): Int {
+        var result = ingredientName.hashCode()
+        result = 31 * result + unitType.hashCode()
+        result = 31 * result + quantity.hashCode()
+        result = 31 * result + tags.hashCode()
+        return result
+    }
+
+}
+
+fun PantryItem.toMap(): Map<String, Any> {
+    return mapOf(
+        "ingredientName" to this.ingredientName,
+        "amount" to this.quantity.amount,
+        "unitType" to this.unitType.name,
+        "unit" to this.quantity.unit.name,
+        "tags" to this.tags.map { it.name },
+    )
+}
+
+fun Map<String, Any>.toPantryItem(): PantryItem {
+    return PantryItem(
+        ingredientName = this["ingredientName"] as String,
+        unitType = UnitType.valueOf(this["unitType"].toString()),
+        quantity = Quantity(
+            this["amount"] as Double,
+            Unit.valueOf(this["unit"].toString())
+        ),
+        tags = (this["tags"] as List<String>).map { Tag.valueOf(it) }
+    )
 }
 
 enum class Tag {
