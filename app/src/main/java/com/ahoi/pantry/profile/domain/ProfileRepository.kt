@@ -16,18 +16,13 @@ import io.reactivex.rxjava3.subjects.PublishSubject
 
 class ProfileRepository(
     private val firestore: FirebaseFirestore,
+    private val userIdSupplier: () -> String
 ) {
 
     private val profileSubject = BehaviorSubject.create<Profile>()
     private val profilePantrySubject: BehaviorSubject<String> = BehaviorSubject.create()
-    private lateinit var _currentProfile: Profile
-    private lateinit var currentPantryRefference: String
-    val pantryReference: String
-        get() = _currentProfile.pantryReference
-    val currentProfile: Profile
-        get() = _currentProfile
 
-    fun createProfile(id: String, name: String?, email: String): Completable {
+    fun createProfile(id: String, name: String, email: String): Completable {
         return Completable.create { emitter ->
             firestore.collection("pantries")
                 .add(
@@ -36,7 +31,7 @@ class ProfileRepository(
                     )
                 ).addOnSuccessListener {
                     val profile = Profile(
-                        name = name ?: "jeffrey",
+                        name = name,
                         email = email,
                         pantryReference = it.id
                     )
@@ -79,13 +74,27 @@ class ProfileRepository(
                 .document(id)
                 .get()
                 .addOnSuccessListener { document ->
-                    _currentProfile = document.toProfile()
+                    profileSubject.onNext(document.toProfile())
                     emitter.onComplete()
                 }
                 .addOnFailureListener { error ->
                     emitter.onError(error)
                 }
         }
+    }
+
+    fun getOrLoadCurrent(): Single<Profile> {
+        return if (profileSubject.hasValue()) {
+            Single.just(profileSubject.value)
+        } else {
+            loadProfile(userIdSupplier())
+                .toSingle { profileSubject.value }
+        }
+    }
+
+    fun getOrLoadPantryReference(): Single<String> {
+        return getOrLoadCurrent()
+            .map { it.pantryReference }
     }
 }
 

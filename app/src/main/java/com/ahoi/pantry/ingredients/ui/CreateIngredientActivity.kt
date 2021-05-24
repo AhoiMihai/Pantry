@@ -60,7 +60,7 @@ class CreateIngredientActivity : PantryActivity() {
         unitSpinner.adapter = ArrayAdapter(
             this,
             android.R.layout.simple_spinner_dropdown_item,
-            Unit.values().filter { it.type == UnitType.MASS }
+            Unit.values()
         )
     }
 }

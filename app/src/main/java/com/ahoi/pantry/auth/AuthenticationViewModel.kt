@@ -26,6 +26,9 @@ class AuthenticationViewModel(
     private val _password = MutableLiveData<String>()
     val password: LiveData<String> = _password
 
+    private val _username = MutableLiveData<String>()
+    val username: LiveData<String> = _username
+
     fun updateEmail(email: String) {
         _email.value = email
     }
@@ -37,8 +40,9 @@ class AuthenticationViewModel(
     fun authenticate(mode: AuthMode) {
         val email = email.value
         val password = password.value
+        val userName = username.value
 
-        if (email.isNullOrEmpty() || password.isNullOrEmpty()) {
+        if (email.isNullOrEmpty() || password.isNullOrEmpty() || (mode == AuthMode.SIGN_UP && userName.isNullOrEmpty())) {
             _signupState.postValue(OperationResult.MISSING_CREDENTIALS)
             return
         }
@@ -63,7 +67,7 @@ class AuthenticationViewModel(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     {
-                        profileRepo.createProfile(it.uid, it.displayName, it.email!!)
+                        profileRepo.createProfile(it.uid, userName!!, it.email!!)
                             .subscribe { _signupState.postValue(CommonOperationState.SUCCESS) }
                     }, {
                         _signupState.postValue(CommonOperationState.UNKNOWN_ERROR)
@@ -71,9 +75,13 @@ class AuthenticationViewModel(
                 )
         }
     }
+
+    fun updateUserName(username: String) {
+        _username.postValue(username)
+    }
 }
 
-enum class OperationResult: OperationState {
+enum class OperationResult : OperationState {
     MISSING_CREDENTIALS,
 }
 

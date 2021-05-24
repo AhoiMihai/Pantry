@@ -23,6 +23,7 @@ class CreateAccountActivity : PantryActivity() {
     private val emailInput: EditText by bind(R.id.email_input)
     private val passwordInput: EditText by bind(R.id.password_input)
     private val submitButton: Button by bind(R.id.submit_button)
+    private val userNameInput: EditText by bind(R.id.name_input)
 
     @Inject
     lateinit var viewModel: AuthenticationViewModel
@@ -39,6 +40,7 @@ class CreateAccountActivity : PantryActivity() {
         submitButton.setOnClickListener {
             viewModel.updateEmail(emailInput.text.toString())
             viewModel.updatePassword(passwordInput.text.toString())
+            viewModel.updateUserName(userNameInput.text.toString())
             viewModel.authenticate(AuthMode.SIGN_UP)
         }
 
