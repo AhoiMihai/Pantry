@@ -14,85 +14,89 @@ import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 
 class PantryImpl(
-    private val pantryRefSupplier: () -> String,
+    private val pantrySingle: Single<String>,
     private val firestore: FirebaseFirestore
 ) : Pantry {
 
     override fun getIngredientsFromPantry(ingredientNames: List<String>): Single<List<PantryItem>> {
-        val pantryRef = pantryRefSupplier()
-        return Single.create { emitter ->
-            firestore.collection("pantries/$pantryRef/contents")
-                .whereIn(FieldPath.documentId(), ingredientNames)
-                .get()
-                .addOnSuccessListener { querySnapshot ->
-                    val result = querySnapshot.documents.map {
-                        createPantryItemFromDocument(it)
+        return pantrySingle.flatMap {
+            Single.create { emitter ->
+                firestore.collection("pantries/$it/contents")
+                    .whereIn(FieldPath.documentId(), ingredientNames)
+                    .get()
+                    .addOnSuccessListener { querySnapshot ->
+                        val result = querySnapshot.documents.map {
+                            createPantryItemFromDocument(it)
+                        }
+                        emitter.onSuccess(result)
                     }
-                    emitter.onSuccess(result)
-                }
-                .addOnFailureListener {
-                    emitter.onError(it)
-                }
+                    .addOnFailureListener {
+                        emitter.onError(it)
+                    }
+            }
         }
     }
 
     override fun updateOrCreateItems(updates: List<PantryItem>): Completable {
-        val pantryRef = pantryRefSupplier()
-        val writeBatch = firestore.batch()
-        val collectionRef = firestore.collection("pantries/$pantryRef/contents")
-        updates.forEach { item ->
-            writeBatch.set(
-                collectionRef.document(item.ingredientName),
-                mapOf(
-                    "amount" to item.quantity.amount,
-                    "unitType" to item.unitType.name,
-                    "unit" to item.quantity.unit.name,
-                    "tags" to item.tags.map { it.name },
-                    "keywords" to generateKeywordsFromNameAlsoKnownAsFirestoreIsTrash(item.ingredientName)
+        return pantrySingle.flatMapCompletable {
+            val writeBatch = firestore.batch()
+            val collectionRef = firestore.collection("pantries/$it/contents")
+            updates.forEach { item ->
+                writeBatch.set(
+                    collectionRef.document(item.ingredientName),
+                    mapOf(
+                        "amount" to item.quantity.amount,
+                        "unitType" to item.unitType.name,
+                        "unit" to item.quantity.unit.name,
+                        "tags" to item.tags.map { it.name },
+                        "keywords" to generateKeywordsFromNameAlsoKnownAsFirestoreIsTrash(item.ingredientName)
+                    )
                 )
-            )
-        }
-        return Completable.create { emitter ->
-            writeBatch.commit()
-                .addOnSuccessListener {
-                    emitter.onComplete()
-                }
-                .addOnFailureListener {
-                    emitter.onError(it)
-                }
+            }
+            Completable.create { emitter ->
+                writeBatch.commit()
+                    .addOnSuccessListener {
+                        emitter.onComplete()
+                    }
+                    .addOnFailureListener {
+                        emitter.onError(it)
+                    }
+            }
         }
     }
 
     override fun searchPantryItems(query: String): Single<List<PantryItem>> {
-        val pantryRef = pantryRefSupplier()
-        return Single.create { emitter ->
-            firestore.collection("pantries/$pantryRef/contents")
-                .whereArrayContains("keywords", query)
-                .get()
-                .addOnSuccessListener { query ->
-                    val result = query.documents.map {
-                        createPantryItemFromDocument(it)
+        return pantrySingle.flatMap {
+            Single.create { emitter ->
+                firestore.collection("pantries/$it/contents")
+                    .whereArrayContains("keywords", query)
+                    .get()
+                    .addOnSuccessListener { query ->
+                        val result = query.documents.map {
+                            createPantryItemFromDocument(it)
+                        }
+                        emitter.onSuccess(result)
                     }
-                    emitter.onSuccess(result)
-                }
-                .addOnFailureListener {
-                    emitter.onError(it)
-                }
+                    .addOnFailureListener {
+                        emitter.onError(it)
+                    }
+            }
         }
     }
 
     override fun getPantryItemByName(name: String): Single<PantryItem> {
-        val pantryRef = pantryRefSupplier()
-        return Single.create { emitter ->
-            firestore.collection("pantries/$pantryRef/contents")
-                .document(name)
-                .get()
-                .addOnSuccessListener {
-                    emitter.onSuccess(createPantryItemFromDocument(it))
-                }
-                .addOnFailureListener {
-                    emitter.onError(it)
-                }
+        return pantrySingle.flatMap {
+            Single.create { emitter ->
+                firestore.collection("pantries/$it/contents")
+                    .document(name)
+                    .get()
+                    .addOnSuccessListener {
+                        emitter.onSuccess(createPantryItemFromDocument(it))
+                    }
+                    .addOnFailureListener {
+                        emitter.onError(it)
+                    }
+            }
         }
     }
 

@@ -38,28 +38,6 @@ data class PantryItem(
 
 }
 
-fun PantryItem.toMap(): Map<String, Any> {
-    return mapOf(
-        "ingredientName" to this.ingredientName,
-        "amount" to this.quantity.amount,
-        "unitType" to this.unitType.name,
-        "unit" to this.quantity.unit.name,
-        "tags" to this.tags.map { it.name },
-    )
-}
-
-fun Map<String, Any>.toPantryItem(): PantryItem {
-    return PantryItem(
-        ingredientName = this["ingredientName"] as String,
-        unitType = UnitType.valueOf(this["unitType"].toString()),
-        quantity = Quantity(
-            this["amount"] as Double,
-            Unit.valueOf(this["unit"].toString())
-        ),
-        tags = (this["tags"] as List<String>).map { Tag.valueOf(it) }
-    )
-}
-
 enum class Tag {
     ALCOHOLIC_BEVERAGE,
     FRUIT,

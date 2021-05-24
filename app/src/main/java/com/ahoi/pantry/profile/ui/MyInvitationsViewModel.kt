@@ -26,8 +26,9 @@ class MyInvitationsViewModel(
     val invitations: LiveData<List<Invitation>> = _invitations
 
     fun loadInvitations() {
-        invitationRepository.getInvitationsForUser(profileRepository.currentProfile.email)
-            .subscribeOn(schedulers.io())
+        profileRepository.getOrLoadCurrent().flatMap {
+            invitationRepository.getInvitationsForUser(it.email)
+        }.subscribeOn(schedulers.io())
             .observeOn(schedulers.mainThread())
             .subscribe(
                 {

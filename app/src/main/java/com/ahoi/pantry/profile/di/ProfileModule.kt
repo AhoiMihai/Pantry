@@ -20,8 +20,11 @@ class ProfileModule {
 
     @Provides
     @Singleton
-    fun provideProfileRepo(firestore: FirebaseFirestore): ProfileRepository {
-        return ProfileRepository(firestore)
+    fun provideProfileRepo(
+        firestore: FirebaseFirestore,
+        userIdSupplier: () -> String
+    ): ProfileRepository {
+        return ProfileRepository(firestore, userIdSupplier)
     }
 
     @Provides

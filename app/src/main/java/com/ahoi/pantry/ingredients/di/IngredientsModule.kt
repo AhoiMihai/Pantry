@@ -11,18 +11,19 @@ import com.ahoi.pantry.profile.domain.ProfileRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
+import io.reactivex.rxjava3.core.Single
 
 @Module
 class IngredientsModule {
 
     @Provides
-    fun providePantryRefSupplier(profileRepository: ProfileRepository): () -> String {
-        return { profileRepository.pantryReference }
+    fun providePantrySingle(profileRepository: ProfileRepository): Single<String> {
+        return profileRepository.getOrLoadPantryReference()
     }
 
     @Provides
-    fun providePantry(firestore: FirebaseFirestore, pantryRefSupplier: () -> String): Pantry {
-        return PantryImpl(pantryRefSupplier, firestore)
+    fun providePantry(firestore: FirebaseFirestore, pantrySingle: Single<String>): Pantry {
+        return PantryImpl(pantrySingle, firestore)
     }
 
     @Provides

@@ -1,7 +1,10 @@
 package com.ahoi.pantry.shopping.data
 
-import com.ahoi.pantry.ingredients.data.model.toMap
-import com.ahoi.pantry.ingredients.data.model.toPantryItem
+import com.ahoi.pantry.common.units.Quantity
+import com.ahoi.pantry.common.units.Unit
+import com.ahoi.pantry.common.units.UnitType
+import com.ahoi.pantry.ingredients.data.model.PantryItem
+import com.ahoi.pantry.ingredients.data.model.Tag
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import io.reactivex.rxjava3.core.Completable
@@ -10,20 +13,21 @@ import java.lang.IllegalArgumentException
 
 class ShoppingListRepository(
     private val firestore: FirebaseFirestore,
-    private val pantryRefSupplier: () -> String
+    private val pantrySingle: Single<String>,
 ) {
 
     fun saveShoppingList(shoppingList: ShoppingList): Completable {
-        val pantryRef = pantryRefSupplier()
-        return Completable.create { emitter ->
-            firestore.collection("pantries/$pantryRef/shoppingLists")
-                .add(shoppingList.toMap())
-                .addOnSuccessListener {
-                    emitter.onComplete()
-                }
-                .addOnFailureListener {
-                   emitter.onError(it)
-                }
+        return pantrySingle.flatMapCompletable {
+            Completable.create { emitter ->
+                firestore.collection("pantries/$it/shoppingLists")
+                    .add(shoppingList.toMap())
+                    .addOnSuccessListener {
+                        emitter.onComplete()
+                    }
+                    .addOnFailureListener {
+                        emitter.onError(it)
+                    }
+            }
         }
     }
 
@@ -31,46 +35,49 @@ class ShoppingListRepository(
         if (shoppingList.id.isNullOrEmpty()) {
             return Completable.error(IllegalArgumentException("Null IDs not allowed"))
         }
-        val pantryRef = pantryRefSupplier()
-        return Completable.create { emitter ->
-            firestore.collection("pantries/$pantryRef/shoppingLists")
-                .document(shoppingList.id)
-                .set(shoppingList.toMap())
-                .addOnSuccessListener {
-                    emitter.onComplete()
-                }
-                .addOnFailureListener {
-                   emitter.onError(it)
-                }
+        return pantrySingle.flatMapCompletable {
+            Completable.create { emitter ->
+                firestore.collection("pantries/$it/shoppingLists")
+                    .document(shoppingList.id)
+                    .set(shoppingList.toMap())
+                    .addOnSuccessListener {
+                        emitter.onComplete()
+                    }
+                    .addOnFailureListener {
+                        emitter.onError(it)
+                    }
+            }
         }
     }
 
     fun loadShoppingLists(): Single<List<ShoppingList>> {
-        val pantryRef = pantryRefSupplier()
-        return Single.create { emitter ->
-            firestore.collection("pantries/$pantryRef/shoppingLists")
-                .get()
-                .addOnSuccessListener { query ->
-                    emitter.onSuccess(query.documents.map { it.toShoppingList() })
-                }
-                .addOnFailureListener {
-                   emitter.onError(it)
-                }
+        return pantrySingle.flatMap {
+            Single.create { emitter ->
+                firestore.collection("pantries/$it/shoppingLists")
+                    .get()
+                    .addOnSuccessListener { query ->
+                        emitter.onSuccess(query.documents.map { it.toShoppingList() })
+                    }
+                    .addOnFailureListener {
+                        emitter.onError(it)
+                    }
+            }
         }
     }
 
     fun deleteShoppingList(id: String): Completable {
-        val pantryRef = pantryRefSupplier()
-        return Completable.create { emitter ->
-            firestore.collection("pantries/$pantryRef/shoppingLists")
-                .document(id)
-                .delete()
-                .addOnSuccessListener {
-                    emitter.onComplete()
-                }
-                .addOnFailureListener {
-                   emitter.onError(it)
-                }
+        return pantrySingle.flatMapCompletable {
+            Completable.create { emitter ->
+                firestore.collection("pantries/$it/shoppingLists")
+                    .document(id)
+                    .delete()
+                    .addOnSuccessListener {
+                        emitter.onComplete()
+                    }
+                    .addOnFailureListener {
+                        emitter.onError(it)
+                    }
+            }
         }
     }
 }
@@ -106,4 +113,26 @@ fun List<Map<String, Any>>.toShoppingListContents(): List<ShoppingListItem> {
             it["purchased"] as Boolean
         )
     }
+}
+
+fun PantryItem.toMap(): Map<String, Any> {
+    return mapOf(
+        "ingredientName" to this.ingredientName,
+        "amount" to this.quantity.amount,
+        "unitType" to this.unitType.name,
+        "unit" to this.quantity.unit.name,
+        "tags" to this.tags.map { it.name },
+    )
+}
+
+fun Map<String, Any>.toPantryItem(): PantryItem {
+    return PantryItem(
+        ingredientName = this["ingredientName"] as String,
+        unitType = UnitType.valueOf(this["unitType"].toString()),
+        quantity = Quantity(
+            this["amount"] as Double,
+            Unit.valueOf(this["unit"].toString())
+        ),
+        tags = (this["tags"] as List<String>).map { Tag.valueOf(it) }
+    )
 }

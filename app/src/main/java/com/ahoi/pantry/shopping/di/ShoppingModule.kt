@@ -13,13 +13,14 @@ import com.ahoi.pantry.shopping.ui.mylists.ShoppingListsViewModel
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
+import io.reactivex.rxjava3.core.Single
 
 @Module
 class ShoppingModule {
 
     @Provides
-    fun providePantryRefSupplier(profileRepository: ProfileRepository): () -> String {
-        return { profileRepository.pantryReference }
+    fun providePantrySingle(profileRepository: ProfileRepository): Single<String> {
+        return profileRepository.getOrLoadPantryReference()
     }
 
     @Provides
@@ -45,9 +46,9 @@ class ShoppingModule {
     @Provides
     fun provideShoppingRepository(
         firestore: FirebaseFirestore,
-        pantryRefSupplier: () -> String
+        pantrySingle: Single<String>
     ): ShoppingListRepository {
-        return ShoppingListRepository(firestore, pantryRefSupplier)
+        return ShoppingListRepository(firestore, pantrySingle)
     }
 
     @Provides

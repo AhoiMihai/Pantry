@@ -21,14 +21,16 @@ class CreateInvitationViewModel(
     val operationState: LiveData<OperationState> = _operationState
 
     fun sendInvitationToEmail(email: String) {
-        val invitation = Invitation(
-            "",
-            email,
-            profileRepository.currentProfile.name,
-            profileRepository.pantryReference
-        )
-        invitationRepository.createInvitationForEmail(invitation)
-            .subscribeOn(schedulers.io())
+        profileRepository.getOrLoadCurrent()
+            .flatMapCompletable {
+                val invitation = Invitation(
+                    "",
+                    email,
+                    it.name,
+                    it.pantryReference
+                )
+                invitationRepository.createInvitationForEmail(invitation)
+            }.subscribeOn(schedulers.io())
             .observeOn(schedulers.mainThread())
             .subscribe(
                 {
