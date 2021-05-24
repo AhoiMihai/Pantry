@@ -17,37 +17,6 @@ class RecipeCardsGenerator(
     private val recipeRepository: RecipeRepository,
     private val pantry: Pantry
 ) {
-//
-//    fun loadRecipeCards(
-//        size: Int,
-//        recipeNameToStartAfter: String?
-//    ): Single<ArrayList<RecipeCardInfo>> {
-//        return recipeRepository.loadRecipesFlowable(
-//            authManager.currentUserId,
-//            size,
-//            recipeNameToStartAfter
-//        ).flatMap { recipe ->
-//            pantry.getIngredientsFromPantry(recipe.ingredients.map { it.ingredientName })
-//                .map { RecipeCardInfo(recipe, calculateMissingIngredients(recipe, it)) }
-//                .toFlowable()
-//        }.collect({ ArrayList() }, { a, b -> a.add(b) })
-//    }
-//
-//    fun loadRecipeCardsWithSingleAndBlockingGets(
-//        size: Int,
-//        recipeNameToStartAfter: String?
-//    ): Single<List<RecipeCardInfo>> {
-//        return recipeRepository.loadRecipes(authManager.currentUserId, size, recipeNameToStartAfter)
-//            .map { recipes ->
-//                recipes.map { recipe ->
-//                    val pantryContents =
-//                        pantry.getIngredientsFromPantry(recipe.ingredients.map { it.ingredientName })
-//                            .blockingGet()
-//                    val missingIngredients = calculateMissingIngredients(recipe, pantryContents)
-//                    RecipeCardInfo(recipe, missingIngredients)
-//                }
-//            }
-//    }
 
     fun loadRecipeCards(
         size: Int,

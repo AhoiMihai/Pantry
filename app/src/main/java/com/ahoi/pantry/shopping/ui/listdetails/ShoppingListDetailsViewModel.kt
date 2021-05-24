@@ -9,6 +9,7 @@ import com.ahoi.pantry.common.uistuff.FirestoreErrorHandler
 import com.ahoi.pantry.common.units.Quantity
 import com.ahoi.pantry.common.units.Unit
 import com.ahoi.pantry.common.units.convertTo
+import com.ahoi.pantry.common.units.plus
 import com.ahoi.pantry.common.units.roundToSane
 import com.ahoi.pantry.ingredients.api.Pantry
 import com.ahoi.pantry.ingredients.data.model.PantryItem
@@ -56,9 +57,18 @@ class ShoppingListDetailsViewModel(
             _operationState.postValue(ShoppingListState.NO_UPDATES)
             return
         }
-        pantry.updateOrCreateItems(updates)
-            .andThen(repository.deleteShoppingList(shoppingListId?: ""))
-            .subscribeOn(schedulers.io())
+
+        pantry.getIngredientsFromPantry(updates.map { it.ingredientName })
+            .flatMapCompletable { ing ->
+                pantry.updateOrCreateItems(ing.map {
+                    PantryItem(
+                        it.ingredientName,
+                        it.unitType,
+                        it.quantity.plus(updates[updates.indexOf(it)].quantity),
+                        it.tags
+                    )
+                }).andThen(repository.deleteShoppingList(shoppingListId ?: ""))
+            }.subscribeOn(schedulers.io())
             .observeOn(schedulers.mainThread())
             .subscribe({
                 _operationState.postValue(ShoppingListState.SHOPPING_DONE)
