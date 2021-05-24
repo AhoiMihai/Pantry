@@ -25,25 +25,23 @@ enum class Unit(
     PIECE(UnitType.UNIQUE, "piece", 1.0),
 }
 
-// FIXME: 15/04/2021 can't convert different unit types, need to factor in conversion factors
 fun Quantity.convertTo(destination: Unit): Double {
     if (this.unit.type == UnitType.UNIQUE) {
         throw IllegalArgumentException("Cannot convert unique types")
     }
     return if (this.unit.type == destination.type) {
-        val baseUnitValue = this.convertToBase(this.amount)
-        baseUnitValue / destination.fractionOfBaseUnit
+        this.amount * (this.unit.fractionOfBaseUnit / destination.fractionOfBaseUnit)
     } else {
         throw IllegalArgumentException("incompatible units")
     }
 }
 
-fun Quantity.convertToBase(initialValue: Double): Double {
-    return initialValue * this.unit.fractionOfBaseUnit
-}
-
 fun Quantity.convertToBase(): Double {
-    return this.amount / this.unit.fractionOfBaseUnit
+    return when (this.unit.type) {
+        UnitType.MASS -> this.convertTo(Unit.GRAM)
+        UnitType.VOLUME -> this.convertTo(Unit.LITER)
+        UnitType.UNIQUE -> this.amount
+    }
 }
 
 fun Quantity.minus(other: Quantity): Quantity {
@@ -61,11 +59,11 @@ fun Quantity.plus(other: Quantity): Quantity {
 }
 
 fun Double.roundToSane(): Double {
-    val format = if (this > 10) {
+    val format = if (this < 10) {
         DecimalFormat("#.##")
     } else {
-        DecimalFormat("#")
+        DecimalFormat("#.#")
     }
-    format.roundingMode = RoundingMode.HALF_UP
+    format.roundingMode = RoundingMode.CEILING
     return format.format(this).toDouble()
 }
