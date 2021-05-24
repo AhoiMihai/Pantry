@@ -52,7 +52,10 @@ class ShoppingListsActivity : PantryActivity() {
         fab.setOnClickListener {
             startActivity(Intent(this, ListDetailsActivity::class.java))
         }
+    }
 
+    override fun onStart() {
+        super.onStart()
         viewModel.loadLists()
     }
 

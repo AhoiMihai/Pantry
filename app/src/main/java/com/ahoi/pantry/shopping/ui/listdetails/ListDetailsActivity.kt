@@ -9,6 +9,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.Spinner
 import androidx.appcompat.widget.Toolbar
 import androidx.core.widget.doOnTextChanged
@@ -42,6 +43,7 @@ class ListDetailsActivity : PantryActivity() {
     private val minusButton: ImageButton by bind(R.id.subtract_button)
     private val ingredientAmount: EditText by bind(R.id.ingredient_amount)
     private val unitSpinner: Spinner by bind(R.id.unit_spinner)
+    private val controlContainer: LinearLayout by bind(R.id.control_container)
 
     @Inject
     lateinit var viewModel: ShoppingListDetailsViewModel
@@ -113,6 +115,7 @@ class ListDetailsActivity : PantryActivity() {
     }
 
     override fun onBackPressed() {
+        viewModel.setName(listName.text.toString())
         viewModel.saveShoppingList()
     }
 
@@ -130,7 +133,7 @@ class ListDetailsActivity : PantryActivity() {
                 position: Int,
                 id: Long
             ) {
-                viewModel.selectUnit(Unit.values()[position])
+                viewModel.selectUnit(ingredientAmount.text.toString().toDouble(), Unit.values()[position])
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -146,15 +149,19 @@ class ListDetailsActivity : PantryActivity() {
         minusButton.setOnClickListener {
             ingredientAmount.setText((ingredientAmount.text.toString().toDouble() - 1).toString())
         }
-        listName.doOnTextChanged { text, _, _, _ -> viewModel.setName(text.toString()) }
     }
 
     private fun observeLiveData() {
         viewModel.items.observe(this) {
             adapter.setItems(it)
         }
+        viewModel.listName.observe(this) {
+            listName.setText(it)
+        }
 
         viewModel.selectedItem.observe(this) {
+            controlContainer.visibility = View.VISIBLE
+            unitSpinner.visibility = View.VISIBLE
             unitSpinner.setSelection(it.item.quantity.unit.ordinal)
             ingredientAmount.setText(it.item.quantity.amount.toString())
         }

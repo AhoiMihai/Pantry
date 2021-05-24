@@ -27,13 +27,16 @@ class MyRecipesViewModel(
             return
         }
         loading = true
-        recipeCardsGenerator.loadRecipeCardsWithSingleAndBlockingGets(pageSize, startingPoint)
+        val recipes = recipeCards.value ?: listOf()
+        val lastRecipeId = if (recipes.isEmpty()) null else recipes[recipes.size - 1].recipe.name
+        recipeCardsGenerator.loadRecipeCards(pageSize, lastRecipeId)
+            .toList()
             .subscribeOn(schedulers.computation())
             .observeOn(schedulers.mainThread())
             .subscribe({
                 _recipeCards.value?.let { cards ->
                     _recipeCards.postValue(cards.plus(it))
-                }?: if (it.isEmpty()) {
+                } ?: if (it.isEmpty()) {
                     _operationState.postValue(RecipesOperationState.EMPTY_LIST)
                 } else {
                     _recipeCards.postValue(it)

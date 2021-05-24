@@ -39,7 +39,7 @@ fun Quantity.convertTo(destination: Unit): Double {
 }
 
 fun Quantity.convertToBase(initialValue: Double): Double {
-    return initialValue / this.unit.fractionOfBaseUnit
+    return initialValue * this.unit.fractionOfBaseUnit
 }
 
 fun Quantity.convertToBase(): Double {
@@ -49,6 +49,13 @@ fun Quantity.convertToBase(): Double {
 fun Quantity.minus(other: Quantity): Quantity {
     return Quantity(
         this.amount - other.convertTo(this.unit),
+        this.unit
+    )
+}
+
+fun Quantity.plus(other: Quantity): Quantity {
+    return Quantity(
+        this.amount + other.convertTo(this.unit),
         this.unit
     )
 }

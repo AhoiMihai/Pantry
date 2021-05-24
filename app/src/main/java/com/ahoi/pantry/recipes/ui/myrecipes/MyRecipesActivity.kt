@@ -102,7 +102,7 @@ class MyRecipesActivity : PantryActivity() {
 
     private fun goToRecipeDetails(info: RecipeCardInfo) {
         val intent = Intent(this, RecipeDetailsActivity::class.java)
-        intent.putExtra(K_RECIPE, info)
+        intent.putExtra(K_RECIPE, info.recipe)
         startActivity(intent)
     }
 

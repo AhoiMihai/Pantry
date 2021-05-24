@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ahoi.pantry.R
 import com.ahoi.pantry.shopping.data.ShoppingListItem
 import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 import io.reactivex.rxjava3.subjects.CompletableSubject
 import io.reactivex.rxjava3.subjects.PublishSubject
@@ -23,8 +24,8 @@ class ListItemsAdapter(
     private val shoppingEventSubject = PublishSubject.create<ShoppingEvent>()
     val shoppingEvents = shoppingEventSubject.hide()
 
-    private val editClickedSubject = CompletableSubject.create()
-    val editClicked: Completable = editClickedSubject.hide()
+    private val editClickedSubject = PublishSubject.create<ClickEvent>()
+    val editClicked: Observable<ClickEvent> = editClickedSubject.hide()
 
     class ContentViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val itemName: TextView = view.findViewById(R.id.item_name)
@@ -35,7 +36,7 @@ class ListItemsAdapter(
     class FooterViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
     override fun getItemViewType(position: Int): Int {
-        return if (position == itemCount) {
+        return if (position == itemCount - 1) {
             ViewType.FOOTER.ordinal
         } else {
             ViewType.CONTENT.ordinal
@@ -61,7 +62,7 @@ class ListItemsAdapter(
                 )
 
                 holder.itemView.setOnClickListener {
-                    editClickedSubject.onComplete()
+                    editClickedSubject.onNext(ClickEvent())
                 }
 
                 return holder
@@ -100,7 +101,7 @@ class ListItemsAdapter(
         }
     }
 
-    override fun getItemCount() = if (items.isEmpty()) 0 else items.size + 1
+    override fun getItemCount() = items.size + 1
 
     fun setItems(newItems: List<ShoppingListItem>) {
         items.clear()
@@ -108,6 +109,8 @@ class ListItemsAdapter(
         notifyDataSetChanged()
     }
 }
+
+class ClickEvent
 
 data class ShoppingEvent(
     val position: Int,

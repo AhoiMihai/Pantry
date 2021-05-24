@@ -8,6 +8,7 @@ import com.ahoi.pantry.common.rx.SchedulerProvider
 import com.ahoi.pantry.common.uistuff.FirestoreErrorHandler
 import com.ahoi.pantry.common.units.convertToBase
 import com.ahoi.pantry.common.units.minus
+import com.ahoi.pantry.common.units.roundToSane
 import com.ahoi.pantry.ingredients.api.Pantry
 import com.ahoi.pantry.ingredients.data.model.PantryItem
 import com.ahoi.pantry.recipes.data.Recipe
@@ -34,6 +35,9 @@ class RecipeDetailsViewModel(
     }
 
     fun updateServings(servings: Int) {
+        if (servings < 1) {
+            return
+        }
         _displayRecipe.postValue(displayRecipe.value?.toServings(servings))
     }
 
@@ -42,7 +46,7 @@ class RecipeDetailsViewModel(
         pantry.getIngredientsFromPantry(recipe.ingredients.map { it.ingredientName })
             .flatMapCompletable { ing ->
                 recipe.ingredients.forEach {
-                    if (it.quantity.convertToBase() > ing[ing.indexOf(it)].quantity.convertToBase()) {
+                    if (it.quantity > ing[ing.indexOf(it)].quantity) {
                         return@flatMapCompletable Completable.error(NotEnoughIngredientsException())
                     }
                 }

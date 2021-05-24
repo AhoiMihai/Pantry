@@ -9,6 +9,7 @@ import com.ahoi.pantry.common.uistuff.FirestoreErrorHandler
 import com.ahoi.pantry.common.units.Quantity
 import com.ahoi.pantry.common.units.Unit
 import com.ahoi.pantry.common.units.convertTo
+import com.ahoi.pantry.common.units.roundToSane
 import com.ahoi.pantry.ingredients.api.Pantry
 import com.ahoi.pantry.ingredients.data.model.PantryItem
 import com.ahoi.pantry.shopping.data.ShoppingList
@@ -25,15 +26,13 @@ class ShoppingListDetailsViewModel(
     val operationState: LiveData<OperationState> = _operationState
 
     private val _listName = MutableLiveData<String>()
+    val listName: LiveData<String> = _listName
 
     private val _items = MutableLiveData<List<ShoppingListItem>>()
     val items: LiveData<List<ShoppingListItem>> = _items
 
     private val _selectedItem = MutableLiveData<ShoppingListItem>()
     val selectedItem: LiveData<ShoppingListItem> = _selectedItem
-
-    private val _updatedItem = MutableLiveData<ShoppingListItem>()
-    val updatedItem: LiveData<ShoppingListItem> = _updatedItem
 
     private var shoppingListId: String? = null
 
@@ -52,14 +51,13 @@ class ShoppingListDetailsViewModel(
 
     fun finishShopping() {
         val shoppingList = items.value ?: return
-        val name = _listName.value ?: return
         val updates = shoppingList.filter { it.purchased }.map { it.item }
         if (updates.isEmpty()) {
             _operationState.postValue(ShoppingListState.NO_UPDATES)
             return
         }
         pantry.updateOrCreateItems(updates)
-            .andThen(repository.deleteShoppingList(name))
+            .andThen(repository.deleteShoppingList(shoppingListId?: ""))
             .subscribeOn(schedulers.io())
             .observeOn(schedulers.mainThread())
             .subscribe({
@@ -91,13 +89,13 @@ class ShoppingListDetailsViewModel(
         _items.postValue(shoppingList)
     }
 
-    fun selectUnit(unit: Unit) {
+    fun selectUnit(value: Double, unit: Unit) {
         val selection = selectedItem.value ?: return
 
         val newValue: Double = if (unit.type != selection.item.unitType) {
             0.0
         } else {
-            selection.item.quantity.convertTo(unit)
+            Quantity(value, unit).convertTo(unit).roundToSane()
         }
 
         _selectedItem.postValue(
@@ -114,7 +112,7 @@ class ShoppingListDetailsViewModel(
     }
 
     fun addItem(pantryItem: PantryItem) {
-        val shoppingList = items.value?.toMutableList() ?: return
+        val shoppingList = items.value?.toMutableList() ?: mutableListOf()
 
         shoppingList.add(
             ShoppingListItem(

@@ -116,7 +116,7 @@ class RecipeDetailsActivity : PantryActivity() {
 
     private fun displayRecipe(recipe: Recipe) {
         toolbar.title = recipe.name
-        servingsText.setText(recipe.servings)
+        servingsText.text = recipe.servings.toString()
         ingredientsText.text = recipeIngredientFormatter.formatRecipeIngredients(recipe.ingredients)
         stepsText.text = recipeStepsFormatter.formatRecipeSteps(recipe.steps)
     }

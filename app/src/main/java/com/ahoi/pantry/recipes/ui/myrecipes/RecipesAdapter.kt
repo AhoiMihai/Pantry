@@ -50,12 +50,15 @@ class RecipesAdapter(
             selectedRecipeSubject.onNext(item)
         }
         if (!item.canMake) {
-            picasso.load(R.drawable.twotone_add_shopping_cart_24).into(holder.contextButton)
+            Picasso.get()
+            picasso.load(R.drawable.twotone_add_shopping_cart_24)
+                .error(R.drawable.twotone_add_shopping_cart_24).fit().into(holder.contextButton)
             holder.contextButton.setOnClickListener {
                 shoppingListSubject.onNext(item)
             }
         } else {
-            picasso.load(R.drawable.twotone_check_circle_outline_24).into(holder.contextButton)
+            picasso.load(R.drawable.twotone_check_circle_outline_24)
+                .error(R.drawable.twotone_check_circle_outline_24).fit().into(holder.contextButton)
             holder.contextButton.setOnClickListener(null)
         }
 

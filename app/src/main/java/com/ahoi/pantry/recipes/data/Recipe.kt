@@ -30,7 +30,7 @@ data class Recipe(
 
         return Recipe(
             name,
-            this.servings,
+            newServings,
             adjustedIngredients,
             steps
         )

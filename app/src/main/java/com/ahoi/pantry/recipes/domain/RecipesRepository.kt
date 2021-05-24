@@ -8,6 +8,7 @@ import com.ahoi.pantry.ingredients.data.model.Tag
 import com.ahoi.pantry.recipes.api.RecipeRepository
 import com.ahoi.pantry.recipes.data.Recipe
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import io.reactivex.rxjava3.core.BackpressureStrategy
 import io.reactivex.rxjava3.core.Completable
@@ -71,6 +72,7 @@ class RecipesRepository(
         return Single.create { emitter ->
             firestore.collection("profiles/$userId/recipes")
                 .limit(numberToLoad.toLong())
+                .orderBy(FieldPath.documentId())
                 .startAfter(idToStartFrom)
                 .get()
                 .addOnSuccessListener { recipeDocuments ->
@@ -104,7 +106,6 @@ class RecipesRepository(
         return Flowable.create({ emitter ->
             firestore.collection("profiles/$userId/recipes")
                 .limit(numberToLoad.toLong())
-                .orderBy("name")
                 .get()
                 .addOnSuccessListener { recipeDocuments ->
                     recipeDocuments.documents.forEach {

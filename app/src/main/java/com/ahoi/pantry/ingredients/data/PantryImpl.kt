@@ -25,8 +25,7 @@ class PantryImpl(
                 .whereIn(FieldPath.documentId(), ingredientNames)
                 .get()
                 .addOnSuccessListener { querySnapshot ->
-                    val result = ArrayList<PantryItem>()
-                    querySnapshot.documents.map {
+                    val result = querySnapshot.documents.map {
                         createPantryItemFromDocument(it)
                     }
                     emitter.onSuccess(result)

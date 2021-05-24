@@ -63,7 +63,7 @@ class CreateOrEditRecipeActivity : PantryActivity() {
         if (intent.hasExtra(K_RECIPE_TO_EDIT) && intent.getParcelableExtra<Recipe>(K_RECIPE_TO_EDIT) != null) {
             val recipe = intent.getParcelableExtra<Recipe>(K_RECIPE_TO_EDIT)
             recipeTitle.setText(recipe!!.name)
-            recipeServings.setText(recipe.servings)
+            recipeServings.setText(recipe.servings.toString())
             viewModel.updateRecipeSteps(recipe.steps)
             viewModel.addIngredients(recipe.ingredients)
         }
