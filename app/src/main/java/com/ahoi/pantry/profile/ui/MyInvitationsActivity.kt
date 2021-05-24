@@ -79,8 +79,8 @@ class MyInvitationsActivity : PantryActivity() {
 
         val swipeHandler = object : SwipeToDeleteCallback(this) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                adapter.removeAt(viewHolder.adapterPosition)
                 viewModel.deleteInvitation(adapter.invitations[viewHolder.adapterPosition])
+                adapter.removeAt(viewHolder.adapterPosition)
             }
         }
         val itemTouchHelper = ItemTouchHelper(swipeHandler)

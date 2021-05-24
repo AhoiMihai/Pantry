@@ -4,7 +4,6 @@ import com.ahoi.pantry.common.rx.DefaultSchedulerProvider
 import com.ahoi.pantry.common.rx.SchedulerProvider
 import com.ahoi.pantry.common.uistuff.FirestoreErrorHandler
 import com.ahoi.pantry.ingredients.api.Pantry
-import com.ahoi.pantry.profile.domain.ProfileRepository
 import com.ahoi.pantry.shopping.data.ShoppingListRepository
 import com.ahoi.pantry.shopping.ui.listdetails.ListItemsAdapter
 import com.ahoi.pantry.shopping.ui.listdetails.ShoppingListDetailsViewModel
@@ -17,11 +16,6 @@ import io.reactivex.rxjava3.core.Single
 
 @Module
 class ShoppingModule {
-
-    @Provides
-    fun providePantrySingle(profileRepository: ProfileRepository): Single<String> {
-        return profileRepository.getOrLoadPantryReference()
-    }
 
     @Provides
     fun provideSchedulers(): SchedulerProvider {
@@ -46,7 +40,7 @@ class ShoppingModule {
     @Provides
     fun provideShoppingRepository(
         firestore: FirebaseFirestore,
-        pantrySingle: Single<String>
+        pantrySingle: () -> Single<String>
     ): ShoppingListRepository {
         return ShoppingListRepository(firestore, pantrySingle)
     }

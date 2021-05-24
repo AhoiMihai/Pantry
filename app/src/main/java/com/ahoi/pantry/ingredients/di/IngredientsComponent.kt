@@ -9,6 +9,7 @@ import com.ahoi.pantry.profile.domain.ProfileRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.BindsInstance
 import dagger.Component
+import io.reactivex.rxjava3.core.Single
 
 @Component(modules = [IngredientsModule::class])
 interface IngredientsComponent: PantryComponent {
@@ -20,7 +21,7 @@ interface IngredientsComponent: PantryComponent {
         fun firestore(value: FirebaseFirestore): Builder
 
         @BindsInstance
-        fun profileRepository(value: ProfileRepository): Builder
+        fun pantrySingle(value: () -> Single<String>): Builder
 
         fun build(): IngredientsComponent
     }

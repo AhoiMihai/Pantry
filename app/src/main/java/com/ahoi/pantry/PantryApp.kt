@@ -45,7 +45,10 @@ class PantryApp : Application() {
         componentRegistry[IngredientsComponent::class.java] = DaggerIngredientsComponent
             .builder()
             .firestore(FirebaseFirestore.getInstance())
-            .profileRepository(getComponent(ProfileComponent::class.java).profileRepository())
+            .pantrySingle {
+                getComponent(ProfileComponent::class.java).profileRepository()
+                    .getOrLoadPantryReference()
+            }
             .build()
 
         componentRegistry[LaunchComponent::class.java] = DaggerLaunchComponent
@@ -64,7 +67,10 @@ class PantryApp : Application() {
         componentRegistry[ShoppingComponent::class.java] = DaggerShoppingComponent
             .builder()
             .firestore(FirebaseFirestore.getInstance())
-            .profileRepository(getComponent(ProfileComponent::class.java).profileRepository())
+            .pantrySingle {
+                getComponent(ProfileComponent::class.java).profileRepository()
+                    .getOrLoadPantryReference()
+            }
             .pantry(getComponent(IngredientsComponent::class.java).pantry())
             .build()
     }

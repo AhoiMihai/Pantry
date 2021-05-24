@@ -10,7 +10,8 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/Theme.Pantry">
-        <activity android:name=".profile.ui.details.ProfileActivity"></activity>
+        <activity android:name=".profile.ui.details.ProfileActivity"
+                android:screenOrientation="portrait" />
         <activity
                 android:name=".shopping.ui.listdetails.ListDetailsActivity"
                 android:screenOrientation="portrait" />

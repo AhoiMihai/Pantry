@@ -13,11 +13,11 @@ import java.lang.IllegalArgumentException
 
 class ShoppingListRepository(
     private val firestore: FirebaseFirestore,
-    private val pantrySingle: Single<String>,
+    private val pantrySingle: () -> Single<String>,
 ) {
 
     fun saveShoppingList(shoppingList: ShoppingList): Completable {
-        return pantrySingle.flatMapCompletable {
+        return pantrySingle().flatMapCompletable {
             Completable.create { emitter ->
                 firestore.collection("pantries/$it/shoppingLists")
                     .add(shoppingList.toMap())
@@ -35,7 +35,7 @@ class ShoppingListRepository(
         if (shoppingList.id.isNullOrEmpty()) {
             return Completable.error(IllegalArgumentException("Null IDs not allowed"))
         }
-        return pantrySingle.flatMapCompletable {
+        return pantrySingle().flatMapCompletable {
             Completable.create { emitter ->
                 firestore.collection("pantries/$it/shoppingLists")
                     .document(shoppingList.id)
@@ -51,7 +51,7 @@ class ShoppingListRepository(
     }
 
     fun loadShoppingLists(): Single<List<ShoppingList>> {
-        return pantrySingle.flatMap {
+        return pantrySingle().flatMap {
             Single.create { emitter ->
                 firestore.collection("pantries/$it/shoppingLists")
                     .get()
@@ -66,7 +66,7 @@ class ShoppingListRepository(
     }
 
     fun deleteShoppingList(id: String): Completable {
-        return pantrySingle.flatMapCompletable {
+        return pantrySingle().flatMapCompletable {
             Completable.create { emitter ->
                 firestore.collection("pantries/$it/shoppingLists")
                     .document(id)

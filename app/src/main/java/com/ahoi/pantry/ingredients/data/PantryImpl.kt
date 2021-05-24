@@ -14,12 +14,12 @@ import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 
 class PantryImpl(
-    private val pantrySingle: Single<String>,
+    private val pantrySingle: () -> Single<String>,
     private val firestore: FirebaseFirestore
 ) : Pantry {
 
     override fun getIngredientsFromPantry(ingredientNames: List<String>): Single<List<PantryItem>> {
-        return pantrySingle.flatMap {
+        return pantrySingle().flatMap {
             Single.create { emitter ->
                 firestore.collection("pantries/$it/contents")
                     .whereIn(FieldPath.documentId(), ingredientNames)
@@ -38,7 +38,7 @@ class PantryImpl(
     }
 
     override fun updateOrCreateItems(updates: List<PantryItem>): Completable {
-        return pantrySingle.flatMapCompletable {
+        return pantrySingle().flatMapCompletable {
             val writeBatch = firestore.batch()
             val collectionRef = firestore.collection("pantries/$it/contents")
             updates.forEach { item ->
@@ -66,7 +66,7 @@ class PantryImpl(
     }
 
     override fun searchPantryItems(query: String): Single<List<PantryItem>> {
-        return pantrySingle.flatMap {
+        return pantrySingle().flatMap {
             Single.create { emitter ->
                 firestore.collection("pantries/$it/contents")
                     .whereArrayContains("keywords", query)
@@ -85,7 +85,7 @@ class PantryImpl(
     }
 
     override fun getPantryItemByName(name: String): Single<PantryItem> {
-        return pantrySingle.flatMap {
+        return pantrySingle().flatMap {
             Single.create { emitter ->
                 firestore.collection("pantries/$it/contents")
                     .document(name)

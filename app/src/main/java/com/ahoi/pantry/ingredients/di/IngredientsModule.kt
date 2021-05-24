@@ -7,7 +7,6 @@ import com.ahoi.pantry.ingredients.api.Pantry
 import com.ahoi.pantry.ingredients.data.PantryImpl
 import com.ahoi.pantry.ingredients.ui.CreateOrEditIngredientViewModel
 import com.ahoi.pantry.ingredients.ui.addingredient.AddIngredientViewModel
-import com.ahoi.pantry.profile.domain.ProfileRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
@@ -17,12 +16,7 @@ import io.reactivex.rxjava3.core.Single
 class IngredientsModule {
 
     @Provides
-    fun providePantrySingle(profileRepository: ProfileRepository): Single<String> {
-        return profileRepository.getOrLoadPantryReference()
-    }
-
-    @Provides
-    fun providePantry(firestore: FirebaseFirestore, pantrySingle: Single<String>): Pantry {
+    fun providePantry(firestore: FirebaseFirestore, pantrySingle: () -> Single<String>): Pantry {
         return PantryImpl(pantrySingle, firestore)
     }
 
