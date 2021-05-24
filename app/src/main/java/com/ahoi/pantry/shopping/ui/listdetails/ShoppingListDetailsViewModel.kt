@@ -60,14 +60,19 @@ class ShoppingListDetailsViewModel(
 
         pantry.getIngredientsFromPantry(updates.map { it.ingredientName })
             .flatMapCompletable { ing ->
-                pantry.updateOrCreateItems(ing.map {
-                    PantryItem(
-                        it.ingredientName,
-                        it.unitType,
-                        it.quantity.plus(updates[updates.indexOf(it)].quantity),
-                        it.tags
-                    )
-                }).andThen(repository.deleteShoppingList(shoppingListId ?: ""))
+                val newIngredients = updates.filter {
+                    !ing.contains(it)
+                }
+                pantry.updateOrCreateItems(
+                    ing.map {
+                        PantryItem(
+                            it.ingredientName,
+                            it.unitType,
+                            it.quantity.plus(updates[updates.indexOf(it)].quantity),
+                            it.tags
+                        )
+                    }.plus(newIngredients)
+                ).andThen(repository.deleteShoppingList(shoppingListId ?: ""))
             }.subscribeOn(schedulers.io())
             .observeOn(schedulers.mainThread())
             .subscribe({
