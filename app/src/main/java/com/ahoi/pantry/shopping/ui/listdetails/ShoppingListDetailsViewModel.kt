@@ -110,7 +110,7 @@ class ShoppingListDetailsViewModel(
         val newValue: Double = if (unit.type != selection.item.unitType) {
             0.0
         } else {
-            Quantity(value, unit).convertTo(unit).roundToSane()
+            Quantity(value, selection.item.quantity.unit).convertTo(unit).roundToSane()
         }
 
         _selectedItem.postValue(
