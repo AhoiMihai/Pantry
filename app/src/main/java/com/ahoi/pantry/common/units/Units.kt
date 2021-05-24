@@ -27,7 +27,7 @@ enum class Unit(
 
 fun Quantity.convertTo(destination: Unit): Double {
     if (this.unit.type == UnitType.UNIQUE) {
-        throw IllegalArgumentException("Cannot convert unique types")
+        return this.amount
     }
     return if (this.unit.type == destination.type) {
         this.amount * (this.unit.fractionOfBaseUnit / destination.fractionOfBaseUnit)
