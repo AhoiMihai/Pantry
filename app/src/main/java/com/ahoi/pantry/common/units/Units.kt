@@ -59,10 +59,16 @@ fun Quantity.plus(other: Quantity): Quantity {
 }
 
 fun Double.roundToSane(): Double {
-    val format = if (this < 10) {
-        DecimalFormat("#.##")
-    } else {
-        DecimalFormat("#.#")
+    val format = when {
+        this < 10 -> {
+            DecimalFormat("#.##")
+        }
+        this < 100 -> {
+            DecimalFormat("#.#")
+        }
+        else -> {
+            DecimalFormat("#")
+        }
     }
     format.roundingMode = RoundingMode.CEILING
     return format.format(this).toDouble()
