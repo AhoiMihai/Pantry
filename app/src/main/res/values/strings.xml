@@ -59,4 +59,7 @@
     <string name="create_account_user_name_label">Username</string>
     <string name="log_out">Log Out</string>
     <string name="your_profile">Your Profile</string>
+    <string name="profile_updated_success">Profile Updated</string>
+    <string name="logged_out_successfully">Good Bye</string>
+    <string name="profile">Profile</string>
 </resources>

@@ -12,4 +12,6 @@ interface AuthManager {
     fun loginWithEmailAndPassword(email: String, password: String): Completable
 
     fun signUpWithEmailAndPassword(email: String, password: String): Single<FirebaseUser>
+
+    fun logout()
 }

@@ -10,7 +10,7 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/Theme.Pantry">
-        <activity android:name=".profile.ui.details.ProfileActivity"
+        <activity android:name="com.ahoi.pantry.auth.details.ProfileActivity"
                 android:screenOrientation="portrait" />
         <activity
                 android:name=".shopping.ui.listdetails.ListDetailsActivity"

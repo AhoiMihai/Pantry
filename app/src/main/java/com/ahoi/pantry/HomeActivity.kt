@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
+import com.ahoi.pantry.auth.details.ProfileActivity
 import com.ahoi.pantry.common.uistuff.PantryActivity
 import com.ahoi.pantry.common.uistuff.bind
 import com.ahoi.pantry.profile.ui.MyInvitationsActivity
@@ -39,6 +40,9 @@ class HomeActivity : PantryActivity() {
         if (item.itemId == R.id.invitations) {
             startActivity(Intent(this, MyInvitationsActivity::class.java))
             return true
+        }
+        if (item.itemId == R.id.profile) {
+            startActivity(Intent(this, ProfileActivity::class.java))
         }
         return super.onOptionsItemSelected(item)
     }

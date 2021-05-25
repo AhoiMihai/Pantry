@@ -14,7 +14,7 @@ abstract class PantryActivity : AppCompatActivity() {
             showToast(getString(R.string.error_message_unauthorized))
             val intent = Intent(this, LandingActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(Intent())
+            startActivity(intent)
             finish()
         },
         CommonOperationState.UNKNOWN_ERROR to { showToast(getString(R.string.error_message_unknown_error)) }

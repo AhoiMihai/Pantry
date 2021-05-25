@@ -67,6 +67,20 @@ class ProfileRepository(
         }
     }
 
+    fun updateProfile(profile: Profile): Completable {
+        return Completable.create { emitter ->
+            firestore.collection("profiles")
+                .document(userIdSupplier())
+                .update(profile.toMap())
+                .addOnSuccessListener {
+                    emitter.onComplete()
+                }
+                .addOnFailureListener {
+                    emitter.onError(it)
+                }
+        }
+    }
+
     fun loadProfile(id: String): Completable {
         return Completable.create { emitter ->
             firestore
@@ -103,5 +117,12 @@ fun DocumentSnapshot.toProfile(): Profile {
         this["name"] as String,
         this["email"] as String,
         this["pantryReference"] as String
+    )
+}
+
+fun Profile.toMap(): Map<String, Any> {
+    return mapOf(
+        "name" to this.name,
+        "email" to this.email,
     )
 }

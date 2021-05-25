@@ -41,4 +41,8 @@ class AuthManagerImpl(
                 }
         }
     }
+
+    override fun logout() {
+        firebaseAuth.signOut()
+    }
 }

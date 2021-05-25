@@ -5,6 +5,7 @@ import com.ahoi.pantry.auth.AuthenticationViewModel
 import com.ahoi.pantry.auth.api.AuthManager
 import com.ahoi.pantry.common.rx.DefaultSchedulerProvider
 import com.ahoi.pantry.common.rx.SchedulerProvider
+import com.ahoi.pantry.common.uistuff.FirestoreErrorHandler
 import com.ahoi.pantry.profile.domain.ProfileRepository
 import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
@@ -21,6 +22,11 @@ class AuthenticationModule {
     @Provides
     fun provideSchedulerProvider(): SchedulerProvider {
         return DefaultSchedulerProvider()
+    }
+
+    @Provides
+    fun provideFirestoreErrorHandler(): FirestoreErrorHandler {
+        return FirestoreErrorHandler()
     }
 
     @Provides

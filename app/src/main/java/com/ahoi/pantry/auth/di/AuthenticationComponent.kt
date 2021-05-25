@@ -2,6 +2,7 @@ package com.ahoi.pantry.auth.di
 
 import com.ahoi.pantry.arch.PantryComponent
 import com.ahoi.pantry.auth.api.AuthManager
+import com.ahoi.pantry.auth.details.ProfileActivity
 import com.ahoi.pantry.auth.login.LoginActivity
 import com.ahoi.pantry.auth.signup.CreateAccountActivity
 import com.ahoi.pantry.profile.domain.ProfileRepository
@@ -26,6 +27,7 @@ interface AuthenticationComponent: PantryComponent {
 
     fun inject(activity: CreateAccountActivity)
     fun inject(activity: LoginActivity)
+    fun inject(activity: ProfileActivity)
 
     fun authManager(): AuthManager
 }

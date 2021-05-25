@@ -12,7 +12,6 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.Spinner
 import androidx.appcompat.widget.Toolbar
-import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ahoi.pantry.PantryApp
@@ -161,7 +160,11 @@ class ListDetailsActivity : PantryActivity() {
 
         viewModel.selectedItem.observe(this) {
             controlContainer.visibility = View.VISIBLE
-            unitSpinner.visibility = View.VISIBLE
+            unitSpinner.adapter = ArrayAdapter(
+                this,
+                android.R.layout.simple_spinner_dropdown_item,
+                Unit.values().filter { unit -> unit.type == it.item.unitType }
+            )
             unitSpinner.setSelection(it.item.quantity.unit.ordinal)
             ingredientAmount.setText(it.item.quantity.amount.toString())
         }

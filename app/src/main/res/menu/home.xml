@@ -7,4 +7,10 @@
             app:showAsAction="always"
             android:title="@string/invitations">
     </item>
+    <item
+            android:id="@+id/profile"
+            android:icon="@drawable/baseline_people_24"
+            app:showAsAction="never"
+            android:title="@string/profile">
+    </item>
 </menu>
