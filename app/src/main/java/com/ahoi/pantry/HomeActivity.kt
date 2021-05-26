@@ -4,17 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.viewpager2.widget.ViewPager2
 import com.ahoi.pantry.auth.details.ProfileActivity
 import com.ahoi.pantry.common.uistuff.PantryActivity
 import com.ahoi.pantry.common.uistuff.bind
 import com.ahoi.pantry.profile.ui.MyInvitationsActivity
-import com.ahoi.pantry.recipes.ui.myrecipes.MyRecipesActivity
 import com.ahoi.pantry.recipes.ui.myrecipes.MyRecipesFragment
 import com.ahoi.pantry.shopping.ui.mylists.ShoppingListFragment
-import com.ahoi.pantry.shopping.ui.mylists.ShoppingListsActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator

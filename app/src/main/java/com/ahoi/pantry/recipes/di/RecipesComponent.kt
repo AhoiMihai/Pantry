@@ -3,8 +3,6 @@ package com.ahoi.pantry.recipes.di
 import com.ahoi.pantry.arch.PantryComponent
 import com.ahoi.pantry.auth.api.AuthManager
 import com.ahoi.pantry.ingredients.api.Pantry
-import com.ahoi.pantry.recipes.ui.myrecipes.MyRecipesActivity
-import com.ahoi.pantry.ingredients.ui.addingredient.AddIngredientActivity
 import com.ahoi.pantry.recipes.ui.addsteps.AddStepsToRecipeActivity
 import com.ahoi.pantry.recipes.ui.details.RecipeDetailsActivity
 import com.ahoi.pantry.recipes.ui.edit.CreateOrEditRecipeActivity
@@ -32,7 +30,6 @@ interface RecipesComponent: PantryComponent {
     }
 
     fun inject(activity: CreateOrEditRecipeActivity)
-    fun inject(activity: MyRecipesActivity)
     fun inject(activity: AddStepsToRecipeActivity)
     fun inject(activity: RecipeDetailsActivity)
 

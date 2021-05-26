@@ -16,9 +16,6 @@
                 android:name=".shopping.ui.listdetails.ListDetailsActivity"
                 android:screenOrientation="portrait" />
         <activity
-                android:name=".shopping.ui.mylists.ShoppingListsActivity"
-                android:screenOrientation="portrait" />
-        <activity
                 android:name=".recipes.ui.details.RecipeDetailsActivity"
                 android:screenOrientation="portrait" />
         <activity
@@ -35,9 +32,6 @@
                 android:screenOrientation="portrait" />
         <activity
                 android:name=".ingredients.ui.CreateIngredientActivity"
-                android:screenOrientation="portrait" />
-        <activity
-                android:name=".recipes.ui.myrecipes.MyRecipesActivity"
                 android:screenOrientation="portrait" />
         <activity
                 android:name=".recipes.ui.edit.CreateOrEditRecipeActivity"

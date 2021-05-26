@@ -2,10 +2,8 @@ package com.ahoi.pantry.shopping.di
 
 import com.ahoi.pantry.arch.PantryComponent
 import com.ahoi.pantry.ingredients.api.Pantry
-import com.ahoi.pantry.profile.domain.ProfileRepository
 import com.ahoi.pantry.shopping.ui.listdetails.ListDetailsActivity
 import com.ahoi.pantry.shopping.ui.mylists.ShoppingListFragment
-import com.ahoi.pantry.shopping.ui.mylists.ShoppingListsActivity
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.BindsInstance
 import dagger.Component
@@ -29,7 +27,6 @@ interface ShoppingComponent: PantryComponent {
         fun build(): ShoppingComponent
     }
 
-    fun inject(activity: ShoppingListsActivity)
     fun inject(activity: ListDetailsActivity)
 
     fun inject(fragment: ShoppingListFragment)
