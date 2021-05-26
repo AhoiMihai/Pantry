@@ -31,7 +31,7 @@ class CreateOrEditRecipeViewModel(
     val operationResult: LiveData<OperationState> = _operationState
 
     fun addIngredients(ingredient: List<PantryItem>) {
-        val ingredients = ArrayList(addedIngredients.value?: ArrayList())
+        val ingredients = ArrayList(addedIngredients.value ?: ArrayList())
         ingredients.addAll(ingredient)
         _addedIngredients.postValue(ingredients)
     }
@@ -86,7 +86,7 @@ class CreateOrEditRecipeViewModel(
     }
 }
 
-enum class OperationResult: OperationState {
+enum class OperationResult : OperationState {
     EMPTY_INGREDIENTS,
     EMPTY_STEPS,
     VALIDATION_ERROR,

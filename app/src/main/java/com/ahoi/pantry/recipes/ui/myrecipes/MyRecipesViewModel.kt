@@ -22,7 +22,7 @@ class MyRecipesViewModel(
 
     private var loading: Boolean = false
 
-    fun loadRecipes(pageSize: Int, startingPoint: String?) {
+    fun loadRecipes(pageSize: Int) {
         if (loading) {
             return
         }

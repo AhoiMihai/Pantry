@@ -42,6 +42,7 @@ class AddStepsToRecipeActivity : PantryActivity() {
 
         addButton.setOnClickListener {
             viewModel.addStep(textEdit.text.toString())
+            textEdit.setText("")
         }
         removeButton.setOnClickListener {
             viewModel.removeStep()
@@ -49,6 +50,10 @@ class AddStepsToRecipeActivity : PantryActivity() {
 
         viewModel.steps.observe(this) {
             addedSteps.text = stepsFormatter.formatRecipeSteps(it)
+        }
+
+        if (intent.hasExtra(K_RECIPE_STEPS)) {
+            viewModel.addSteps(intent.getStringArrayListExtra(K_RECIPE_STEPS)!!)
         }
     }
 

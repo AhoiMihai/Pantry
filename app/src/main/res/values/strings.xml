@@ -62,4 +62,6 @@
     <string name="profile_updated_success">Profile Updated</string>
     <string name="logged_out_successfully">Good Bye</string>
     <string name="profile">Profile</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

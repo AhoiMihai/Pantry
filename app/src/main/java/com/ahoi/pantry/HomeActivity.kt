@@ -6,28 +6,42 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
+import androidx.viewpager2.widget.ViewPager2
 import com.ahoi.pantry.auth.details.ProfileActivity
 import com.ahoi.pantry.common.uistuff.PantryActivity
 import com.ahoi.pantry.common.uistuff.bind
 import com.ahoi.pantry.profile.ui.MyInvitationsActivity
 import com.ahoi.pantry.recipes.ui.myrecipes.MyRecipesActivity
+import com.ahoi.pantry.recipes.ui.myrecipes.MyRecipesFragment
+import com.ahoi.pantry.shopping.ui.mylists.ShoppingListFragment
 import com.ahoi.pantry.shopping.ui.mylists.ShoppingListsActivity
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 
 class HomeActivity : PantryActivity() {
 
-    private val recipes: TextView by bind(R.id.recipes)
-    private val shoppingLists: TextView by bind(R.id.shopping_lists)
+    private val pager: ViewPager2 by bind(R.id.pager)
+    private val fab: FloatingActionButton by bind(R.id.fab)
     private val toolbar: Toolbar by bind(R.id.toolbar)
+    private val tabs: TabLayout by bind(R.id.tabs)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-        recipes.setOnClickListener {
-            startActivity(Intent(this, MyRecipesActivity::class.java))
-        }
-        shoppingLists.setOnClickListener {
-            startActivity(Intent(this, ShoppingListsActivity::class.java))
+        val fragments = listOf(
+            MyRecipesFragment(),
+            ShoppingListFragment()
+        )
+
+        val adapter = HomePagerAdapter(fragments, supportFragmentManager, lifecycle)
+        pager.adapter = adapter
+        TabLayoutMediator(tabs, pager) { tab, position ->
+            tab.text = getString(adapter.pageTitleAt(position))
+        }.attach()
+        fab.setOnClickListener {
+            adapter.fabClicked(pager.currentItem)
         }
     }
 

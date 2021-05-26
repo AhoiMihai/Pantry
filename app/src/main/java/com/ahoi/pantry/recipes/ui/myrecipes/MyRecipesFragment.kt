@@ -2,14 +2,17 @@ package com.ahoi.pantry.recipes.ui.myrecipes
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ahoi.pantry.PantryApp
 import com.ahoi.pantry.R
-import com.ahoi.pantry.common.uistuff.PantryActivity
+import com.ahoi.pantry.common.uistuff.HomeStyleFragment
+import com.ahoi.pantry.common.uistuff.PantryFragment
 import com.ahoi.pantry.common.uistuff.bind
 import com.ahoi.pantry.recipes.data.RecipeCardInfo
 import com.ahoi.pantry.recipes.di.RecipesComponent
@@ -23,11 +26,10 @@ import javax.inject.Inject
 
 private const val PAGE_SIZE = 25
 
-class MyRecipesActivity : PantryActivity() {
+class MyRecipesFragment : HomeStyleFragment() {
 
-    private val recipesList: RecyclerView by bind(R.id.list)
-    private val emptyView: TextView by bind(R.id.empty_view)
-    private val fab: FloatingActionButton by bind(R.id.fab)
+    private lateinit var recipesList: RecyclerView
+    private lateinit var emptyView: TextView
 
     @Inject
     lateinit var viewModel: MyRecipesViewModel
@@ -37,8 +39,19 @@ class MyRecipesActivity : PantryActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_list_with_fab)
-        (application as PantryApp).getComponent(RecipesComponent::class.java).inject(this)
+        (requireActivity().application as PantryApp).getComponent(RecipesComponent::class.java)
+            .inject(this)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        val view = inflater.inflate(R.layout.fragment_list, container, false)
+        recipesList = view.findViewById(R.id.list)
+        emptyView = view.findViewById(R.id.empty_view)
+
         setupList()
 
         viewModel.recipeCards.observe(this) {
@@ -52,14 +65,19 @@ class MyRecipesActivity : PantryActivity() {
             handleOperationState(it)
         }
 
-        fab.setOnClickListener {
-            goToCreateRecipe()
-        }
+        return view
     }
 
     override fun onStart() {
         super.onStart()
         viewModel.loadRecipes(PAGE_SIZE)
+    }
+
+    override val titleResId: Int
+        get() = R.string.recipes
+
+    override fun activityFabClicked() {
+        goToCreateRecipe()
     }
 
     private fun showEmptyView() {
@@ -69,10 +87,10 @@ class MyRecipesActivity : PantryActivity() {
 
     private fun setupList() {
         recipesList.adapter = adapter
-        val layoutManager = LinearLayoutManager(this)
+        val layoutManager = LinearLayoutManager(requireContext())
         recipesList.layoutManager = layoutManager
 //        recipesList.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
-        recipesList.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+        recipesList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -94,20 +112,20 @@ class MyRecipesActivity : PantryActivity() {
         }
 
         adapter.shoppingList.subscribe {
-            val intent = Intent(this, ListDetailsActivity::class.java)
+            val intent = Intent(requireActivity(), ListDetailsActivity::class.java)
             intent.putParcelableArrayListExtra(K_INGREDIENT_LIST, ArrayList(it.missingIngredients))
             startActivity(intent)
         }
     }
 
     private fun goToRecipeDetails(info: RecipeCardInfo) {
-        val intent = Intent(this, RecipeDetailsActivity::class.java)
+        val intent = Intent(requireActivity(), RecipeDetailsActivity::class.java)
         intent.putExtra(K_RECIPE, info.recipe)
         startActivity(intent)
     }
 
     private fun goToCreateRecipe() {
-        startActivity(Intent(this, CreateOrEditRecipeActivity::class.java))
+        startActivity(Intent(requireActivity(), CreateOrEditRecipeActivity::class.java))
     }
 
     private fun hideEmptyView() {

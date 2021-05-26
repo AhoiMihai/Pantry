@@ -59,7 +59,9 @@ class CreateAccountActivity : PantryActivity() {
     }
 
     private fun goToDashboard() {
-        startActivity(Intent(this, HomeActivity::class.java))
+        val intent = Intent(this, HomeActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
         finish()
     }
 }

@@ -8,6 +8,7 @@ import com.ahoi.pantry.ingredients.ui.addingredient.AddIngredientActivity
 import com.ahoi.pantry.recipes.ui.addsteps.AddStepsToRecipeActivity
 import com.ahoi.pantry.recipes.ui.details.RecipeDetailsActivity
 import com.ahoi.pantry.recipes.ui.edit.CreateOrEditRecipeActivity
+import com.ahoi.pantry.recipes.ui.myrecipes.MyRecipesFragment
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.BindsInstance
 import dagger.Component
@@ -34,4 +35,6 @@ interface RecipesComponent: PantryComponent {
     fun inject(activity: MyRecipesActivity)
     fun inject(activity: AddStepsToRecipeActivity)
     fun inject(activity: RecipeDetailsActivity)
+
+    fun inject(fragment: MyRecipesFragment)
 }

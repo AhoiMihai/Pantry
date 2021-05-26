@@ -85,6 +85,7 @@ class CreateOrEditRecipeActivity : PantryActivity() {
 
         recipeText.setOnClickListener {
             val intent = Intent(this, AddStepsToRecipeActivity::class.java)
+            intent.putStringArrayListExtra(K_RECIPE_STEPS, ArrayList(viewModel.recipeSteps.value?: ArrayList()))
             startActivityForResult(intent, REQUEST_CODE_ADD_STEPS)
         }
     }

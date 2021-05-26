@@ -8,6 +8,12 @@ class AddStepsToRecipeViewModel {
     private val _steps = MutableLiveData<MutableList<String>>()
     val steps: LiveData<MutableList<String>> = _steps
 
+    fun addSteps(step: List<String>) {
+        val currentSteps = steps.value?: mutableListOf()
+        currentSteps.addAll(step)
+        _steps.postValue(currentSteps)
+    }
+
     fun addStep(step: String) {
         if (step.isEmpty()) {
             return

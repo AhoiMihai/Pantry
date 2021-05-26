@@ -51,8 +51,8 @@ class RecipesRepository(
     ): Single<List<Recipe>> {
         return Single.create { emitter ->
             firestore.collection("profiles/$userId/recipes")
-                .limit(numberToLoad.toLong())
                 .orderBy(FieldPath.documentId())
+                .limit(numberToLoad.toLong())
                 .get()
                 .addOnSuccessListener { recipeDocuments ->
                     emitter.onSuccess(recipeDocuments.documents.map {
