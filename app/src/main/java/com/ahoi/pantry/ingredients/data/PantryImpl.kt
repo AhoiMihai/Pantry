@@ -26,7 +26,7 @@ class PantryImpl(
                     .get()
                     .addOnSuccessListener { querySnapshot ->
                         val result = querySnapshot.documents.map {
-                            createPantryItemFromDocument(it)
+                            it.toPantryItem()
                         }
                         emitter.onSuccess(result)
                     }
@@ -44,13 +44,7 @@ class PantryImpl(
             updates.forEach { item ->
                 writeBatch.set(
                     collectionRef.document(item.ingredientName),
-                    mapOf(
-                        "amount" to item.quantity.amount,
-                        "unitType" to item.unitType.name,
-                        "unit" to item.quantity.unit.name,
-                        "tags" to item.tags.map { it.name },
-                        "keywords" to generateKeywordsFromNameAlsoKnownAsFirestoreIsTrash(item.ingredientName)
-                    )
+                    item.toMap()
                 )
             }
             Completable.create { emitter ->
@@ -73,7 +67,7 @@ class PantryImpl(
                     .get()
                     .addOnSuccessListener { query ->
                         val result = query.documents.map {
-                            createPantryItemFromDocument(it)
+                            it.toPantryItem()
                         }
                         emitter.onSuccess(result)
                     }
@@ -91,7 +85,7 @@ class PantryImpl(
                     .document(name)
                     .get()
                     .addOnSuccessListener {
-                        emitter.onSuccess(createPantryItemFromDocument(it))
+                        emitter.onSuccess(it.toPantryItem())
                     }
                     .addOnFailureListener {
                         emitter.onError(it)
@@ -99,24 +93,25 @@ class PantryImpl(
             }
         }
     }
+}
 
-    private fun createPantryItemFromDocument(document: DocumentSnapshot): PantryItem {
-        return PantryItem(
-            ingredientName = document.id,
-            unitType = UnitType.valueOf(document["unitType"].toString()),
-            quantity = Quantity(
-                document["amount"] as Double,
-                Unit.valueOf(document["unit"].toString())
-            )
+private fun DocumentSnapshot.toPantryItem(): PantryItem {
+    return PantryItem(
+        ingredientName = this.id,
+        unitType = UnitType.valueOf(this["unitType"].toString()),
+        quantity = Quantity(
+            this["amount"] as Double,
+            Unit.valueOf(this["unit"].toString())
         )
-    }
+    )
+}
 
-    private fun generateKeywordsFromNameAlsoKnownAsFirestoreIsTrash(name: String): List<String> {
-        val result = ArrayList<String>()
-        for (i in 0..name.length) {
-            result.add(name.subSequence(0, i).toString())
-        }
-
-        return result
-    }
+private fun PantryItem.toMap(): Map<String, Any> {
+    return mapOf(
+        "amount" to this.quantity.amount,
+        "unitType" to this.unitType.name,
+        "unit" to this.quantity.unit.name,
+        "tags" to this.tags.map { it.name },
+        "keywords" to this.generateKeywordsFromNameAlsoKnownAsFirestoreIsTrash()
+    )
 }

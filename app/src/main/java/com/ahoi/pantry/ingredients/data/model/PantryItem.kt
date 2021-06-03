@@ -36,6 +36,15 @@ data class PantryItem(
         return result
     }
 
+    fun generateKeywordsFromNameAlsoKnownAsFirestoreIsTrash(): List<String> {
+        val result = ArrayList<String>()
+        for (i in 0..ingredientName.length) {
+            result.add(ingredientName.subSequence(0, i).toString())
+        }
+
+        return result
+    }
+
 }
 
 enum class Tag {

@@ -1,8 +1,6 @@
 package com.ahoi.pantry.recipes.domain
 
 import com.ahoi.pantry.auth.api.AuthManager
-import com.ahoi.pantry.common.units.Quantity
-import com.ahoi.pantry.common.units.convertTo
 import com.ahoi.pantry.common.units.minus
 import com.ahoi.pantry.ingredients.api.Pantry
 import com.ahoi.pantry.ingredients.data.model.PantryItem
@@ -10,7 +8,6 @@ import com.ahoi.pantry.recipes.api.RecipeRepository
 import com.ahoi.pantry.recipes.data.Recipe
 import com.ahoi.pantry.recipes.data.RecipeCardInfo
 import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.core.Single
 
 class RecipeCardsGenerator(
     private val authManager: AuthManager,

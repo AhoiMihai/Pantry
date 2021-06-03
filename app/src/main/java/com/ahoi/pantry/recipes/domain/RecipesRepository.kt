@@ -57,7 +57,7 @@ class RecipesRepository(
                 .addOnSuccessListener { recipeDocuments ->
                     emitter.onSuccess(recipeDocuments.documents.map {
                         it.toRecipe()
-                    })
+                    }.sortedBy { it.name })
                 }
                 .addOnFailureListener {
                     emitter.onError(it)
@@ -72,14 +72,14 @@ class RecipesRepository(
     ): Single<List<Recipe>> {
         return Single.create { emitter ->
             firestore.collection("profiles/$userId/recipes")
-                .limit(numberToLoad.toLong())
                 .orderBy(FieldPath.documentId())
                 .startAfter(idToStartFrom)
+                .limit(numberToLoad.toLong())
                 .get()
                 .addOnSuccessListener { recipeDocuments ->
                     val result = recipeDocuments.documents.map {
                         it.toRecipe()
-                    }
+                    }.sortedBy { it.name }
                     emitter.onSuccess(result)
                 }
                 .addOnFailureListener {
