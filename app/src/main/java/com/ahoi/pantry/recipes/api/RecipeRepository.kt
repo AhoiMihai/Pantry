@@ -10,8 +10,4 @@ interface RecipeRepository {
     fun createOrUpdate(userId: String, recipe: Recipe): Completable
 
     fun loadRecipes(userId: String, numberToLoad: Int, idToStartFrom: String?): Single<List<Recipe>>
-
-    fun loadRecipesFlowable(userId: String, numberToLoad: Int, idToStartFrom: String?): Flowable<Recipe>
-
-    fun loadFullRecipe(userId: String, name: String): Single<Recipe>
 }

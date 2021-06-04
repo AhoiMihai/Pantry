@@ -27,8 +27,7 @@ interface IngredientsComponent: PantryComponent {
     }
 
     fun inject(activity: CreateIngredientActivity)
+    fun inject(activity: AddIngredientActivity)
 
     fun pantry(): Pantry
-
-    fun inject(activity: AddIngredientActivity)
 }

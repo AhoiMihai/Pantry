@@ -20,7 +20,6 @@ class RecipesRepository(
 ) : RecipeRepository {
 
     override fun createOrUpdate(userId: String, recipe: Recipe): Completable {
-
         return Completable.create { emitter ->
             firestore.collection("profiles/$userId/recipes")
                 .document(recipe.name)
@@ -81,75 +80,6 @@ class RecipesRepository(
                         it.toRecipe()
                     }.sortedBy { it.name }
                     emitter.onSuccess(result)
-                }
-                .addOnFailureListener {
-                    emitter.onError(it)
-                }
-        }
-    }
-
-    override fun loadRecipesFlowable(
-        userId: String,
-        numberToLoad: Int,
-        idToStartFrom: String?
-    ): Flowable<Recipe> {
-        return if (idToStartFrom == null) {
-            loadRecipesFlowable(userId, numberToLoad)
-        } else {
-            loadRecipesFlowableWithStartingPoint(userId, numberToLoad, idToStartFrom)
-        }
-    }
-
-    private fun loadRecipesFlowable(
-        userId: String,
-        numberToLoad: Int
-    ): Flowable<Recipe> {
-        return Flowable.create({ emitter ->
-            firestore.collection("profiles/$userId/recipes")
-                .limit(numberToLoad.toLong())
-                .get()
-                .addOnSuccessListener { recipeDocuments ->
-                    recipeDocuments.documents.forEach {
-                        emitter.onNext(it.toRecipe())
-                    }
-                }
-                .addOnFailureListener {
-                    emitter.onError(it)
-                }
-        }, BackpressureStrategy.BUFFER)
-    }
-
-    private fun loadRecipesFlowableWithStartingPoint(
-        userId: String,
-        numberToLoad: Int,
-        idToStartFrom: String
-    ): Flowable<Recipe> {
-        return Flowable.create({ emitter ->
-            firestore.collection("profiles/$userId/recipes")
-                .limit(numberToLoad.toLong())
-                .startAfter(idToStartFrom)
-                .get()
-                .addOnSuccessListener { recipeDocuments ->
-                    recipeDocuments.documents.forEach {
-                        emitter.onNext(it.toRecipe())
-                    }
-                }
-                .addOnFailureListener {
-                    emitter.onError(it)
-                }
-        }, BackpressureStrategy.BUFFER)
-    }
-
-
-    override fun loadFullRecipe(userId: String, name: String): Single<Recipe> {
-
-        return Single.create { emitter ->
-            firestore.collection("profiles/$userId/recipes")
-                .whereEqualTo("name", name)
-                .limit(1)
-                .get()
-                .addOnSuccessListener {
-                    emitter.onSuccess(it.documents[0].toRecipe())
                 }
                 .addOnFailureListener {
                     emitter.onError(it)

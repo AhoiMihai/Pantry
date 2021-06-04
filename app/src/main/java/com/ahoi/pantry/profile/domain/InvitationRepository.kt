@@ -11,7 +11,6 @@ class InvitationRepository(
 ) {
 
     fun getInvitationsForUser(email: String): Single<List<Invitation>> {
-
         return Single.create { emitter ->
             firestore
                 .collection("invitations")

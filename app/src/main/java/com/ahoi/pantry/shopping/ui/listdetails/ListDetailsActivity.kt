@@ -1,5 +1,6 @@
 package com.ahoi.pantry.shopping.ui.listdetails
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -33,6 +34,7 @@ import javax.inject.Inject
 const val K_SELECTED_SHOPPING_LIST = "selected_shopping_list"
 const val K_INGREDIENT_LIST = "ingredient_list_to_add"
 
+@Suppress("UNCHECKED_CAST")
 class ListDetailsActivity : PantryActivity() {
 
     private val listName: EditText by bind(R.id.editable_title)
@@ -43,6 +45,27 @@ class ListDetailsActivity : PantryActivity() {
     private val ingredientAmount: EditText by bind(R.id.ingredient_amount)
     private val unitSpinner: Spinner by bind(R.id.unit_spinner)
     private val controlContainer: LinearLayout by bind(R.id.control_container)
+
+    private val spinnerListener = object : AdapterView.OnItemSelectedListener {
+        override fun onItemSelected(
+            parent: AdapterView<*>?,
+            view: View?,
+            position: Int,
+            id: Long
+        ) {
+            if (unitSpinner.tag != "do not listen") {
+                viewModel.selectUnit(
+                    ingredientAmount.text.toString().toDouble(),
+                    Unit.values()[position]
+                )
+            }
+            unitSpinner.tag = "listen"
+        }
+
+        override fun onNothingSelected(parent: AdapterView<*>?) {
+        }
+
+    }
 
     @Inject
     lateinit var viewModel: ShoppingListDetailsViewModel
@@ -122,23 +145,10 @@ class ListDetailsActivity : PantryActivity() {
         unitSpinner.adapter = ArrayAdapter(
             this,
             android.R.layout.simple_spinner_dropdown_item,
-            Unit.values()
+            Unit.values().map { it.abbreviation }
         )
 
-        unitSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                viewModel.selectUnit(ingredientAmount.text.toString().toDouble(), Unit.values()[position])
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
-
-        }
+        unitSpinner.onItemSelectedListener = spinnerListener
     }
 
     private fun setupValueEdit() {
@@ -160,11 +170,14 @@ class ListDetailsActivity : PantryActivity() {
 
         viewModel.selectedItem.observe(this) {
             controlContainer.visibility = View.VISIBLE
-            unitSpinner.adapter = ArrayAdapter(
-                this,
-                android.R.layout.simple_spinner_dropdown_item,
+            (unitSpinner.adapter as ArrayAdapter<String>).clear()
+            (unitSpinner.adapter as ArrayAdapter<String>).addAll(
                 Unit.values().filter { unit -> unit.type == it.item.unitType }
+                    .map { it.abbreviation }
             )
+            (unitSpinner.adapter as ArrayAdapter<String>).notifyDataSetChanged()
+
+            unitSpinner.tag = "do not listen"
             unitSpinner.setSelection(it.item.quantity.unit.ordinal)
             ingredientAmount.setText(it.item.quantity.amount.toString())
         }
