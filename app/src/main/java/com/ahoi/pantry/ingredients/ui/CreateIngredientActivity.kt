@@ -12,7 +12,7 @@ import com.ahoi.pantry.common.uistuff.PantryActivity
 import com.ahoi.pantry.common.uistuff.bind
 import com.ahoi.pantry.common.uistuff.showToast
 import com.ahoi.pantry.common.units.Unit
-import com.ahoi.pantry.common.units.UnitType
+import com.ahoi.pantry.common.units.unitFromAbbreviation
 import com.ahoi.pantry.ingredients.di.IngredientsComponent
 import javax.inject.Inject
 
@@ -50,7 +50,7 @@ class CreateIngredientActivity : PantryActivity() {
                 DisplayIngredient(
                     title.text.toString(),
                     amount.text.toString().toDouble(),
-                    unitSpinner.selectedItem as Unit
+                    (unitSpinner.selectedItem as String).unitFromAbbreviation()
                 )
             )
         }

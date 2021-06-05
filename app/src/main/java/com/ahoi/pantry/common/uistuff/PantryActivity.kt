@@ -20,9 +20,9 @@ abstract class PantryActivity : AppCompatActivity() {
         CommonOperationState.UNKNOWN_ERROR to { showToast(getString(R.string.error_message_unknown_error)) }
     )
 
-    protected fun handleOperationState(error: OperationState) {
-        if (stateHandlers[error] != null) {
-            stateHandlers[error]!!()
+    protected fun handleOperationState(state: OperationState) {
+        if (stateHandlers[state] != null) {
+            stateHandlers[state]!!()
         } else {
             stateHandlers[CommonOperationState.UNKNOWN_ERROR]!!()
         }

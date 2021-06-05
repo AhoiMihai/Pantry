@@ -1,6 +1,5 @@
 package com.ahoi.pantry.common.units
 
-import java.lang.IllegalArgumentException
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
@@ -23,6 +22,10 @@ enum class Unit(
     TEASPOON(UnitType.VOLUME, "tsp", 0.00493),
     CUP(UnitType.VOLUME, "cup", 0.24),
     PIECE(UnitType.UNIQUE, "piece", 1.0),
+}
+
+fun String.unitFromAbbreviation(): Unit {
+    return Unit.values().filter { it.abbreviation == this }[0]
 }
 
 fun Quantity.convertTo(destination: Unit): Double {

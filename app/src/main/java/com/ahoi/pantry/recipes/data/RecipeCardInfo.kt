@@ -12,6 +12,7 @@ data class RecipeCardInfo(
     val recipe: Recipe,
     val missingIngredients: List<PantryItem> = mutableListOf()
 ) : Parcelable {
+
     val canMake: Boolean
         get() = missingIngredients.isEmpty() || missingIngredients.none {
             it.quantity.convertToBase() > (recipe.ingredients[recipe.ingredients.indexOf(it)].quantity.convertToBase() * MIN_DIFFERENCE_PERCENT) / 100

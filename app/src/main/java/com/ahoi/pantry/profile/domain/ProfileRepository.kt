@@ -1,25 +1,19 @@
 package com.ahoi.pantry.profile.domain
 
 import com.ahoi.pantry.profile.data.Profile
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentId
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.core.FirestoreClient
 import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.subjects.BehaviorSubject
-import io.reactivex.rxjava3.subjects.PublishSubject
+import java.util.Optional
 
 class ProfileRepository(
     private val firestore: FirebaseFirestore,
     private val userIdSupplier: () -> String
 ) {
 
-    private val profileSubject = BehaviorSubject.create<Profile>()
+    private val profileSubject = BehaviorSubject.create<Optional<Profile>>()
     private val profilePantrySubject: BehaviorSubject<String> = BehaviorSubject.create()
 
     fun createProfile(id: String, name: String, email: String): Completable {
@@ -88,7 +82,7 @@ class ProfileRepository(
                 .document(id)
                 .get()
                 .addOnSuccessListener { document ->
-                    profileSubject.onNext(document.toProfile())
+                    profileSubject.onNext(Optional.of(document.toProfile()))
                     emitter.onComplete()
                 }
                 .addOnFailureListener { error ->
@@ -98,17 +92,21 @@ class ProfileRepository(
     }
 
     fun getOrLoadCurrent(): Single<Profile> {
-        return if (profileSubject.hasValue()) {
-            Single.just(profileSubject.value)
+        return if (profileSubject.hasValue() && profileSubject.value.isPresent) {
+            Single.just(profileSubject.value.get())
         } else {
             loadProfile(userIdSupplier())
-                .toSingle { profileSubject.value }
+                .toSingle { profileSubject.value.get() }
         }
     }
 
     fun getOrLoadPantryReference(): Single<String> {
         return getOrLoadCurrent()
             .map { it.pantryReference }
+    }
+
+    fun clearProfile() {
+        profileSubject.onNext(Optional.empty())
     }
 }
 

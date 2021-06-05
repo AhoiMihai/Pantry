@@ -56,6 +56,7 @@ class ProfileViewModel @Inject constructor(
 
     fun logout() {
         authManager.logout()
+        profileRepository.clearProfile()
         _operationState.postValue(ProfileState.LOGGED_OUT)
     }
 }
