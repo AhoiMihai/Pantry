@@ -211,6 +211,12 @@ class ShoppingListDetailsViewModel(
         _items.postValue(newList)
     }
 
+    fun removeIngredient(shoppingListItem: ShoppingListItem) {
+        val newList = items.value!!.toMutableList()
+        newList.remove(shoppingListItem)
+        _items.postValue(newList)
+    }
+
 }
 
 enum class ShoppingListState : OperationState {

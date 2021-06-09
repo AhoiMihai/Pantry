@@ -73,6 +73,6 @@ fun Double.roundToSane(): Double {
             DecimalFormat("#")
         }
     }
-    format.roundingMode = RoundingMode.CEILING
+    format.roundingMode = RoundingMode.HALF_UP
     return format.format(this).toDouble()
 }

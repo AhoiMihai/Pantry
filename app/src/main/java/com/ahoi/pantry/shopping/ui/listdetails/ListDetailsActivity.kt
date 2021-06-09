@@ -13,12 +13,14 @@ import android.widget.Spinner
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ahoi.pantry.PantryApp
 import com.ahoi.pantry.R
 import com.ahoi.pantry.common.operation.CommonOperationState
 import com.ahoi.pantry.common.uistuff.PantryActivity
+import com.ahoi.pantry.common.uistuff.SwipeToDeleteCallback
 import com.ahoi.pantry.common.uistuff.bind
 import com.ahoi.pantry.common.uistuff.showToast
 import com.ahoi.pantry.common.units.Quantity
@@ -47,28 +49,6 @@ class ListDetailsActivity : PantryActivity() {
     private val ingredientAmount: EditText by bind(R.id.ingredient_amount)
     private val unitSpinner: Spinner by bind(R.id.unit_spinner)
     private val controlContainer: CardView by bind(R.id.control_container)
-
-    private val spinnerListener = object : AdapterView.OnItemSelectedListener {
-        override fun onItemSelected(
-            parent: AdapterView<*>?,
-            view: View?,
-            position: Int,
-            id: Long
-        ) {
-            if (unitSpinner.tag != "do not listen") {
-                viewModel.selectUnit(
-                    ingredientAmount.text.toString().toDouble(),
-                    unitSpinner.selectedItem.toString().unitFromAbbreviation()
-                )
-            }
-            unitSpinner.tag = "listen"
-        }
-
-        override fun onNothingSelected(parent: AdapterView<*>?) {
-            print("NOTHING_SELECTED")
-        }
-
-    }
 
     @Inject
     lateinit var viewModel: ShoppingListDetailsViewModel
@@ -220,6 +200,13 @@ class ListDetailsActivity : PantryActivity() {
         ingredientList.layoutManager = LinearLayoutManager(this)
         ingredientList.adapter = adapter
         ingredientList.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+        val swipeHandler = object : SwipeToDeleteCallback(this) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                viewModel.removeIngredient(adapter.items[viewHolder.adapterPosition])
+            }
+        }
+        val itemTouchHelper = ItemTouchHelper(swipeHandler)
+        itemTouchHelper.attachToRecyclerView(ingredientList)
 
         adapter.editClicked.subscribe {
             startActivityForResult(

@@ -8,14 +8,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ahoi.pantry.R
 import com.ahoi.pantry.shopping.data.ShoppingListItem
-import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.subjects.BehaviorSubject
-import io.reactivex.rxjava3.subjects.CompletableSubject
 import io.reactivex.rxjava3.subjects.PublishSubject
 
 class ListItemsAdapter(
-    private val items: MutableList<ShoppingListItem> = mutableListOf()
+    val items: MutableList<ShoppingListItem> = mutableListOf()
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val selectedItemSubject = BehaviorSubject.create<ShoppingListItem>()

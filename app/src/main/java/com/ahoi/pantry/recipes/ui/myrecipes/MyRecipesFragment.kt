@@ -2,7 +2,6 @@ package com.ahoi.pantry.recipes.ui.myrecipes
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,8 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ahoi.pantry.PantryApp
 import com.ahoi.pantry.R
 import com.ahoi.pantry.common.uistuff.HomeStyleFragment
-import com.ahoi.pantry.common.uistuff.PantryFragment
-import com.ahoi.pantry.common.uistuff.bind
 import com.ahoi.pantry.recipes.data.RecipeCardInfo
 import com.ahoi.pantry.recipes.di.RecipesComponent
 import com.ahoi.pantry.recipes.ui.details.K_RECIPE
@@ -21,7 +18,6 @@ import com.ahoi.pantry.recipes.ui.details.RecipeDetailsActivity
 import com.ahoi.pantry.recipes.ui.edit.CreateOrEditRecipeActivity
 import com.ahoi.pantry.shopping.ui.listdetails.K_INGREDIENT_LIST
 import com.ahoi.pantry.shopping.ui.listdetails.ListDetailsActivity
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import javax.inject.Inject
 
 private const val PAGE_SIZE = 25
@@ -56,7 +52,7 @@ class MyRecipesFragment : HomeStyleFragment() {
 
         viewModel.recipeCards.observe(this) {
             hideEmptyView()
-            adapter.addRecipes(it)
+            adapter.addRecipes(it.toList())
         }
 
         stateHandlers[RecipesOperationState.EMPTY_LIST] = { showEmptyView() }

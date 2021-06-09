@@ -13,8 +13,8 @@ class MyRecipesViewModel(
     private val schedulers: SchedulerProvider,
     private val errorHandler: FirestoreErrorHandler
 ) {
-    private val _recipeCards = MutableLiveData<List<RecipeCardInfo>>()
-    val recipeCards: LiveData<List<RecipeCardInfo>> = _recipeCards
+    private val _recipeCards = MutableLiveData<Set<RecipeCardInfo>>()
+    val recipeCards: LiveData<Set<RecipeCardInfo>> = _recipeCards
 
     private val _operationState = MutableLiveData<OperationState>()
     val operationState: LiveData<OperationState> = _operationState
@@ -27,7 +27,7 @@ class MyRecipesViewModel(
         }
         loading = true
         val recipes = recipeCards.value ?: listOf()
-        val lastRecipeId = if (recipes.isEmpty()) null else recipes[recipes.size - 1].recipe.name
+        val lastRecipeId = if (recipes.isEmpty()) null else recipes.toList()[recipes.size - 1].recipe.name
         recipeCardsGenerator.loadRecipeCards(pageSize, lastRecipeId)
             .toList()
             .subscribeOn(schedulers.computation())
@@ -38,7 +38,7 @@ class MyRecipesViewModel(
                 } ?: if (it.isEmpty()) {
                     _operationState.postValue(RecipesOperationState.EMPTY_LIST)
                 } else {
-                    _recipeCards.postValue(it)
+                    _recipeCards.postValue(it.toSet())
                 }
                 loading = false
             }, {
