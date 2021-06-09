@@ -8,11 +8,11 @@ import com.ahoi.pantry.common.operation.OperationState
 import com.ahoi.pantry.common.rx.SchedulerProvider
 import com.ahoi.pantry.common.uistuff.FirestoreErrorHandler
 import com.ahoi.pantry.profile.data.Profile
-import com.ahoi.pantry.profile.domain.ProfileRepository
+import com.ahoi.pantry.profile.domain.ProfileRepositoryImpl
 import javax.inject.Inject
 
 class ProfileViewModel @Inject constructor(
-    private val profileRepository: ProfileRepository,
+    private val profileRepository: ProfileRepositoryImpl,
     private val authManager: AuthManager,
     private val schedulers: SchedulerProvider,
     private val firestoreErrorHandler: FirestoreErrorHandler

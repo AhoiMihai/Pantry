@@ -2,10 +2,9 @@ package com.ahoi.pantry.profile.di
 
 import android.content.Context
 import com.ahoi.pantry.arch.PantryComponent
-import com.ahoi.pantry.profile.domain.ProfileRepository
+import com.ahoi.pantry.profile.domain.ProfileRepositoryImpl
 import com.ahoi.pantry.profile.ui.CreateInvitationActivity
 import com.ahoi.pantry.profile.ui.MyInvitationsActivity
-import com.ahoi.pantry.auth.details.ProfileActivity
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.BindsInstance
 import dagger.Component
@@ -33,5 +32,5 @@ interface ProfileComponent: PantryComponent {
     fun inject(activity: MyInvitationsActivity)
     fun inject(activity: CreateInvitationActivity)
 
-    fun profileRepository(): ProfileRepository
+    fun profileRepository(): ProfileRepositoryImpl
 }

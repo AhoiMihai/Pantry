@@ -5,7 +5,7 @@ import com.ahoi.pantry.auth.api.AuthManager
 import com.ahoi.pantry.auth.details.ProfileActivity
 import com.ahoi.pantry.auth.login.LoginActivity
 import com.ahoi.pantry.auth.signup.CreateAccountActivity
-import com.ahoi.pantry.profile.domain.ProfileRepository
+import com.ahoi.pantry.profile.domain.ProfileRepositoryImpl
 import com.google.firebase.auth.FirebaseAuth
 import dagger.BindsInstance
 import dagger.Component
@@ -20,7 +20,7 @@ interface AuthenticationComponent: PantryComponent {
         fun firebaseAuth(value: FirebaseAuth): Builder
 
         @BindsInstance
-        fun profileRepository(value: ProfileRepository): Builder
+        fun profileRepository(value: ProfileRepositoryImpl): Builder
 
         fun build(): AuthenticationComponent
     }

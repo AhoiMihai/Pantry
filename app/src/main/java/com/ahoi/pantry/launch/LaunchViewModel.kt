@@ -1,13 +1,16 @@
 package com.ahoi.pantry.launch
 
-import androidx.lifecycle.*
-import com.ahoi.pantry.common.rx.SchedulerProvider
-import com.ahoi.pantry.profile.domain.ProfileRepository
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.OnLifecycleEvent
+import com.ahoi.pantry.profile.domain.ProfileRepositoryImpl
 import com.google.firebase.auth.FirebaseAuth
 
 class LaunchViewModel(
     private val firebaseAuth: FirebaseAuth,
-    private val profileRepository: ProfileRepository,
+    private val profileRepository: ProfileRepositoryImpl,
 ): LifecycleObserver {
 
     private val _authState = MutableLiveData<AuthState>()

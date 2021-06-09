@@ -1,5 +1,6 @@
 package com.ahoi.pantry.profile.domain
 
+import com.ahoi.pantry.profile.api.ProfileRepository
 import com.ahoi.pantry.profile.data.Profile
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -8,15 +9,14 @@ import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 import java.util.Optional
 
-class ProfileRepository(
+open class ProfileRepositoryImpl(
     private val firestore: FirebaseFirestore,
     private val userIdSupplier: () -> String
-) {
+): ProfileRepository {
 
     private val profileSubject = BehaviorSubject.create<Optional<Profile>>()
-    private val profilePantrySubject: BehaviorSubject<String> = BehaviorSubject.create()
 
-    fun createProfile(id: String, name: String, email: String): Completable {
+    override fun createProfile(id: String, name: String, email: String): Completable {
         return Completable.create { emitter ->
             firestore.collection("pantries")
                 .add(
@@ -34,7 +34,6 @@ class ProfileRepository(
                         .document(id)
                         .set(profile)
                         .addOnSuccessListener {
-                            profilePantrySubject.onNext(profile.pantryReference)
                             emitter.onComplete()
                         }
                         .addOnFailureListener { error ->
@@ -47,7 +46,7 @@ class ProfileRepository(
         }
     }
 
-    fun updateProfilePantryRef(id: String, reference: String): Completable {
+    override fun updateProfilePantryRef(id: String, reference: String): Completable {
         return Completable.create { emitter ->
             firestore.collection("profiles")
                 .document(id)
@@ -61,7 +60,7 @@ class ProfileRepository(
         }
     }
 
-    fun updateProfile(profile: Profile): Completable {
+    override fun updateProfile(profile: Profile): Completable {
         return Completable.create { emitter ->
             firestore.collection("profiles")
                 .document(userIdSupplier())
@@ -75,7 +74,7 @@ class ProfileRepository(
         }
     }
 
-    fun loadProfile(id: String): Completable {
+    override fun loadProfile(id: String): Completable {
         return Completable.create { emitter ->
             firestore
                 .collection("profiles")
@@ -91,7 +90,7 @@ class ProfileRepository(
         }
     }
 
-    fun getOrLoadCurrent(): Single<Profile> {
+    override fun getOrLoadCurrent(): Single<Profile> {
         return if (profileSubject.hasValue() && profileSubject.value.isPresent) {
             Single.just(profileSubject.value.get())
         } else {
@@ -100,12 +99,12 @@ class ProfileRepository(
         }
     }
 
-    fun getOrLoadPantryReference(): Single<String> {
+    override fun getOrLoadPantryReference(): Single<String> {
         return getOrLoadCurrent()
             .map { it.pantryReference }
     }
 
-    fun clearProfile() {
+    override fun clearProfile() {
         profileSubject.onNext(Optional.empty())
     }
 }

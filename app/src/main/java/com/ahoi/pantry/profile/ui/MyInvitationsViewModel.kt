@@ -2,17 +2,15 @@ package com.ahoi.pantry.profile.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.ahoi.pantry.auth.api.AuthManager
-import com.ahoi.pantry.common.operation.CommonOperationState
 import com.ahoi.pantry.common.operation.OperationState
 import com.ahoi.pantry.common.rx.SchedulerProvider
 import com.ahoi.pantry.common.uistuff.FirestoreErrorHandler
 import com.ahoi.pantry.profile.data.Invitation
 import com.ahoi.pantry.profile.domain.InvitationRepository
-import com.ahoi.pantry.profile.domain.ProfileRepository
+import com.ahoi.pantry.profile.domain.ProfileRepositoryImpl
 
 class MyInvitationsViewModel(
-    private val profileRepository: ProfileRepository,
+    private val profileRepository: ProfileRepositoryImpl,
     private val invitationRepository: InvitationRepository,
     private val userIdSupplier: () -> String,
     private val schedulers: SchedulerProvider,

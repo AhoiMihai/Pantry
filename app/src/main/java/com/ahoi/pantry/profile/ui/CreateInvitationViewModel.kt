@@ -8,11 +8,11 @@ import com.ahoi.pantry.common.rx.SchedulerProvider
 import com.ahoi.pantry.common.uistuff.FirestoreErrorHandler
 import com.ahoi.pantry.profile.data.Invitation
 import com.ahoi.pantry.profile.domain.InvitationRepository
-import com.ahoi.pantry.profile.domain.ProfileRepository
+import com.ahoi.pantry.profile.domain.ProfileRepositoryImpl
 
 class CreateInvitationViewModel(
     private val invitationRepository: InvitationRepository,
-    private val profileRepository: ProfileRepository,
+    private val profileRepository: ProfileRepositoryImpl,
     private val schedulers: SchedulerProvider,
     private val errorHandler: FirestoreErrorHandler
 ) {

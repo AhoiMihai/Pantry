@@ -2,14 +2,11 @@ package com.ahoi.pantry.auth
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.ahoi.pantry.R
 import com.ahoi.pantry.auth.api.AuthManager
 import com.ahoi.pantry.common.operation.CommonOperationState
 import com.ahoi.pantry.common.operation.OperationState
 import com.ahoi.pantry.common.rx.SchedulerProvider
-import com.ahoi.pantry.profile.domain.ProfileRepository
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.schedulers.Schedulers
+import com.ahoi.pantry.profile.api.ProfileRepository
 
 class AuthenticationViewModel(
     private val authManager: AuthManager,
@@ -48,27 +45,25 @@ class AuthenticationViewModel(
         }
         when (mode) {
             AuthMode.LOGIN -> authManager.loginWithEmailAndPassword(email, password)
+                .flatMapCompletable { profileRepo.loadProfile(authManager.currentUserId) }
+                .observeOn(schedulers.io())
+                .subscribeOn(schedulers.mainThread())
                 .subscribe(
                     {
-                        profileRepo.loadProfile(authManager.currentUserId)
-                            .observeOn(schedulers.io())
-                            .subscribeOn(schedulers.mainThread())
-                            .subscribe({
-                                _signupState.postValue(CommonOperationState.SUCCESS)
-                            }, {
-                                _signupState.postValue(CommonOperationState.UNKNOWN_ERROR)
-                            })
-                    },
-                    {
+                        _signupState.postValue(CommonOperationState.SUCCESS)
+                    }, {
                         _signupState.postValue(CommonOperationState.UNKNOWN_ERROR)
                     })
             AuthMode.SIGN_UP -> authManager.signUpWithEmailAndPassword(email, password)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .flatMapCompletable {
+                    profileRepo.createProfile(it, userName!!, email)
+                        .andThen(profileRepo.loadProfile(it))
+                }
+                .subscribeOn(schedulers.io())
+                .observeOn(schedulers.mainThread())
                 .subscribe(
                     {
-                        profileRepo.createProfile(it.uid, userName!!, it.email!!)
-                            .subscribe { _signupState.postValue(CommonOperationState.SUCCESS) }
+                        _signupState.postValue(CommonOperationState.SUCCESS)
                     }, {
                         _signupState.postValue(CommonOperationState.UNKNOWN_ERROR)
                     }
@@ -77,7 +72,7 @@ class AuthenticationViewModel(
     }
 
     fun updateUserName(username: String) {
-        _username.postValue(username)
+        _username.value = username
     }
 }
 

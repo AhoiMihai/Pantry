@@ -2,7 +2,7 @@ package com.ahoi.pantry.launch.di
 
 import com.ahoi.pantry.arch.PantryComponent
 import com.ahoi.pantry.launch.LaunchActivity
-import com.ahoi.pantry.profile.domain.ProfileRepository
+import com.ahoi.pantry.profile.domain.ProfileRepositoryImpl
 import com.google.firebase.auth.FirebaseAuth
 import dagger.BindsInstance
 import dagger.Component
@@ -17,7 +17,7 @@ interface LaunchComponent: PantryComponent {
         fun firebaseAuth(value: FirebaseAuth): Builder
 
         @BindsInstance
-        fun profileRepository(value: ProfileRepository): Builder
+        fun profileRepository(value: ProfileRepositoryImpl): Builder
 
         fun build(): LaunchComponent
     }

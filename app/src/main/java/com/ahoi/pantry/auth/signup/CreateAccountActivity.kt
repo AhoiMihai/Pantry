@@ -1,6 +1,7 @@
 package com.ahoi.pantry.auth.signup
 
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -17,6 +18,7 @@ import com.ahoi.pantry.common.uistuff.PantryActivity
 import com.ahoi.pantry.common.uistuff.bind
 import com.ahoi.pantry.common.uistuff.showToast
 import javax.inject.Inject
+
 
 class CreateAccountActivity : PantryActivity() {
 
@@ -60,7 +62,7 @@ class CreateAccountActivity : PantryActivity() {
 
     private fun goToDashboard() {
         val intent = Intent(this, HomeActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or FLAG_ACTIVITY_SINGLE_TOP
         startActivity(intent)
         finish()
     }
