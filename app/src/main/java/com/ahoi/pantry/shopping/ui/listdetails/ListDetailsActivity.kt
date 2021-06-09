@@ -23,6 +23,7 @@ import com.ahoi.pantry.common.uistuff.bind
 import com.ahoi.pantry.common.uistuff.showToast
 import com.ahoi.pantry.common.units.Quantity
 import com.ahoi.pantry.common.units.Unit
+import com.ahoi.pantry.common.units.roundToSane
 import com.ahoi.pantry.common.units.unitFromAbbreviation
 import com.ahoi.pantry.ingredients.data.model.PantryItem
 import com.ahoi.pantry.ingredients.ui.addingredient.AddIngredientActivity
@@ -183,10 +184,10 @@ class ListDetailsActivity : PantryActivity() {
 
     private fun setupValueEdit() {
         plusButton.setOnClickListener {
-            ingredientAmount.setText((ingredientAmount.text.toString().toDouble() + 1).toString())
+            ingredientAmount.setText((ingredientAmount.text.toString().toDouble() + 1).roundToSane().toString())
         }
         minusButton.setOnClickListener {
-            ingredientAmount.setText((ingredientAmount.text.toString().toDouble() - 1).toString())
+            ingredientAmount.setText((ingredientAmount.text.toString().toDouble() - 1).roundToSane().toString())
         }
     }
 
@@ -206,7 +207,6 @@ class ListDetailsActivity : PantryActivity() {
                     .map { it.abbreviation }
             )
             (unitSpinner.adapter as ArrayAdapter<String>).notifyDataSetChanged()
-            unitSpinner.tag = "do not listen"
             unitSpinner.setSelection(it.item.quantity.unit.ordinal)
             ingredientAmount.setText(it.item.quantity.amount.toString())
         }
