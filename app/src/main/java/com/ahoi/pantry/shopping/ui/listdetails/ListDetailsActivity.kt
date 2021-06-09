@@ -1,6 +1,5 @@
 package com.ahoi.pantry.shopping.ui.listdetails
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -23,6 +22,7 @@ import com.ahoi.pantry.common.uistuff.bind
 import com.ahoi.pantry.common.uistuff.showToast
 import com.ahoi.pantry.common.units.Quantity
 import com.ahoi.pantry.common.units.Unit
+import com.ahoi.pantry.common.units.unitFromAbbreviation
 import com.ahoi.pantry.ingredients.data.model.PantryItem
 import com.ahoi.pantry.ingredients.ui.addingredient.AddIngredientActivity
 import com.ahoi.pantry.ingredients.ui.addingredient.K_SELECTED_INGREDIENT
@@ -56,7 +56,7 @@ class ListDetailsActivity : PantryActivity() {
             if (unitSpinner.tag != "do not listen") {
                 viewModel.selectUnit(
                     ingredientAmount.text.toString().toDouble(),
-                    Unit.values()[position]
+                    unitSpinner.adapter.getItem(position).toString().unitFromAbbreviation()
                 )
             }
             unitSpinner.tag = "listen"
@@ -123,7 +123,7 @@ class ListDetailsActivity : PantryActivity() {
                 viewModel.updateSelectedQuantity(
                     Quantity(
                         ingredientAmount.text.toString().toDouble(),
-                        unitSpinner.selectedItem as Unit
+                        unitSpinner.selectedItem.toString().unitFromAbbreviation()
                     )
                 )
                 true
@@ -177,7 +177,6 @@ class ListDetailsActivity : PantryActivity() {
             )
             (unitSpinner.adapter as ArrayAdapter<String>).notifyDataSetChanged()
 
-            unitSpinner.tag = "do not listen"
             unitSpinner.setSelection(it.item.quantity.unit.ordinal)
             ingredientAmount.setText(it.item.quantity.amount.toString())
         }
