@@ -1,6 +1,5 @@
 package com.ahoi.pantry.shopping.ui.listdetails
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -10,9 +9,10 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.LinearLayout
 import android.widget.Spinner
 import androidx.appcompat.widget.Toolbar
+import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ahoi.pantry.PantryApp
@@ -23,6 +23,7 @@ import com.ahoi.pantry.common.uistuff.bind
 import com.ahoi.pantry.common.uistuff.showToast
 import com.ahoi.pantry.common.units.Quantity
 import com.ahoi.pantry.common.units.Unit
+import com.ahoi.pantry.common.units.unitFromAbbreviation
 import com.ahoi.pantry.ingredients.data.model.PantryItem
 import com.ahoi.pantry.ingredients.ui.addingredient.AddIngredientActivity
 import com.ahoi.pantry.ingredients.ui.addingredient.K_SELECTED_INGREDIENT
@@ -44,7 +45,7 @@ class ListDetailsActivity : PantryActivity() {
     private val minusButton: ImageButton by bind(R.id.subtract_button)
     private val ingredientAmount: EditText by bind(R.id.ingredient_amount)
     private val unitSpinner: Spinner by bind(R.id.unit_spinner)
-    private val controlContainer: LinearLayout by bind(R.id.control_container)
+    private val controlContainer: CardView by bind(R.id.control_container)
 
     private val spinnerListener = object : AdapterView.OnItemSelectedListener {
         override fun onItemSelected(
@@ -56,13 +57,14 @@ class ListDetailsActivity : PantryActivity() {
             if (unitSpinner.tag != "do not listen") {
                 viewModel.selectUnit(
                     ingredientAmount.text.toString().toDouble(),
-                    Unit.values()[position]
+                    unitSpinner.selectedItem.toString().unitFromAbbreviation()
                 )
             }
             unitSpinner.tag = "listen"
         }
 
         override fun onNothingSelected(parent: AdapterView<*>?) {
+            print("NOTHING_SELECTED")
         }
 
     }
@@ -123,7 +125,7 @@ class ListDetailsActivity : PantryActivity() {
                 viewModel.updateSelectedQuantity(
                     Quantity(
                         ingredientAmount.text.toString().toDouble(),
-                        unitSpinner.selectedItem as Unit
+                        unitSpinner.selectedItem.toString().unitFromAbbreviation()
                     )
                 )
                 true
@@ -137,7 +139,15 @@ class ListDetailsActivity : PantryActivity() {
     }
 
     override fun onBackPressed() {
-        viewModel.setName(listName.text.toString())
+        viewModel.setName(
+            listName.text.toString().let {
+                if (it.isEmpty()) {
+                    getString(R.string.shopping_list_default_name)
+                } else {
+                    it
+                }
+            }
+        )
         viewModel.saveShoppingList()
     }
 
@@ -148,7 +158,27 @@ class ListDetailsActivity : PantryActivity() {
             Unit.values().map { it.abbreviation }
         )
 
-        unitSpinner.onItemSelectedListener = spinnerListener
+        unitSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                if (unitSpinner.tag != "do not listen") {
+                    viewModel.selectUnit(
+                        ingredientAmount.text.toString().toDouble(),
+                        unitSpinner.selectedItem.toString().unitFromAbbreviation()
+                    )
+                }
+                unitSpinner.tag = "listen"
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                print("NOTHING_SELECTED")
+            }
+
+        }
     }
 
     private fun setupValueEdit() {
@@ -176,7 +206,6 @@ class ListDetailsActivity : PantryActivity() {
                     .map { it.abbreviation }
             )
             (unitSpinner.adapter as ArrayAdapter<String>).notifyDataSetChanged()
-
             unitSpinner.tag = "do not listen"
             unitSpinner.setSelection(it.item.quantity.unit.ordinal)
             ingredientAmount.setText(it.item.quantity.amount.toString())
@@ -190,6 +219,7 @@ class ListDetailsActivity : PantryActivity() {
     private fun setupList() {
         ingredientList.layoutManager = LinearLayoutManager(this)
         ingredientList.adapter = adapter
+        ingredientList.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
 
         adapter.editClicked.subscribe {
             startActivityForResult(

@@ -7,7 +7,6 @@ import com.ahoi.pantry.common.rx.SchedulerProvider
 import com.ahoi.pantry.common.uistuff.FirestoreErrorHandler
 import com.ahoi.pantry.recipes.data.RecipeCardInfo
 import com.ahoi.pantry.recipes.domain.RecipeCardsGenerator
-import com.ahoi.pantry.shopping.data.ShoppingList
 
 class MyRecipesViewModel(
     private val recipeCardsGenerator: RecipeCardsGenerator,
@@ -35,7 +34,7 @@ class MyRecipesViewModel(
             .observeOn(schedulers.mainThread())
             .subscribe({
                 _recipeCards.value?.let { cards ->
-                    _recipeCards.postValue(cards.plus(it))
+                    _recipeCards.postValue(cards.plus(it.sortedBy { card -> card.recipe.name.toUpperCase()  }))
                 } ?: if (it.isEmpty()) {
                     _operationState.postValue(RecipesOperationState.EMPTY_LIST)
                 } else {

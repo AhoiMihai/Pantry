@@ -12,7 +12,6 @@ import com.ahoi.pantry.common.uistuff.PantryActivity
 import com.ahoi.pantry.common.uistuff.bind
 import com.ahoi.pantry.common.uistuff.showToast
 import com.ahoi.pantry.launch.LandingActivity
-import com.ahoi.pantry.profile.di.ProfileComponent
 import javax.inject.Inject
 
 class ProfileActivity : PantryActivity() {
@@ -42,7 +41,7 @@ class ProfileActivity : PantryActivity() {
         stateHandlers[ProfileState.LOGGED_OUT] = {
             showToast(getString(R.string.logged_out_successfully))
             val intent = Intent(this, LandingActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             startActivity(intent)
             finish()
         }

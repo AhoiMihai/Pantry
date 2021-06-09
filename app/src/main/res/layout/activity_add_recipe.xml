@@ -4,51 +4,97 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingStart="32dp"
-        android:paddingEnd="32dp"
         tools:context=".recipes.ui.edit.CreateOrEditRecipeActivity">
 
-    <EditText
-            android:id="@+id/recipe_title"
+    <androidx.cardview.widget.CardView
+            android:id="@+id/text_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:hint="@string/edit_recipe_recipe_name_hint"
-            android:importantForAutofill="no"
-            android:inputType="text"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:cardElevation="4dp"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <EditText
-            android:id="@+id/recipe_servings"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:hint="@string/edit_recipe_servings_hint"
-            android:importantForAutofill="no"
-            android:inputType="number"
-            app:layout_constraintTop_toBottomOf="@+id/recipe_title" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingStart="32dp"
+                android:paddingEnd="32dp"
+                android:paddingTop="32dp"
+                android:paddingBottom="8dp">
+
+            <TextView
+                    android:id="@+id/name_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:labelFor="@+id/recipe_title"
+                    android:text="@string/recipe_name_label"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                    android:id="@+id/recipe_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:importantForAutofill="no"
+                    android:inputType="text"
+                    android:background="@color/transparent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/name_label"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                    android:id="@+id/servings_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:labelFor="@+id/recipe_servings"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/recipe_servings_label"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/name_label" />
+
+            <EditText
+                    android:id="@+id/recipe_servings"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginStart="32dp"
+                    android:importantForAutofill="no"
+                    android:inputType="number"
+                    android:background="@color/transparent"
+                    app:layout_constraintTop_toBottomOf="@+id/recipe_title"
+                    app:layout_constraintStart_toEndOf="@+id/servings_label"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/ingredient_list"
             android:layout_width="match_parent"
             android:layout_height="280dp"
+            android:layout_marginStart="32sp"
+            android:layout_marginEnd="32dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
-            app:layout_constraintTop_toBottomOf="@+id/recipe_servings" />
+            app:layout_constraintTop_toBottomOf="@+id/text_container" />
 
     <ScrollView
             android:id="@+id/recipe_steps_container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginStart="32sp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toTopOf="@+id/done_button"
-            app:layout_constraintTop_toBottomOf="@+id/ingredient_list" >
+            app:layout_constraintTop_toBottomOf="@+id/ingredient_list">
 
         <TextView
+                android:id="@+id/recipe_steps"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="400dp"
-                android:id="@+id/recipe_steps"/>
+                android:minHeight="400dp" />
 
     </ScrollView>
 
@@ -56,6 +102,8 @@
             android:id="@+id/done_button"
             android:layout_width="match_parent"
             android:layout_height="48dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
             android:text="@string/done"
             app:layout_constraintBottom_toBottomOf="parent" />
 
