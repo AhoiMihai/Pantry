@@ -50,12 +50,14 @@ class MyRecipesFragment : HomeStyleFragment() {
 
         setupList()
 
+        stateHandlers[RecipesOperationState.EMPTY_LIST] = { showEmptyView() }
+
         viewModel.recipeCards.observe(this) {
-            hideEmptyView()
+            if (it.isNotEmpty()) {
+                hideEmptyView()
+            }
             adapter.addRecipes(it.toList())
         }
-
-        stateHandlers[RecipesOperationState.EMPTY_LIST] = { showEmptyView() }
 
         viewModel.operationState.observe(this) {
             handleOperationState(it)
@@ -67,6 +69,11 @@ class MyRecipesFragment : HomeStyleFragment() {
     override fun onStart() {
         super.onStart()
         viewModel.loadRecipes(PAGE_SIZE)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        viewModel.clearRecipes()
     }
 
     override val titleResId: Int

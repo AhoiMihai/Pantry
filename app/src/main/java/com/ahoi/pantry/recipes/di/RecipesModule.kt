@@ -7,6 +7,7 @@ import com.ahoi.pantry.common.uistuff.FirestoreErrorHandler
 import com.ahoi.pantry.ingredients.api.Pantry
 import com.ahoi.pantry.recipes.domain.RecipeCardsGenerator
 import com.ahoi.pantry.recipes.domain.RecipesRepository
+import com.ahoi.pantry.recipes.ui.MissingIngredientsFormatter
 import com.ahoi.pantry.recipes.ui.RecipeIngredientFormatter
 import com.ahoi.pantry.recipes.ui.RecipeStepsFormatter
 import com.ahoi.pantry.recipes.ui.addsteps.AddStepsToRecipeViewModel
@@ -65,8 +66,16 @@ class RecipesModule {
     }
 
     @Provides
-    fun provideRecipesAdapter(picasso: Picasso): RecipesAdapter {
-        return RecipesAdapter(picasso)
+    fun provideMissingIngredientFormatter(): MissingIngredientsFormatter {
+        return MissingIngredientsFormatter()
+    }
+
+    @Provides
+    fun provideRecipesAdapter(
+        picasso: Picasso,
+        formatter: MissingIngredientsFormatter
+    ): RecipesAdapter {
+        return RecipesAdapter(picasso, formatter)
     }
 
     @Provides

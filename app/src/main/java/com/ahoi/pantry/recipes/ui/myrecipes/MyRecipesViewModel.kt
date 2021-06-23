@@ -47,6 +47,10 @@ class MyRecipesViewModel(
             })
     }
 
+    fun clearRecipes() {
+        _recipeCards.value = HashSet<RecipeCardInfo>()
+    }
+
 }
 
 enum class RecipesOperationState : OperationState {

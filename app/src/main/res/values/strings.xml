@@ -67,4 +67,6 @@
     <string name="shopping_list_default_name">Shopping List</string>
     <string name="recipe_name_label">Name:</string>
     <string name="recipe_servings_label">Servings:</string>
+    <string name="recipe_card_can_make">You can make this!</string>
+    <string name="recipe_card_missing_prefix">Missing: %s</string>
 </resources>

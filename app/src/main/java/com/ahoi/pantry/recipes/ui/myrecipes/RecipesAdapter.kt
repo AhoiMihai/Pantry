@@ -8,12 +8,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ahoi.pantry.R
 import com.ahoi.pantry.recipes.data.RecipeCardInfo
+import com.ahoi.pantry.recipes.ui.MissingIngredientsFormatter
 import com.squareup.picasso.Picasso
 import io.reactivex.rxjava3.subjects.PublishSubject
 
 class RecipesAdapter(
     private val picasso: Picasso,
-    private val recipeList: MutableList<RecipeCardInfo> = mutableListOf()
+    private val formatter: MissingIngredientsFormatter,
+    private val recipeList: MutableList<RecipeCardInfo> = mutableListOf(),
 ) : RecyclerView.Adapter<RecipesAdapter.ViewHolder>() {
 
     private val shoppingListSubject = PublishSubject.create<RecipeCardInfo>()
@@ -35,6 +37,8 @@ class RecipesAdapter(
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val nameText: TextView = view.findViewById(R.id.recipe_name)
         val contextButton: ImageButton = view.findViewById(R.id.context_button)
+        val tag: View = view.findViewById(R.id.tag)
+        val missingIngredientsText: TextView = view.findViewById(R.id.missing_ingredients)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -56,10 +60,17 @@ class RecipesAdapter(
             holder.contextButton.setOnClickListener {
                 shoppingListSubject.onNext(item)
             }
+            holder.tag.setBackgroundColor(holder.itemView.context.getColor(R.color.dark_grey))
+            holder.missingIngredientsText.text = String.format(
+                holder.itemView.context.getString(R.string.recipe_card_missing_prefix),
+                formatter.formatRecipeIngredients(item.missingIngredients)
+            )
         } else {
             picasso.load(R.drawable.twotone_check_circle_outline_24)
                 .error(R.drawable.twotone_check_circle_outline_24).fit().into(holder.contextButton)
             holder.contextButton.setOnClickListener(null)
+            holder.tag.setBackgroundColor(holder.itemView.context.getColor(R.color.teal_200))
+            holder.missingIngredientsText.text = holder.itemView.context.getString(R.string.recipe_card_can_make)
         }
 
     }

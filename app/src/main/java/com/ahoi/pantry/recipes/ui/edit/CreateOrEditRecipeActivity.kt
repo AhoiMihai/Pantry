@@ -15,13 +15,16 @@ import com.ahoi.pantry.common.operation.CommonOperationState
 import com.ahoi.pantry.common.uistuff.PantryActivity
 import com.ahoi.pantry.common.uistuff.bind
 import com.ahoi.pantry.common.uistuff.showToast
+import com.ahoi.pantry.common.units.Quantity
 import com.ahoi.pantry.ingredients.data.model.PantryItem
+import com.ahoi.pantry.ingredients.ui.addingredient.AddIngredientActivity
+import com.ahoi.pantry.ingredients.ui.addingredient.IngredientQuantityPicker
+import com.ahoi.pantry.ingredients.ui.addingredient.K_SELECTED_INGREDIENT
+import com.ahoi.pantry.ingredients.ui.addingredient.QuantityPickedListener
+import com.ahoi.pantry.ingredients.ui.addingredient.REQUEST_CODE_ADD_INGREDIENT
 import com.ahoi.pantry.recipes.data.Recipe
 import com.ahoi.pantry.recipes.di.RecipesComponent
 import com.ahoi.pantry.recipes.ui.RecipeStepsFormatter
-import com.ahoi.pantry.ingredients.ui.addingredient.AddIngredientActivity
-import com.ahoi.pantry.ingredients.ui.addingredient.K_SELECTED_INGREDIENT
-import com.ahoi.pantry.ingredients.ui.addingredient.REQUEST_CODE_ADD_INGREDIENT
 import com.ahoi.pantry.recipes.ui.addsteps.AddStepsToRecipeActivity
 import com.ahoi.pantry.recipes.ui.addsteps.K_RECIPE_STEPS
 import com.ahoi.pantry.recipes.ui.addsteps.REQUEST_CODE_ADD_STEPS
@@ -29,7 +32,9 @@ import javax.inject.Inject
 
 const val K_RECIPE_TO_EDIT = "pantryrecipetoedit"
 
-class CreateOrEditRecipeActivity : PantryActivity() {
+private const val DIALOG_TAG = "value_picker"
+
+class CreateOrEditRecipeActivity : PantryActivity(), QuantityPickedListener {
 
     private val recipeTitle: EditText by bind(R.id.recipe_title)
     private val recipeServings: EditText by bind(R.id.recipe_servings)
@@ -82,6 +87,16 @@ class CreateOrEditRecipeActivity : PantryActivity() {
                     REQUEST_CODE_ADD_INGREDIENT
                 )
             }
+        adapter.clickedItem.subscribe {
+            val fragment: IngredientQuantityPicker? =
+                supportFragmentManager.findFragmentByTag(DIALOG_TAG) as IngredientQuantityPicker?
+            fragment?.dismiss()
+
+            IngredientQuantityPicker.newInstance(it.unitType)
+                .show(supportFragmentManager,
+                    DIALOG_TAG
+                )
+        }
 
         recipeText.setOnClickListener {
             val intent = Intent(this, AddStepsToRecipeActivity::class.java)
@@ -147,5 +162,13 @@ class CreateOrEditRecipeActivity : PantryActivity() {
                 return
             }
         }
+    }
+
+    override fun quantityPicked(quantity: Quantity) {
+        
+    }
+
+    override fun invalidQuantity() {
+        showToast(getString(R.string.add_ingredient_invalid_ammount))
     }
 }

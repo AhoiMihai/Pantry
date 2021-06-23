@@ -41,7 +41,8 @@ class ProfileActivity : PantryActivity() {
         stateHandlers[ProfileState.LOGGED_OUT] = {
             showToast(getString(R.string.logged_out_successfully))
             val intent = Intent(this, LandingActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            intent.flags =
+                Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
             finish()
         }

@@ -52,6 +52,7 @@ class ShoppingListFragment: HomeStyleFragment() {
         viewModel.shoppingLists.observe(this) {
             if (it.isEmpty()) {
                 emptyView.visibility = View.VISIBLE
+                adapter.setItems(it)
                 return@observe
             }
             emptyView.visibility = View.GONE
